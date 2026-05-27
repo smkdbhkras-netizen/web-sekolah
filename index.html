@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMK IT AL MUBAROK</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #ffffff; }
+        iframe { border: none; width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <script>
+        // 1. Ambil parameter (?berita_id=X) dari link utama browser
+        const URL_PARAMETER = window.location.search;
+        
+        // 2. LINK WEB APP GOOGLE SCRIPT EXEC ANDA
+        // ⚠️ GANTI teks di bawah dengan URL /exec asli Anda yang didapat dari Google Apps Script!
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6D7iiYCBdpae_d7LTLsP7_bE-0_3G7FmUNYHY9rP3pTQoNa2mnzMab3zQn5DUd757Mg/exec";
+        
+        // 3. Gabungkan link Google Script dengan parameternya secara utuh
+        const LINK_AKHIR = GOOGLE_SCRIPT_URL + URL_PARAMETER;
+        
+        // 4. Tampilkan website di dalam iframe
+        document.write('<iframe src="' + LINK_AKHIR + '" allow="clipboard-read; clipboard-write"></iframe>');
+    </script>
+</body>
+</html>

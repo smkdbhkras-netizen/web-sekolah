@@ -41,29 +41,40 @@
         // didelegasikan ke halaman ini (induk/top-level), yang memang diizinkan
         // meminta GPS, lalu hasilnya dikirim balik ke iframe lewat postMessage.
         window.addEventListener('message', function (e) {
+            console.log('[GEO] Halaman GitHub menerima pesan:', e.data, 'dari origin:', e.origin);
             if (!e.data || e.data.type !== 'REQUEST_GEO_LOCATION') return;
 
-            const iframe = document.getElementById('app-frame');
-            if (!iframe || !iframe.contentWindow) return;
+            // Pakai e.source (referensi persis ke frame pengirim), bukan iframe.contentWindow,
+            // karena kode Apps Script sebenarnya jalan di iframe internal DI DALAM iframe utama
+            // (wrapper bawaan Google untuk google.script.run). iframe.contentWindow cuma nyampe
+            // ke wrapper Google itu, bukan ke frame kode kamu yang sesungguhnya.
+            const target = e.source;
+            if (!target) {
+                console.log('[GEO] e.source kosong, tidak bisa membalas.');
+                return;
+            }
 
             if (!navigator.geolocation) {
-                iframe.contentWindow.postMessage(
+                target.postMessage(
                     { type: 'GEO_LOCATION_RESULT', error: 'Geolocation tidak didukung browser ini.' },
                     '*'
                 );
                 return;
             }
 
+            console.log('[GEO] Meminta getCurrentPosition ke browser...');
             navigator.geolocation.getCurrentPosition(
                 function (pos) {
-                    iframe.contentWindow.postMessage({
+                    console.log('[GEO] Sukses, mengirim balik ke pengirim...');
+                    target.postMessage({
                         type: 'GEO_LOCATION_RESULT',
                         lat: pos.coords.latitude,
                         lng: pos.coords.longitude
                     }, '*');
                 },
                 function (err) {
-                    iframe.contentWindow.postMessage(
+                    console.log('[GEO] getCurrentPosition error:', err.code, err.message);
+                    target.postMessage(
                         { type: 'GEO_LOCATION_RESULT', error: err.message },
                         '*'
                     );

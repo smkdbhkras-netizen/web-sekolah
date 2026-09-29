@@ -355,6 +355,36 @@
     html.dark .kg-ghead{background:#0f172a}
     html.dark .kg-gbody{background:#0f172a;border-color:#334155}
     html.dark .kg-tile-name,html.dark .kg-gtitle b{color:#f1f5f9}
+    /* --- wilayah: ringkasan & tile yang lebih ramah --- */
+    .kg-wsum{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;border-radius:20px;padding:16px 18px;margin:4px 0 14px;box-shadow:0 10px 24px rgba(37,99,235,.22)}
+    .kg-wsum-ico{flex:0 0 auto;width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px}
+    .kg-wsum-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+    .kg-wsum-txt b{font-size:18px;font-weight:800;line-height:1.25}
+    .kg-wsum-txt>span{font-size:13.5px;opacity:.92;font-weight:600}
+    .kg-wsum-txt b .kg-wsum-num{font-size:30px;font-weight:900;margin-right:4px;opacity:1}
+    .kg-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:4px}
+    @media(max-width:520px){.kg-tiles{grid-template-columns:1fr 1fr;gap:8px}.kg-tile-ico{display:none!important}}
+    .kg-tile{position:relative;display:flex;flex-direction:column;gap:8px;text-align:left;padding:12px 14px;border-radius:18px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;min-height:70px;font-family:inherit;transition:.15s}
+    .kg-tile:hover{border-color:#60a5fa;transform:translateY(-2px);box-shadow:0 8px 18px rgba(37,99,235,.12)}
+    .kg-tile-row{display:flex;align-items:center;gap:10px;width:100%}
+    .kg-tile-ico{flex:0 0 auto;width:36px;height:36px;border-radius:12px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:15px}
+    .kg-tile-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+    .kg-tile-name{font-size:14.5px;font-weight:800;color:#0f172a;line-height:1.25;word-break:break-word}
+    .kg-tile-count{font-size:12px;color:#64748b;font-weight:600}
+    .kg-tile-num{flex:0 0 auto;font-size:22px;font-weight:900;color:#1d4ed8;line-height:1}
+    .kg-tile-flag{position:absolute;top:-9px;right:12px;background:#f59e0b;color:#fff;font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;box-shadow:0 2px 6px rgba(245,158,11,.4)}
+    .kg-bar{display:block;height:5px;background:#eef2f7;border-radius:5px;overflow:hidden}
+    .kg-bar i{display:block;height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);border-radius:5px}
+    .kg-tile-all{background:#f8fafc}
+    .kg-tile-on{background:linear-gradient(135deg,#2563eb,#0ea5e9);border-color:#2563eb;box-shadow:0 10px 22px rgba(37,99,235,.28)}
+    .kg-tile-on .kg-tile-name,.kg-tile-on .kg-tile-num{color:#fff}
+    .kg-tile-on .kg-tile-count{color:rgba(255,255,255,.88)}
+    .kg-tile-on .kg-tile-ico{background:rgba(255,255,255,.22);color:#fff}
+    .kg-tile-on .kg-bar{background:rgba(255,255,255,.3)}
+    .kg-tile-on .kg-bar i{background:#fff}
+    html.dark .kg-tile,html.dark .kg-tile-all{background:#1e293b;border-color:#334155}
+    html.dark .kg-tile-ico{background:#0f172a}
+    html.dark .kg-tile-on{background:linear-gradient(135deg,#2563eb,#0ea5e9)}
     </style>
 </head>
 <body class="text-slate-800">
@@ -2268,7 +2298,7 @@
         // ================== END KEGIATAN VIDEO YOUTUBE ==================
 
         // ================== KEGIATAN: FILTER TAHUN + PAGINATION (HANYA UNTUK MENU KEGIATAN) ==================
-        let KEGIATAN_STATE = { items: [], years: [], layanan: [], wilayah: [], activeYear: 'semua', activeLayanan: 'semua', activeWilayah: 'semua', query: '', pageSize: 6, visibleCount: 6, groupPage: 4, groupStep: 6, groupOpen: {}, groupVisible: {}, tilesExpanded: false };
+        let KEGIATAN_STATE = { items: [], years: [], layanan: [], wilayah: [], activeYear: 'semua', activeLayanan: 'semua', activeWilayah: 'semua', wilayahQuery: '', query: '', pageSize: 6, visibleCount: 6, groupPage: 4, groupStep: 6, groupOpen: {}, groupVisible: {}, tilesExpanded: false };
 
         function getKegiatanYear(item) {
             let t = (item.tanggal_pelaksanaan || '').toString();
@@ -2465,7 +2495,7 @@
             ];
             const since = KEGIATAN_STATE.years.length ? KEGIATAN_STATE.years[KEGIATAN_STATE.years.length - 1] : '';
             return '<div id="kg-sec-statistik" class="kg-panel" style="scroll-margin-top:100px">'
-                + '<h3 class="kg-sec-title"><i class="fas fa-chart-simple"></i> Dampak MOVE' + (since && since !== 'Lainnya' ? ' sejak ' + since : '') + '</h3>'
+                + '<h3 class="kg-sec-title"><i class="fas fa-chart-simple"></i> Dampak MOVE' + (KEGIATAN_STATE.activeYear !== 'semua' ? (KEGIATAN_STATE.activeYear === 'Lainnya' ? '' : ' tahun ' + KEGIATAN_STATE.activeYear) : (since && since !== 'Lainnya' ? ' sejak ' + since : '')) + '</h3>'
                 + '<p class="kg-sec-sub">Ringkasan seluruh kegiatan pelayanan yang sudah terlaksana.</p>'
                 + '<div class="kg-stats">' + stats.map(s => '<div class="kg-stat"><i class="fas ' + s.icon + '"></i><b>' + s.value.toLocaleString('id-ID') + '</b><span>' + s.label + '</span></div>').join('') + '</div></div>';
         }
@@ -2487,17 +2517,21 @@
                 return '<button onclick="filterKegiatanYear(\'' + y + '\')" data-year="' + y + '" class="kegiatan-year-tab px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors bg-white text-slate-500 border border-slate-200 hover:bg-slate-50">' + label + ' (' + count + ')</button>';
             }).join('');
             h += '</div>';
-            h += '<div id="kegiatan-wilayah-wrap"></div><div class="kg-info" id="kegiatan-result-info"></div>';
+            h += '<div id="kegiatan-wilayah-wrap">'
+                + '<div id="kg-wsum"></div>'
+                + '<div id="kg-wsearch-box" class="kg-searchbox" style="display:none;margin:12px 0 4px"><i class="fas fa-magnifying-glass"></i><input id="kg-wsearch" class="kg-input" type="search" placeholder="Cari nama wilayah..." oninput="setKegiatanWilayahQuery(this.value)" autocomplete="off"></div>'
+                + '<div id="kg-wtiles"></div><div id="kg-wmore"></div></div>';
+            h += '<div class="kg-info" id="kegiatan-result-info"></div>';
             h += '<div id="kegiatan-items-container"></div><div id="kegiatan-loadmore-container"></div></div>';
             return h;
         }
 
-        function getKegiatanFiltered() {
+        function getKegiatanFiltered(skipWilayah) {
             const q = KEGIATAN_STATE.query.toLowerCase().trim();
             return KEGIATAN_STATE.items.filter(it => {
                 if (KEGIATAN_STATE.activeYear !== 'semua' && it._year !== KEGIATAN_STATE.activeYear) return false;
                 if (KEGIATAN_STATE.activeLayanan !== 'semua' && kgTxt(it.kategori_layanan) !== KEGIATAN_STATE.activeLayanan) return false;
-                if (KEGIATAN_STATE.activeWilayah !== 'semua' && String(it._wid) !== String(KEGIATAN_STATE.activeWilayah)) return false;
+                if (!skipWilayah && KEGIATAN_STATE.activeWilayah !== 'semua' && String(it._wid) !== String(KEGIATAN_STATE.activeWilayah)) return false;
                 if (q) {
                     const hay = [it.nama_pelanggan, it.lokasi_desa, it.kategori_layanan, it.keluhan, it.area_pijat, it.ketua_tim_pelaksana].map(kgTxt).join(' ').toLowerCase();
                     if (hay.indexOf(q) === -1) return false;
@@ -2506,25 +2540,85 @@
             });
         }
 
+        // grup wilayah dibuka semua hanya jika pengguna mencari kata kunci / memilih satu wilayah
         function kgFilterAktif() {
             const S = KEGIATAN_STATE;
-            return S.query.trim() !== '' || S.activeYear !== 'semua' || S.activeLayanan !== 'semua' || S.activeWilayah !== 'semua';
+            return S.query.trim() !== '' || S.activeWilayah !== 'semua';
         }
 
-        function renderKegiatanWilayahTiles() {
-            const wrap = document.getElementById('kegiatan-wilayah-wrap');
-            if (!wrap) return;
+        function kgLabelTahun() {
+            const y = KEGIATAN_STATE.activeYear;
+            return y === 'semua' ? 'Semua tahun' : (y === 'Lainnya' ? 'Tahun lainnya' : 'Tahun ' + y);
+        }
+
+        // Daftar wilayah yang ADA pada filter aktif (tahun/layanan/kata kunci), lengkap dengan jumlahnya
+        function kgWilayahAktif(base) {
+            const c = {};
+            base.forEach(it => { c[it._wid] = (c[it._wid] || 0) + 1; });
+            return KEGIATAN_STATE.wilayah.filter(w => c[w.id]).map(w => ({ id: w.id, key: w.key, label: w.label, count: c[w.id] }))
+                .sort((a, b) => {
+                    if ((a.key === '~kosong') !== (b.key === '~kosong')) return a.key === '~kosong' ? 1 : -1;
+                    return b.count - a.count || a.label.localeCompare(b.label);
+                });
+        }
+
+        function renderKegiatanWilayahTiles(base, list) {
+            const sum = document.getElementById('kg-wsum');
+            const tilesEl = document.getElementById('kg-wtiles');
+            const moreEl = document.getElementById('kg-wmore');
+            const searchBox = document.getElementById('kg-wsearch-box');
+            if (!tilesEl) return;
             const S = KEGIATAN_STATE;
-            if (S.wilayah.length < 2) { wrap.innerHTML = ''; return; }
+            const total = base.length;
             const LIMIT = 8;
-            const list = S.tilesExpanded ? S.wilayah : S.wilayah.slice(0, LIMIT);
-            const max = Math.max.apply(null, S.wilayah.map(w => w.count));
-            let h = '<p class="kg-lbl" style="margin:6px 0 8px"><i class="fas fa-map-pin" style="color:#ef4444"></i> Pilih wilayah</p><div class="kg-tiles">';
-            h += '<button type="button" class="kg-tile' + (S.activeWilayah === 'semua' ? ' kg-tile-on' : '') + '" onclick="setKegiatanWilayah(\'semua\')"><span class="kg-tile-name"><i class="fas fa-layer-group"></i> Semua wilayah</span><span class="kg-tile-count">' + S.items.length + ' kegiatan</span><span class="kg-bar"><i style="width:100%"></i></span></button>';
-            h += list.map(w => '<button type="button" class="kg-tile' + (String(S.activeWilayah) === String(w.id) ? ' kg-tile-on' : '') + '" onclick="setKegiatanWilayah(' + w.id + ')"><span class="kg-tile-name">' + kgEsc(w.label) + '</span><span class="kg-tile-count">' + w.count + ' kegiatan</span><span class="kg-bar"><i style="width:' + Math.max(8, Math.round(w.count / max * 100)) + '%"></i></span></button>').join('');
+
+            if (sum) {
+                sum.innerHTML = '<div class="kg-wsum">'
+                    + '<div class="kg-wsum-ico"><i class="fas fa-map-location-dot"></i></div>'
+                    + '<div class="kg-wsum-txt"><b><span class="kg-wsum-num">' + list.length + '</span> wilayah terjangkau</b>'
+                    + '<span>' + kgLabelTahun() + ' &middot; ' + total + ' kegiatan' + (S.activeLayanan !== 'semua' ? ' &middot; ' + kgEsc(S.activeLayanan) : '') + '</span></div></div>';
+            }
+            if (searchBox) searchBox.style.display = list.length > LIMIT ? 'block' : 'none';
+
+            if (list.length === 0) { tilesEl.innerHTML = ''; if (moreEl) moreEl.innerHTML = ''; return; }
+
+            const wq = (S.wilayahQuery || '').toLowerCase().trim();
+            let shownList = wq ? list.filter(w => w.label.toLowerCase().indexOf(wq) !== -1) : list;
+            const limited = !wq && !S.tilesExpanded && shownList.length > LIMIT;
+            if (limited) shownList = shownList.slice(0, LIMIT);
+            const max = Math.max.apply(null, list.map(w => w.count));
+
+            let h = '<div class="kg-tiles">';
+            h += '<button type="button" class="kg-tile kg-tile-all' + (S.activeWilayah === 'semua' ? ' kg-tile-on' : '') + '" onclick="setKegiatanWilayah(\'semua\')">'
+                + '<span class="kg-tile-row"><span class="kg-tile-ico"><i class="fas fa-layer-group"></i></span>'
+                + '<span class="kg-tile-txt"><span class="kg-tile-name">Semua wilayah</span><span class="kg-tile-count">' + list.length + ' wilayah</span></span>'
+                + '<span class="kg-tile-num">' + total + '</span></span><span class="kg-bar"><i style="width:100%"></i></span></button>';
+            h += shownList.map((w, i) => {
+                const on = String(S.activeWilayah) === String(w.id);
+                const top = (!wq && i === 0 && list.length > 3 && w.key !== '~kosong') ? '<span class="kg-tile-flag">Terbanyak</span>' : '';
+                return '<button type="button" class="kg-tile' + (on ? ' kg-tile-on' : '') + '" onclick="setKegiatanWilayah(' + w.id + ')">' + top
+                    + '<span class="kg-tile-row"><span class="kg-tile-ico"><i class="fas fa-location-dot"></i></span>'
+                    + '<span class="kg-tile-txt"><span class="kg-tile-name">' + kgEsc(w.label) + '</span><span class="kg-tile-count">' + w.count + ' kegiatan</span></span>'
+                    + '<span class="kg-tile-num">' + w.count + '</span></span>'
+                    + '<span class="kg-bar"><i style="width:' + Math.max(8, Math.round(w.count / max * 100)) + '%"></i></span></button>';
+            }).join('');
             h += '</div>';
-            if (S.wilayah.length > LIMIT) h += '<button type="button" class="kg-link" onclick="toggleKegiatanTiles()">' + (S.tilesExpanded ? 'Ringkas daftar wilayah' : 'Tampilkan semua ' + S.wilayah.length + ' wilayah') + '</button>';
-            wrap.innerHTML = h;
+            if (wq && shownList.length === 0) h = '<div class="kg-empty" style="margin-top:10px">Wilayah &ldquo;' + kgEsc(S.wilayahQuery) + '&rdquo; tidak ditemukan pada pilihan ini.</div>';
+            tilesEl.innerHTML = h;
+
+            if (moreEl) {
+                moreEl.innerHTML = (!wq && list.length > LIMIT)
+                    ? '<button type="button" class="kg-link" onclick="toggleKegiatanTiles()">' + (S.tilesExpanded ? '<i class="fas fa-chevron-up"></i> Ringkas daftar wilayah' : '<i class="fas fa-chevron-down"></i> Tampilkan semua ' + list.length + ' wilayah') + '</button>'
+                    : '';
+            }
+        }
+
+        function renderKegiatanStatsByYear() {
+            const el = document.getElementById('kg-sec-statistik');
+            if (!el) return;
+            const S = KEGIATAN_STATE;
+            const items = S.activeYear === 'semua' ? S.items : S.items.filter(it => it._year === S.activeYear);
+            el.outerHTML = buildKegiatanStatsHtml(items);
         }
 
         function renderKegiatanItemsUI() {
@@ -2534,16 +2628,20 @@
             if (!itemsContainer) return;
             const S = KEGIATAN_STATE;
 
-            renderKegiatanWilayahTiles();
+            // wilayah menyesuaikan tahun/layanan/kata kunci yang sedang dipilih
+            const base = getKegiatanFiltered(true);
+            const wilAktif = kgWilayahAktif(base);
+            if (S.activeWilayah !== 'semua' && !wilAktif.some(w => String(w.id) === String(S.activeWilayah))) S.activeWilayah = 'semua';
+            renderKegiatanWilayahTiles(base, wilAktif);
+            renderKegiatanStatsByYear();
 
-            const filtered = getKegiatanFiltered();
+            const filtered = getKegiatanFiltered(false);
             if (loadMoreContainer) loadMoreContainer.innerHTML = '';
 
             if (filtered.length === 0) {
                 itemsContainer.innerHTML = '<div class="kg-empty"><i class="fas fa-face-frown" style="font-size:26px;display:block;margin-bottom:8px;color:#94a3b8"></i>Tidak ada kegiatan yang cocok.<br>Coba kata kunci lain atau pilih &ldquo;Semua wilayah&rdquo;.</div>';
                 if (infoEl) infoEl.innerText = '';
             } else {
-                // kelompokkan per wilayah
                 const groups = {};
                 filtered.forEach(it => { (groups[it._wid] = groups[it._wid] || []).push(it); });
                 let order = Object.keys(groups).map(id => ({ id: id, items: groups[id], w: S.wilayah.find(w => String(w.id) === id) }));
@@ -2578,7 +2676,7 @@
                         + (isOpen ? '<div class="kg-gbody">' + body + '</div>' : '')
                         + '</section>';
                 }).join('');
-                if (infoEl) infoEl.innerText = 'Menampilkan ' + filtered.length + ' kegiatan di ' + order.length + ' wilayah';
+                if (infoEl) infoEl.innerText = 'Menampilkan ' + filtered.length + ' kegiatan di ' + order.length + ' wilayah (' + kgLabelTahun().toLowerCase() + ')';
             }
 
             document.querySelectorAll('.kegiatan-year-tab').forEach(btn => {
@@ -2606,7 +2704,12 @@
         }
         function toggleKegiatanTiles() {
             KEGIATAN_STATE.tilesExpanded = !KEGIATAN_STATE.tilesExpanded;
-            renderKegiatanWilayahTiles();
+            renderKegiatanItemsUI();
+        }
+        function setKegiatanWilayahQuery(v) {
+            KEGIATAN_STATE.wilayahQuery = v || '';
+            const base = getKegiatanFiltered(true);
+            renderKegiatanWilayahTiles(base, kgWilayahAktif(base));
         }
 
         if (!window.__kgResizeBound) {
@@ -2778,6 +2881,7 @@
                         KEGIATAN_STATE.layanan = layananList;
                         KEGIATAN_STATE.wilayah = wilList;
                         KEGIATAN_STATE.activeWilayah = 'semua';
+                        KEGIATAN_STATE.wilayahQuery = '';
                         KEGIATAN_STATE.tilesExpanded = false;
                         kgResetGroupState();
                         KEGIATAN_STATE.activeYear = 'semua';

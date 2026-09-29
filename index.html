@@ -393,9 +393,15 @@
     .kg-anat-head b{font-size:12px;font-weight:800;color:#64748b}
     .kg-leg{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#94a3b8}
     .kg-leg i{width:10px;height:10px;border-radius:50%;background:#f43f5e;display:inline-block}
-    .kg-figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;background:#f8fafc;border:1px solid #e8edf4;border-radius:16px;padding:14px 8px 10px}
+    .kg-figs{display:grid;grid-template-columns:1fr;gap:6px;background:#f8fafc;border:1px solid #e8edf4;border-radius:16px;padding:12px 6px 10px}
     .kg-fig{margin:0;text-align:center}
-    .kg-fig svg{width:100%;max-width:130px;height:auto;display:block;margin:0 auto}
+    .kg-fig svg{width:100%;max-width:360px;height:auto;display:block;margin:0 auto;overflow:visible}
+    .kg-fig .kg-lead{stroke:#be123c;stroke-width:1.1;fill:none;opacity:.9}
+    .kg-fig .kg-dot{fill:#fff;stroke:#be123c;stroke-width:1.6}
+    .kg-fig .kg-lbl-t{fill:#9f1239;font-size:12px;font-weight:700;font-family:inherit}
+    html.dark .kg-fig .kg-lead{stroke:#fb7185}
+    html.dark .kg-fig .kg-dot{fill:#0f172a;stroke:#fb7185}
+    html.dark .kg-fig .kg-lbl-t{fill:#fda4af}
     .kg-fig figcaption{font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:6px}
     .kg-zchips{display:flex;flex-wrap:wrap;gap:6px}
     .kg-zchips span{font-size:12.5px;font-weight:700;color:#be123c;background:#fff1f2;border:1px solid #fecdd3;padding:4px 10px;border-radius:999px}
@@ -2549,6 +2555,61 @@
             });
             return set;
         }
+        // titik penunjuk label pada gambar: [x, y, sisi label] (L = kiri, R = kanan)
+        const KG_ANCHOR_DEPAN = {
+            kepala: [100, 24, 'R'], leher: [100, 51, 'R'], bahu: [55, 70, 'L'],
+            lengan_atas: [44, 108, 'L'], lengan_bawah: [44, 166, 'L'], pergelangan_tangan: [44, 197, 'L'],
+            telapak_tangan: [44, 214, 'L'], jari_tangan: [44, 238, 'L'],
+            paha_depan: [119, 246, 'R'], lutut: [118, 306, 'R'], betis: [117, 355, 'R'], kaki_depan: [118, 408, 'R']
+        };
+        const KG_ANCHOR_BELAKANG = {
+            tengkuk: [100, 51, 'L'], bahu: [146, 68, 'R'], punggung_atas: [84, 100, 'L'],
+            punggung_tengah: [116, 146, 'R'], pinggang: [86, 183, 'L'], pinggul: [120, 210, 'R'],
+            bokong: [74, 244, 'L'], paha_belakang: [119, 286, 'R'], betis: [80, 353, 'L'],
+            pergelangan_kaki: [118, 397, 'R'], telapak_kaki: [82, 416, 'L']
+        };
+        // pecah label panjang jadi 2 baris
+        function kgLabelLines(t) {
+            if (t.length <= 12 || t.indexOf(' ') === -1) return [t];
+            const i = t.indexOf(' ');
+            return [t.slice(0, i), t.slice(i + 1)];
+        }
+        // gambar tubuh + label tepat di posisi area yang dipijat
+        function kgAnatomiFigur(svgBase, anchors, zones, all, caption) {
+            const items = [];
+            Object.keys(anchors).forEach(function (z) {
+                if (all || zones.has(z)) {
+                    const a = anchors[z], lines = kgLabelLines(KG_ZONE_LABEL[z]);
+                    items.push({ z: z, ax: a[0], ay: a[1], side: a[2], lines: lines, h: lines.length * 13 + 2 });
+                }
+            });
+            if (!items.length) return '';
+            let yMin = 1e9, yMax = -1e9, out = '';
+            ['L', 'R'].forEach(function (side) {
+                const col = items.filter(function (i) { return i.side === side; }).sort(function (a, b) { return a.ay - b.ay; });
+                let prev = null;
+                col.forEach(function (it) {
+                    it.cy = it.ay;
+                    if (prev) it.cy = Math.max(it.cy, prev.cy + prev.h / 2 + it.h / 2 + 3);
+                    prev = it;
+                    yMin = Math.min(yMin, it.ay - 14, it.cy - it.h / 2);
+                    yMax = Math.max(yMax, it.ay + 14, it.cy + it.h / 2);
+                    const left = side === 'L';
+                    const ex = left ? 10 : 190, tx = left ? 6 : 194, anc = left ? 'end' : 'start';
+                    out += '<line class="kg-lead" x1="' + it.ax + '" y1="' + it.ay + '" x2="' + ex + '" y2="' + it.cy + '"/>'
+                        + '<circle class="kg-dot" cx="' + it.ax + '" cy="' + it.ay + '" r="2.8"/>';
+                    it.lines.forEach(function (ln, n) {
+                        const y = it.cy + (n - (it.lines.length - 1) / 2) * 13;
+                        out += '<text class="kg-lbl-t" x="' + tx + '" y="' + y + '" dy=".35em" text-anchor="' + anc + '">' + kgEsc(ln) + '</text>';
+                    });
+                });
+            });
+            // potong bagian yang tidak perlu supaya gambar tidak terlalu tinggi
+            let y0 = Math.max(0, Math.floor(yMin - 85)), y1 = Math.min(436, Math.ceil(yMax + 70));
+            if (y1 - y0 > 330) { y0 = 0; y1 = 436; }
+            return '<figure class="kg-fig"><svg viewBox="-84 ' + y0 + ' 368 ' + (y1 - y0) + '" role="img" aria-label="' + caption + '">'
+                + svgBase + out + '</svg><figcaption>' + caption + '</figcaption></figure>';
+        }
         function kgAnatomiHtml(zones) {
             if (!zones || zones.size === 0) return '';
             const all = zones.has('SEMUA');
@@ -2557,16 +2618,14 @@
                     return (all || zones.has(z)) ? 'data-zone="' + z + '" class="zona-pijat zona-aktif"' : m;
                 });
             };
-            const depan = paint(SVG_ZONA_DEPAN), belakang = paint(SVG_ZONA_BELAKANG);
-            const figs = [];
-            if (depan.indexOf('zona-aktif') !== -1) figs.push('<figure class="kg-fig"><svg viewBox="0 0 200 460" role="img" aria-label="Tampak depan">' + depan + '</svg><figcaption>Tampak depan</figcaption></figure>');
-            if (belakang.indexOf('zona-aktif') !== -1) figs.push('<figure class="kg-fig"><svg viewBox="0 0 200 460" role="img" aria-label="Tampak belakang">' + belakang + '</svg><figcaption>Tampak belakang</figcaption></figure>');
+            const figs = [
+                kgAnatomiFigur(paint(SVG_ZONA_DEPAN), KG_ANCHOR_DEPAN, zones, all, 'Tampak depan'),
+                kgAnatomiFigur(paint(SVG_ZONA_BELAKANG), KG_ANCHOR_BELAKANG, zones, all, 'Tampak belakang')
+            ].filter(Boolean);
             if (!figs.length) return '';
-            const labels = all ? ['Seluruh tubuh'] : Object.keys(KG_ZONE_LABEL).filter(function (z) { return zones.has(z); }).map(function (z) { return KG_ZONE_LABEL[z]; });
             return '<div class="kg-anatblock">'
                 + '<div class="kg-anat-head"><b>Bagian tubuh yang dipijat</b><span class="kg-leg"><i></i>Area dipijat</span></div>'
                 + '<div class="kg-figs">' + figs.join('') + '</div>'
-                + '<div class="kg-zchips">' + labels.map(function (l) { return '<span>' + kgEsc(l) + '</span>'; }).join('') + '</div>'
                 + '</div>';
         }
 

@@ -376,6 +376,57 @@
     .kg-tprev{left:-10px}.kg-tnext{right:-10px}
     @media(max-width:520px){.kg-tprev{left:-6px}.kg-tnext{right:-6px}.kg-tnav{width:34px;height:34px}}
     html.dark .kg-tnav{background:#1e293b;border-color:#334155;color:#93c5fd}
+    /* ============ ADMIN: tampilan HP (menu ringkas, kartu data, form muat di layar) ============ */
+    .kg-asearch{position:relative;margin:0 0 14px}
+    .kg-asearch i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:14px}
+    .kg-asearch input{width:100%;box-sizing:border-box;padding:12px 14px 12px 38px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;font-size:14px;font-weight:600;font-family:inherit;color:#0f172a;outline:none}
+    .kg-asearch input:focus{border-color:#3b82f6}
+    .kg-acards{display:grid;gap:12px}
+    .kg-acard{background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:14px;box-shadow:0 2px 8px rgba(15,23,42,.05)}
+    .kg-acard-top{display:flex;gap:12px;align-items:flex-start}
+    .kg-athumb{flex:0 0 64px;width:64px;height:64px;border-radius:14px;object-fit:cover;background:#f1f5f9;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;color:#b6c2d4;font-size:22px}
+    .kg-ainfo{min-width:0;display:flex;flex-direction:column;gap:3px}
+    .kg-aname{font-size:15.5px;font-weight:800;color:#0f172a;line-height:1.25;word-break:break-word}
+    .kg-ameta{font-size:12.5px;font-weight:600;color:#64748b;display:flex;gap:6px;align-items:center}
+    .kg-ameta i{width:13px;text-align:center;color:#94a3b8}
+    .kg-asvc{align-self:flex-start;margin-top:2px;background:#ecfdf5;color:#0f766e;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:8px}
+    .kg-akl{margin:10px 0 0;font-size:13px;line-height:1.5;color:#475569;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .kg-aact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .kg-aact button{min-height:46px;border-radius:13px;border:0;font-size:13px;font-weight:800;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+    .kg-aedit{background:#eff6ff;color:#1d4ed8}.kg-adel{background:#fef2f2;color:#dc2626}
+    html.dark .kg-acard,html.dark .kg-asearch input{background:#1e293b;border-color:#334155;color:#e2e8f0}
+    html.dark .kg-aname{color:#f1f5f9}
+    html.dark .kg-aedit{background:#1e3a8a;color:#bfdbfe}html.dark .kg-adel{background:#450a0a;color:#fca5a5}
+    @media(max-width:767px){
+      #view-admin{display:block}
+      #view-admin aside{position:sticky;top:0;z-index:40;padding:10px 12px 8px;border-right:0;border-bottom:1px solid #e2e8f0;box-shadow:0 4px 14px rgba(15,23,42,.06)}
+      #view-admin aside>div:first-child{margin-bottom:8px!important}
+      #view-admin aside>div:first-child>div:first-child{width:38px!important;height:38px!important}
+      #view-admin aside>div:first-child h2{font-size:14px!important}
+      #view-admin aside>div.flex.items-center.gap-2.mb-8{display:none}
+      #view-admin aside nav{display:flex;flex-direction:row;overflow-x:auto;gap:8px;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      #view-admin aside nav::-webkit-scrollbar{display:none}
+      #view-admin aside nav>*+*{margin-top:0!important}
+      #view-admin aside nav .admin-btn{width:auto!important;flex:0 0 auto;white-space:nowrap;padding:9px 14px!important;border-left:0!important;border-radius:999px!important;background:#f1f5f9;font-size:12.5px!important;gap:8px!important}
+      #view-admin aside nav .admin-btn i{width:auto!important}
+      #view-admin aside nav .admin-btn.active{background:#1e40af!important;color:#fff!important}
+      #view-admin aside>div.pt-8{position:absolute;top:10px;right:12px;padding:0!important;border:0!important}
+      #view-admin aside>div.pt-8 button{width:auto!important;padding:9px 12px!important;font-size:10px!important}
+      #view-admin aside>div.pt-8 button span{display:none}
+      #admin-content{padding:16px 14px 40px!important}
+      #admin-content h2{font-size:24px!important}
+      .kg-ayrow{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:14px!important}
+      .kg-ayrow::-webkit-scrollbar{display:none}
+      .kg-ayrow>button{flex:0 0 auto;white-space:nowrap}
+    }
+    /* form tambah/ubah (SweetAlert) di HP */
+    .kg-editor-popup input,.kg-editor-popup select,.kg-editor-popup textarea{font-size:16px!important}
+    @media(max-width:640px){
+      .swal2-popup.kg-editor-popup{width:95vw!important;max-width:95vw!important;padding:16px 12px!important;border-radius:22px!important}
+      .kg-editor-popup .swal2-title{font-size:1.05rem!important;padding:0 4px!important}
+      .kg-editor-popup .swal2-actions{width:100%;gap:8px;margin-top:12px!important}
+      .kg-editor-popup .swal2-actions button{flex:1 1 0;min-height:46px;margin:0!important}
+    }
     /* --- keluhan rapi (grid 2 kolom) --- */
     .kg-lbl .kg-cnt{display:inline-block;margin-left:6px;min-width:20px;padding:1px 7px;border-radius:999px;background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:800;text-align:center}
     .kg-klh{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -1351,7 +1402,10 @@
             </div>
             
             <!-- Tombol Login Admin pindah ke bawah menu di HP -->
-            <div class="p-6 border-t border-slate-100 bg-slate-50">
+            <div class="p-6 border-t border-slate-100 bg-slate-50 space-y-3">
+                <button onclick="openAdminLoginGate('kegiatan'); toggleMobileMenu();" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-black text-[10px] tracking-widest uppercase shadow-md transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-camera-retro"></i> <span>Input Data Kegiatan</span>
+                </button>
                 <button onclick="toggleLoginModal(); toggleMobileMenu();" class="w-full bg-[#0b162a] hover:bg-blue-900 text-white py-3.5 rounded-xl font-black text-[10px] tracking-widest uppercase shadow-md transition-colors flex items-center justify-center gap-2">
                     <i class="fas fa-lock"></i> <span data-i18n="btn_portal_admin">Portal Admin</span>
                 </button>
@@ -3907,6 +3961,23 @@
             }
         }
 
+        /** Pintasan dari menu HP: buka langsung halaman admin tertentu. Belum login -> wajib login dulu. */
+        function openAdminLoginGate(target) {
+            if (sessionStorage.getItem('edudigital_admin') === 'true') {
+                document.getElementById('view-visitor').classList.add('hidden');
+                document.getElementById('view-admin').classList.remove('hidden');
+                renderAdmin(target || 'guru');
+                window.scrollTo(0, 0);
+                return;
+            }
+            LOGIN_CONTEXT = { mode: 'admin', target: target || '' };
+            const titleEl = document.getElementById('login-modal-title');
+            const subEl = document.getElementById('login-modal-subtitle');
+            if (titleEl) titleEl.innerText = 'Login Data Kegiatan';
+            if (subEl) subEl.innerText = 'Masuk dengan akun Anda untuk menambah/mengubah data';
+            document.getElementById('modal-login').classList.remove('hidden');
+        }
+
         function toggleLoginModal() {
             // Tombol "Portal Admin" selalu membuka modal dalam konteks Admin CMS biasa.
             LOGIN_CONTEXT = { mode: 'admin', target: '' };
@@ -3988,6 +4059,8 @@
             }
 
             // ---- Login Admin CMS (perilaku lama, tidak berubah) ----
+            // Tujuan halaman setelah login (mis. dari pintasan "Input Data Kegiatan" di menu HP).
+            const adminTarget = (LOGIN_CONTEXT.mode === 'admin' && LOGIN_CONTEXT.target) ? LOGIN_CONTEXT.target : 'guru';
             sessionStorage.setItem('edudigital_admin', 'true');
             document.getElementById('view-visitor').classList.add('hidden');
             document.getElementById('view-admin').classList.remove('hidden');
@@ -4003,9 +4076,9 @@
             google.script.run
                 .withSuccessHandler(res => {
                     if (res && !res.error) DATA = res;
-                    renderAdmin('guru');
+                    renderAdmin(adminTarget);
                 })
-                .withFailureHandler(() => { renderAdmin('guru'); })
+                .withFailureHandler(() => { renderAdmin(adminTarget); })
                 .getFullData('id');
         }
 
@@ -4016,7 +4089,7 @@
         }
 
         // ================== ADMIN DATA KEGIATAN: FILTER TAHUN + PAGINATION (HANYA UNTUK SHEET KEGIATAN) ==================
-        let ADMIN_KEGIATAN_STATE = { page: 1, pageSize: 15, year: 'semua' };
+        let ADMIN_KEGIATAN_STATE = { page: 1, pageSize: 15, year: 'semua', q: '' };
 
         function renderAdminKegiatanUI(sheetName) {
             const container = document.getElementById('admin-content');
@@ -4032,6 +4105,8 @@
 
             let filtered = ADMIN_KEGIATAN_STATE.year === 'semua' ? sheetData : sheetData.filter(r => getKegiatanYear(r) === ADMIN_KEGIATAN_STATE.year);
             filtered = filtered.slice().reverse();
+            const akq = (ADMIN_KEGIATAN_STATE.q || '').toLowerCase().trim();
+            if (akq) filtered = filtered.filter(r => [r.nama_pelanggan, r.lokasi_desa, r.keluhan, r.kategori_layanan, r.kontak_pelanggan].map(v => String(v || '')).join(' ').toLowerCase().indexOf(akq) !== -1);
 
             const totalPages = Math.max(1, Math.ceil(filtered.length / ADMIN_KEGIATAN_STATE.pageSize));
             if (ADMIN_KEGIATAN_STATE.page > totalPages) ADMIN_KEGIATAN_STATE.page = totalPages;
@@ -4041,7 +4116,33 @@
 
             document.querySelectorAll('.admin-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = Array.from(document.querySelectorAll('.admin-btn')).find(b => b.innerText.toLowerCase().includes(sheetName.toLowerCase()));
-            if (activeBtn) activeBtn.classList.add('active');
+            if (activeBtn) { activeBtn.classList.add('active'); if (activeBtn.scrollIntoView) { try { activeBtn.scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) {} } }
+
+            // kartu untuk tampilan HP (tabel lebar tetap dipakai di layar besar)
+            const akFoto = (row) => {
+                const k = Object.keys(row).find(h => /gambar|foto/i.test(h) && typeof row[h] === 'string' && row[h].indexOf('http') === 0);
+                return k ? row[k].split(',')[0].trim() : '';
+            };
+            const cardsHtml = pagedData.length ? pagedData.map(row => {
+                const foto = akFoto(row);
+                const nama = kgEsc(row.nama_pelanggan || ('Kegiatan #' + row._rowId));
+                const tgl = kgEsc(row.tanggal_pelaksanaan || '');
+                const lokasi = [row.lokasi_desa, row.jenis_kelamin].filter(Boolean).map(kgEsc).join(' &middot; ');
+                const layanan = kgEsc(row.kategori_layanan || '');
+                const kl = kgEsc(row.keluhan || '');
+                return '<div class="kg-acard"><div class="kg-acard-top">'
+                    + (foto ? '<img class="kg-athumb" loading="lazy" src="' + kgEsc(foto) + '" alt="">' : '<div class="kg-athumb"><i class="fas fa-image"></i></div>')
+                    + '<div class="kg-ainfo"><b class="kg-aname">' + nama + '</b>'
+                    + (tgl ? '<span class="kg-ameta"><i class="fas fa-calendar-day"></i>' + tgl + '</span>' : '')
+                    + (lokasi ? '<span class="kg-ameta"><i class="fas fa-location-dot"></i>' + lokasi + '</span>' : '')
+                    + (layanan ? '<span class="kg-asvc">' + layanan + '</span>' : '')
+                    + '</div></div>'
+                    + (kl ? '<p class="kg-akl"><b>Keluhan:</b> ' + kl + '</p>' : '')
+                    + '<div class="kg-aact">'
+                    + '<button type="button" class="kg-aedit" onclick="openEditor(\'' + sheetName + '\', ' + row._rowId + ')"><i class="fas fa-pen-to-square"></i> Ubah</button>'
+                    + '<button type="button" class="kg-adel" onclick="confirmDelete(\'' + sheetName + '\', ' + row._rowId + ')"><i class="fas fa-trash"></i> Hapus</button>'
+                    + '</div></div>';
+            }).join('') : '<div class="kg-acard" style="text-align:center;color:#94a3b8;font-weight:700;padding:28px 14px">Tidak ada data pada filter ini.</div>';
 
             container.innerHTML = `
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
@@ -4049,11 +4150,12 @@
                         <h2 class="text-3xl font-black text-slate-900 tracking-tight capitalize">Data Kegiatan</h2>
                         <p class="text-slate-500 text-sm mt-1">Total ${sheetData.length} dokumentasi tersimpan</p>
                     </div>
-                    <button onclick="openEditor('${sheetName}')" class="bg-blue-700 hover:bg-blue-800 text-white px-6 py-3.5 rounded-xl font-bold text-xs tracking-wider shadow-md transition-colors flex items-center gap-2">
+                    <button onclick="openEditor('${sheetName}')" class="w-full md:w-auto justify-center bg-blue-700 hover:bg-blue-800 text-white px-6 py-4 md:py-3.5 rounded-xl font-bold text-xs tracking-wider shadow-md transition-colors flex items-center gap-2">
                         <i class="fas fa-plus"></i> Tambah Data
                     </button>
                 </div>
-                <div class="flex flex-wrap items-center gap-2 mb-6">
+                <div class="kg-asearch"><i class="fas fa-magnifying-glass"></i><input id="admin-kg-search" type="search" value="${kgEsc(ADMIN_KEGIATAN_STATE.q || '')}" placeholder="Cari nama, desa, atau keluhan..." oninput="adminKegiatanSearch(this.value)" autocomplete="off"></div>
+                <div class="kg-ayrow flex flex-wrap items-center gap-2 mb-6">
                     <button onclick="filterAdminKegiatanYear('semua')" class="px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors ${ADMIN_KEGIATAN_STATE.year === 'semua' ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50'}">Semua (${sheetData.length})</button>
                     ${years.map(y => {
                         const count = sheetData.filter(r => getKegiatanYear(r) === y).length;
@@ -4062,7 +4164,8 @@
                         return `<button onclick="filterAdminKegiatanYear('${y}')" class="px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors ${active ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50'}">${label} (${count})</button>`;
                     }).join('')}
                 </div>
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="kg-acards md:hidden">${cardsHtml}</div>
+                <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="overflow-x-auto"><table class="w-full border-collapse">
                         <thead class="bg-slate-50 border-b border-slate-200"><tr class="text-left">
                             ${headers.map(h => `<th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">${h}</th>`).join('')}
@@ -4083,7 +4186,7 @@
                         </tbody>
                     </table></div>
                 </div>
-                <div class="flex items-center justify-between mt-6">
+                <div class="flex flex-wrap gap-3 items-center justify-between mt-6">
                     <p class="text-xs font-semibold text-slate-500">Halaman ${ADMIN_KEGIATAN_STATE.page} dari ${totalPages} &bull; ${filtered.length} data</p>
                     <div class="flex gap-2">
                         <button onclick="changeAdminKegiatanPage(-1)" ${ADMIN_KEGIATAN_STATE.page <= 1 ? 'disabled' : ''} class="px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"><i class="fas fa-chevron-left mr-1"></i> Sebelumnya</button>
@@ -4091,6 +4194,18 @@
                     </div>
                 </div>
             `;
+        }
+
+        let _adminKgTimer = null;
+        function adminKegiatanSearch(v) {
+            clearTimeout(_adminKgTimer);
+            _adminKgTimer = setTimeout(function () {
+                ADMIN_KEGIATAN_STATE.q = v;
+                ADMIN_KEGIATAN_STATE.page = 1;
+                renderAdminKegiatanUI('kegiatan');
+                const el = document.getElementById('admin-kg-search');
+                if (el) { el.focus(); const n = el.value.length; try { el.setSelectionRange(n, n); } catch (e) {} }
+            }, 300);
         }
 
         function filterAdminKegiatanYear(year) {
@@ -7262,12 +7377,12 @@
 
             const { value: formValues } = await Swal.fire({
                 title: `<span class="font-black text-2xl tracking-tight">${rowId ? 'Ubah' : 'Tambah'} Data ${sheetName}</span>`,
-                html: `<div class="mt-6 max-h-[60vh] overflow-y-auto px-1">${formHtml}</div>`,
+                html: `<div class="mt-4 md:mt-6 max-h-[62vh] overflow-y-auto px-1 text-left">${formHtml}</div>`,
                 showCancelButton: true,
                 confirmButtonText: 'SIMPAN DATA',
                 confirmButtonColor: '#0f172a',
                 cancelButtonText: 'Batal',
-                customClass: { popup: 'rounded-[2rem] p-8 md:p-10' }
+                customClass: { popup: 'rounded-[2rem] p-8 md:p-10 kg-editor-popup' }
             });
 
             if (formValues) {

@@ -2558,16 +2558,16 @@
         }
         // titik penunjuk label pada gambar: [x, y, sisi label] (L = kiri, R = kanan)
         const KG_ANCHOR_DEPAN = {
-            kepala: [100, 24, 'R'], leher: [100, 51, 'R'], bahu: [55, 70, 'L'],
-            lengan_atas: [44, 108, 'L'], lengan_bawah: [44, 166, 'L'], pergelangan_tangan: [44, 197, 'L'],
-            telapak_tangan: [44, 214, 'L'], jari_tangan: [44, 238, 'L'],
-            paha_depan: [119, 246, 'R'], lutut: [118, 306, 'R'], betis: [117, 355, 'R'], kaki_depan: [118, 408, 'R']
+            kepala: [100, 26, 'R'], leher: [100, 57, 'R'], bahu: [50, 84, 'L'],
+            lengan_atas: [47, 120, 'L'], lengan_bawah: [43, 168, 'L'], pergelangan_tangan: [40, 198, 'L'],
+            telapak_tangan: [39, 216, 'L'], jari_tangan: [37, 240, 'L'],
+            paha_depan: [118, 252, 'R'], lutut: [118, 312, 'R'], betis: [117, 362, 'R'], kaki_depan: [118, 414, 'R']
         };
         const KG_ANCHOR_BELAKANG = {
-            tengkuk: [100, 51, 'L'], bahu: [146, 68, 'R'], punggung_atas: [84, 100, 'L'],
-            punggung_tengah: [116, 146, 'R'], pinggang: [86, 183, 'L'], pinggul: [120, 210, 'R'],
-            bokong: [74, 244, 'L'], paha_belakang: [119, 286, 'R'], betis: [80, 353, 'L'],
-            pergelangan_kaki: [118, 397, 'R'], telapak_kaki: [82, 416, 'L']
+            tengkuk: [100, 56, 'L'], bahu: [152, 84, 'R'], punggung_atas: [84, 100, 'L'],
+            punggung_tengah: [116, 146, 'R'], pinggang: [86, 185, 'L'], pinggul: [116, 213, 'R'],
+            bokong: [78, 244, 'L'], paha_belakang: [118, 290, 'R'], betis: [82, 356, 'L'],
+            pergelangan_kaki: [118, 399, 'R'], telapak_kaki: [82, 416, 'L']
         };
         // pecah label panjang jadi 2 baris
         function kgLabelLines(t) {
@@ -7569,141 +7569,89 @@
         }
 
         const SVG_ZONA_DEPAN = `
-            <!-- SILUET DASAR TUBUH (NON-INTERAKTIF, MEMBERI BENTUK ANATOMIS) -->
-            <ellipse cx="100" cy="55"  rx="15" ry="11" fill="#eef2f7" stroke="#cbd5e1" stroke-width="1"/>
-            <ellipse cx="100" cy="96"  rx="43" ry="32" fill="#eef2f7" stroke="#cbd5e1" stroke-width="1"/>
-            <ellipse cx="100" cy="155" rx="31" ry="34" fill="#eef2f7" stroke="#cbd5e1" stroke-width="1"/>
-            <ellipse cx="100" cy="198" rx="37" ry="28" fill="#eef2f7" stroke="#cbd5e1" stroke-width="1"/>
-
-            <!-- KEPALA & LEHER -->
-            <circle data-zone="kepala" class="zona-pijat" cx="100" cy="26" r="19"/>
-            <path data-zone="leher" class="zona-pijat" d="M89,44 L111,44 L109,58 L91,58 Z"/>
-
-            <!-- BAHU -->
-            <ellipse data-zone="bahu" class="zona-pijat" cx="57" cy="70" rx="20" ry="15" transform="rotate(-14 57 70)"/>
-            <ellipse data-zone="bahu" class="zona-pijat" cx="143" cy="70" rx="20" ry="15" transform="rotate(14 143 70)"/>
-
-            <!-- LENGAN ATAS (MERUNCING SEPERTI OTOT LENGAN ASLI) -->
-            <path data-zone="lengan_atas" class="zona-pijat" d="M35,76 L59,76 L53,140 L37,140 Z"/>
-            <path data-zone="lengan_atas" class="zona-pijat" d="M141,76 L165,76 L163,140 L147,140 Z"/>
-
-            <!-- LENGAN BAWAH -->
-            <path data-zone="lengan_bawah" class="zona-pijat" d="M36,140 L54,140 L50,192 L38,192 Z"/>
-            <path data-zone="lengan_bawah" class="zona-pijat" d="M146,140 L164,140 L162,192 L150,192 Z"/>
-
-            <!-- PERGELANGAN TANGAN -->
-            <rect data-zone="pergelangan_tangan" class="zona-pijat" x="37" y="192" width="14" height="10" rx="4"/>
-            <rect data-zone="pergelangan_tangan" class="zona-pijat" x="149" y="192" width="14" height="10" rx="4"/>
-
-            <!-- TELAPAK TANGAN -->
-            <ellipse data-zone="telapak_tangan" class="zona-pijat" cx="44" cy="214" rx="12" ry="16"/>
-            <ellipse data-zone="telapak_tangan" class="zona-pijat" cx="156" cy="214" rx="12" ry="16"/>
-
-            <!-- JARI TANGAN (DIPISAH PER JARI AGAR LEBIH JELAS) -->
-            <rect data-zone="jari_tangan" class="zona-pijat" x="32" y="226" width="7" height="16" rx="3.5" transform="rotate(-14 35.5 226)"/>
-            <rect data-zone="jari_tangan" class="zona-pijat" x="40" y="228" width="7" height="18" rx="3.5"/>
-            <rect data-zone="jari_tangan" class="zona-pijat" x="48" y="228" width="7" height="18" rx="3.5"/>
-            <rect data-zone="jari_tangan" class="zona-pijat" x="56" y="225" width="7" height="15" rx="3.5" transform="rotate(14 59.5 225)"/>
-            <rect data-zone="jari_tangan" class="zona-pijat" x="161" y="225" width="7" height="15" rx="3.5" transform="rotate(-14 164.5 225)"/>
-            <rect data-zone="jari_tangan" class="zona-pijat" x="153" y="228" width="7" height="18" rx="3.5"/>
-            <rect data-zone="jari_tangan" class="zona-pijat" x="145" y="228" width="7" height="18" rx="3.5"/>
-            <rect data-zone="jari_tangan" class="zona-pijat" x="137" y="226" width="7" height="16" rx="3.5" transform="rotate(14 140.5 226)"/>
-
-            <!-- PAHA DEPAN -->
-            <path data-zone="paha_depan" class="zona-pijat" d="M70,196 L98,196 L92,296 L72,296 Z"/>
-            <path data-zone="paha_depan" class="zona-pijat" d="M102,196 L130,196 L128,296 L108,296 Z"/>
-
-            <!-- LUTUT -->
-            <circle data-zone="lutut" class="zona-pijat" cx="82" cy="306" r="13"/>
-            <circle data-zone="lutut" class="zona-pijat" cx="118" cy="306" r="13"/>
-
-            <!-- BETIS -->
-            <path data-zone="betis" class="zona-pijat" d="M72,318 L94,318 L88,392 L76,392 Z"/>
-            <path data-zone="betis" class="zona-pijat" d="M106,318 L128,318 L124,392 L112,392 Z"/>
-
-            <!-- PUNGGUNG KAKI (TAMPAK DEPAN) -->
-            <ellipse data-zone="kaki_depan" class="zona-pijat" cx="82" cy="408" rx="15" ry="9"/>
-            <ellipse data-zone="kaki_depan" class="zona-pijat" cx="118" cy="408" rx="15" ry="9"/>
-
-            <!-- GARIS DETAIL OTOT (DEKORATIF, TIDAK BISA DIKLIK) -->
-            <g fill="none" stroke="#94a3b8" stroke-width="1" opacity="0.55" stroke-linecap="round">
-                <path d="M64,64 Q100,74 136,64"/>
-                <path d="M68,86 Q86,100 80,120"/>
-                <path d="M132,86 Q114,100 120,120"/>
-                <line x1="100" y1="80" x2="100" y2="150"/>
-                <line x1="91" y1="126" x2="109" y2="126"/>
-                <line x1="90" y1="138" x2="110" y2="138"/>
-                <line x1="91" y1="150" x2="109" y2="150"/>
-                <path d="M70,140 Q64,165 72,190"/>
-                <path d="M130,140 Q136,165 128,190"/>
-                <line x1="83" y1="212" x2="80" y2="290"/>
-                <line x1="117" y1="212" x2="120" y2="290"/>
-                <line x1="79" y1="322" x2="77" y2="384"/>
-                <line x1="121" y1="322" x2="123" y2="384"/>
-            </g>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M66,74 C62,98 66,128 71,152 C74,172 73,192 70,210 C82,224 92,228 100,230 L100,70 C90,70 78,71 66,74 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M134 74 C138 98 134 128 129 152 C126 172 127 192 130 210 C118 224 108 228 100 230 L100 70 C110 70 122 71 134 74 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M88,58 C80,62 70,64 62,69 L66,82 C76,78 86,74 94,70 L94,58 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M112 58 C120 62 130 64 138 69 L134 82 C124 78 114 74 106 70 L106 58 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M69,86 C79,81 92,83 99,90 L99,113 C88,119 76,115 70,104 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M131 86 C121 81 108 83 101 90 L101 113 C112 119 124 115 130 104 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M72,120 C79,132 84,152 84,178 C80,190 76,198 72,206 C69,182 68,150 72,120 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M128 120 C121 132 116 152 116 178 C120 190 124 198 128 206 C131 182 132 150 128 120 Z"/>
+            <rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="92" y="118" width="7.4" height="11" rx="3.4"/><rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="100.6" y="118" width="7.4" height="11" rx="3.4"/><rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="92" y="132" width="7.4" height="11" rx="3.4"/><rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="100.6" y="132" width="7.4" height="11" rx="3.4"/><rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="92" y="146" width="7.4" height="11" rx="3.4"/><rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="100.6" y="146" width="7.4" height="11" rx="3.4"/><rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="92" y="160" width="7.4" height="11" rx="3.4"/><rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="100.6" y="160" width="7.4" height="11" rx="3.4"/><rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="92" y="174" width="7.4" height="11" rx="3.4"/><rect fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" x="100.6" y="174" width="7.4" height="11" rx="3.4"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M71,204 C78,218 90,226 99,230 L99,214 C90,212 80,208 71,204 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M129 204 C122 218 110 226 101 230 L101 214 C110 212 120 208 129 204 Z"/>
+            <path data-zone="paha_depan" class="zona-pijat" d="M71,208 C65,238 66,270 72,298 L95,298 C98,272 98,242 98,216 Z"/>
+            <path data-zone="paha_depan" class="zona-pijat" d="M129 208 C135 238 134 270 128 298 L105 298 C102 272 102 242 102 216 Z"/>
+            <path data-zone="lutut" class="zona-pijat" d="M72,299 L95,299 C98,309 96,319 92,327 L76,327 C71,319 69,309 72,299 Z"/>
+            <path data-zone="lutut" class="zona-pijat" d="M128 299 L105 299 C102 309 104 319 108 327 L124 327 C129 319 131 309 128 299 Z"/>
+            <path data-zone="betis" class="zona-pijat" d="M76,329 L93,329 C98,346 94,374 90,398 L79,398 C73,376 70,348 76,329 Z"/>
+            <path data-zone="betis" class="zona-pijat" d="M124 329 L107 329 C102 346 106 374 110 398 L121 398 C127 376 130 348 124 329 Z"/>
+            <path data-zone="kaki_depan" class="zona-pijat" d="M78,400 L91,400 C95,408 96,416 94,423 C89,428 79,428 74,424 C72,417 74,407 78,400 Z"/>
+            <path data-zone="kaki_depan" class="zona-pijat" d="M122 400 L109 400 C105 408 104 416 106 423 C111 428 121 428 126 424 C128 417 126 407 122 400 Z"/>
+            <path data-zone="lengan_atas" class="zona-pijat" d="M41,98 C38,112 37,128 39,143 L56,143 C58,128 59,112 60,98 Z"/>
+            <path data-zone="lengan_atas" class="zona-pijat" d="M159 98 C162 112 163 128 161 143 L144 143 C142 128 141 112 140 98 Z"/>
+            <path data-zone="lengan_bawah" class="zona-pijat" d="M39,141 C35,160 33,176 33,191 L46,193 C50,178 53,161 56,145 Z"/>
+            <path data-zone="lengan_bawah" class="zona-pijat" d="M161 141 C165 160 167 176 167 191 L154 193 C150 178 147 161 144 145 Z"/>
+            <path data-zone="pergelangan_tangan" class="zona-pijat" d="M33,192 L46,194 L45,204 L34,203 Z"/>
+            <path data-zone="pergelangan_tangan" class="zona-pijat" d="M167 192 L154 194 L155 204 L166 203 Z"/>
+            <path data-zone="telapak_tangan" class="zona-pijat" d="M34,204 L45,205 C48,214 47,223 44,229 L35,229 C31,222 31,212 34,204 Z"/>
+            <path data-zone="telapak_tangan" class="zona-pijat" d="M166 204 L155 205 C152 214 153 223 156 229 L165 229 C169 222 169 212 166 204 Z"/>
+            <path data-zone="jari_tangan" class="zona-pijat" d="M30.5,222 C29,228 29,236 31,242 C32.5,244 34,243 34.5,241 L35,229 Z"/>
+            <path data-zone="jari_tangan" class="zona-pijat" d="M169.5 222 C171 228 171 236 169 242 C167.5 244 166 243 165.5 241 L165 229 Z"/>
+            <path data-zone="jari_tangan" class="zona-pijat" d="M35.5,229 L39,229 L39,247 C39,249.5 35.5,249.5 35.5,247 Z"/>
+            <path data-zone="jari_tangan" class="zona-pijat" d="M164.5 229 L161 229 L161 247 C161 249.5 164.5 249.5 164.5 247 Z"/>
+            <path data-zone="jari_tangan" class="zona-pijat" d="M39.8,229 L43.2,229 L43.2,249 C43.2,251.5 39.8,251.5 39.8,249 Z"/>
+            <path data-zone="jari_tangan" class="zona-pijat" d="M160.2 229 L156.8 229 L156.8 249 C156.8 251.5 160.2 251.5 160.2 249 Z"/>
+            <path data-zone="jari_tangan" class="zona-pijat" d="M44,229 L47.2,229 C48.5,236 48.5,243 47,246 C45.5,247 44,246 44,244 Z"/>
+            <path data-zone="jari_tangan" class="zona-pijat" d="M156 229 L152.8 229 C151.5 236 151.5 243 153 246 C154.5 247 156 246 156 244 Z"/>
+            <path data-zone="bahu" class="zona-pijat" d="M62,68 C51,68 42,75 39,89 C38,96 40,102 43,106 L59,103 C63,95 67,87 69,77 Z"/>
+            <path data-zone="bahu" class="zona-pijat" d="M138 68 C149 68 158 75 161 89 C162 96 160 102 157 106 L141 103 C137 95 133 87 131 77 Z"/>
+            <path data-zone="leher" class="zona-pijat" d="M91,50 L109,50 L112,63 C106,66 94,66 88,63 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M80,26 C77,25 76,32 80,35 Z"/><path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M120,26 C123,25 124,32 120,35 Z"/>
+            <path data-zone="kepala" class="zona-pijat" d="M100,8 C112,8 119,17 119,28 C119,39 113,47 106,51 L94,51 C87,47 81,39 81,28 C81,17 88,8 100,8 Z"/>
+            <g fill="none" stroke="#8fa0b5" stroke-width="0.9" opacity="0.6" stroke-linecap="round" stroke-linejoin="round"><path d="M91,52 C93,58 97,64 100,68"/><path d="M109,52 C107,58 103,64 100,68"/><path d="M62,72 C66,84 66,94 60,102"/><path d="M138 72 C134 84 134 94 140 102"/><path d="M48,104 C46,116 46,128 47,140"/><path d="M152 104 C154 116 154 128 153 140"/><path d="M42,150 C41,164 40,178 40,188"/><path d="M158 150 C159 164 160 178 160 188"/><path d="M100,88 L100,190"/><path d="M72,104 C80,110 92,108 99,102"/><path d="M128 104 C120 110 108 108 101 102"/><path d="M82,214 C78,240 78,268 82,292"/><path d="M118 214 C122 240 122 268 118 292"/><path d="M74,222 C70,246 72,272 76,292"/><path d="M126 222 C130 246 128 272 124 292"/><path d="M84,306 C86,310 90,310 92,306"/><path d="M116 306 C114 310 110 310 108 306"/><path d="M82,334 C80,352 82,372 84,392"/><path d="M118 334 C120 352 118 372 116 392"/><path d="M100,29 C100,32 101,34 102,35"/></g>
         `;
 
         const SVG_ZONA_BELAKANG = `
-            <!-- SILUET DASAR TUBUH (NON-INTERAKTIF, MEMBERI BENTUK ANATOMIS) -->
-            <ellipse cx="100" cy="55"  rx="15" ry="11" fill="#eef2f7" stroke="#cbd5e1" stroke-width="1"/>
-            <ellipse cx="100" cy="96"  rx="43" ry="32" fill="#eef2f7" stroke="#cbd5e1" stroke-width="1"/>
-            <ellipse cx="100" cy="155" rx="31" ry="34" fill="#eef2f7" stroke="#cbd5e1" stroke-width="1"/>
-            <ellipse cx="100" cy="198" rx="37" ry="28" fill="#eef2f7" stroke="#cbd5e1" stroke-width="1"/>
-
-            <!-- KEPALA (TAMPAK BELAKANG, NON-INTERAKTIF) -->
-            <circle class="zona-pijat" style="fill:#e2e8f0;stroke:#cbd5e1;" cx="100" cy="26" r="19"/>
-
-            <!-- TENGKUK -->
-            <path data-zone="tengkuk" class="zona-pijat" d="M89,44 L111,44 L109,58 L91,58 Z"/>
-
-            <!-- BAHU -->
-            <ellipse data-zone="bahu" class="zona-pijat" cx="57" cy="70" rx="20" ry="15" transform="rotate(-14 57 70)"/>
-            <ellipse data-zone="bahu" class="zona-pijat" cx="143" cy="70" rx="20" ry="15" transform="rotate(14 143 70)"/>
-
-            <!-- PUNGGUNG ATAS -->
-            <path data-zone="punggung_atas" class="zona-pijat" d="M64,76 L136,76 L128,125 L72,125 Z"/>
-
-            <!-- PUNGGUNG TENGAH -->
-            <path data-zone="punggung_tengah" class="zona-pijat" d="M70,125 L130,125 L126,168 L74,168 Z"/>
-
-            <!-- PINGGANG -->
-            <path data-zone="pinggang" class="zona-pijat" d="M72,168 L128,168 L124,198 L76,198 Z"/>
-
-            <!-- PINGGUL -->
-            <path data-zone="pinggul" class="zona-pijat" d="M68,198 L132,198 L136,222 L64,222 Z"/>
-
-            <!-- BOKONG -->
-            <ellipse data-zone="bokong" class="zona-pijat" cx="100" cy="240" rx="38" ry="24"/>
-
-            <!-- PAHA BELAKANG -->
-            <path data-zone="paha_belakang" class="zona-pijat" d="M70,266 L98,266 L92,306 L72,306 Z"/>
-            <path data-zone="paha_belakang" class="zona-pijat" d="M102,266 L130,266 L128,306 L108,306 Z"/>
-
-            <!-- BETIS -->
-            <path data-zone="betis" class="zona-pijat" d="M71,314 L93,314 L87,392 L75,392 Z"/>
-            <path data-zone="betis" class="zona-pijat" d="M107,314 L129,314 L125,392 L113,392 Z"/>
-
-            <!-- PERGELANGAN KAKI -->
-            <rect data-zone="pergelangan_kaki" class="zona-pijat" x="74" y="392" width="16" height="10" rx="4"/>
-            <rect data-zone="pergelangan_kaki" class="zona-pijat" x="110" y="392" width="16" height="10" rx="4"/>
-
-            <!-- TELAPAK KAKI / TUMIT -->
-            <ellipse data-zone="telapak_kaki" class="zona-pijat" cx="82" cy="416" rx="15" ry="10"/>
-            <ellipse data-zone="telapak_kaki" class="zona-pijat" cx="118" cy="416" rx="15" ry="10"/>
-
-            <!-- GARIS DETAIL OTOT (DEKORATIF, TIDAK BISA DIKLIK) -->
-            <g fill="none" stroke="#94a3b8" stroke-width="1" opacity="0.55" stroke-linecap="round">
-                <line x1="100" y1="60" x2="100" y2="196" stroke-dasharray="2,3"/>
-                <path d="M80,90 Q92,102 84,120"/>
-                <path d="M120,90 Q108,102 116,120"/>
-                <path d="M70,96 Q65,130 76,160"/>
-                <path d="M130,96 Q135,130 124,160"/>
-                <path d="M78,238 Q100,248 122,238"/>
-                <line x1="83" y1="268" x2="80" y2="300"/>
-                <line x1="117" y1="268" x2="120" y2="300"/>
-                <line x1="79" y1="318" x2="77" y2="384"/>
-                <line x1="121" y1="318" x2="123" y2="384"/>
-            </g>
+            <ellipse cx="100" cy="27" rx="18" ry="20" fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M66,74 C62,98 66,128 71,152 C74,172 73,192 70,210 L100,214 L100,70 C90,70 78,71 66,74 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M134 74 C138 98 134 128 129 152 C126 172 127 192 130 210 L100 214 L100 70 C110 70 122 71 134 74 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M41,98 C38,112 37,128 39,143 L56,143 C58,128 59,112 60,98 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M159 98 C162 112 163 128 161 143 L144 143 C142 128 141 112 140 98 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M39,141 C35,160 33,176 33,191 L46,193 C50,178 53,161 56,145 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M161 141 C165 160 167 176 167 191 L154 193 C150 178 147 161 144 145 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M33,192 L46,194 L45,204 L34,203 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M167 192 L154 194 L155 204 L166 203 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M34,204 L45,205 C48,214 47,223 44,229 L35,229 C31,222 31,212 34,204 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M166 204 L155 205 C152 214 153 223 156 229 L165 229 C169 222 169 212 166 204 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M30.5,222 C29,228 29,236 31,242 C32.5,244 34,243 34.5,241 L35,229 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M169.5 222 C171 228 171 236 169 242 C167.5 244 166 243 165.5 241 L165 229 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M35.5,229 L39,229 L39,247 C39,249.5 35.5,249.5 35.5,247 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M164.5 229 L161 229 L161 247 C161 249.5 164.5 249.5 164.5 247 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M39.8,229 L43.2,229 L43.2,249 C43.2,251.5 39.8,251.5 39.8,249 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M160.2 229 L156.8 229 L156.8 249 C156.8 251.5 160.2 251.5 160.2 249 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M44,229 L47.2,229 C48.5,236 48.5,243 47,246 C45.5,247 44,246 44,244 Z"/>
+            <path fill="#e8edf4" stroke="#c3cedc" stroke-width="1" stroke-linejoin="round" d="M156 229 L152.8 229 C151.5 236 151.5 243 153 246 C154.5 247 156 246 156 244 Z"/>
+            <path data-zone="punggung_atas" class="zona-pijat" d="M88,62 L112,62 C124,65 134,70 137,78 C137,96 133,112 129,126 L71,126 C67,112 63,96 63,78 C66,70 76,65 88,62 Z"/>
+            <path data-zone="punggung_tengah" class="zona-pijat" d="M71,127 L129,127 C127,140 126,153 126,167 L74,167 C74,153 73,140 71,127 Z"/>
+            <path data-zone="pinggang" class="zona-pijat" d="M74,168 L126,168 C126,180 127,191 129,201 L71,201 C73,191 74,180 74,168 Z"/>
+            <path data-zone="pinggul" class="zona-pijat" d="M71,202 L129,202 C133,208 135,216 135,224 L65,224 C65,216 67,208 71,202 Z"/>
+            <path data-zone="bokong" class="zona-pijat" d="M66,225 C63,240 67,258 81,264 C92,267 99,260 99.5,250 L99.5,225 Z"/>
+            <path data-zone="bokong" class="zona-pijat" d="M134 225 C137 240 133 258 119 264 C108 267 101 260 100.5 250 L100.5 225 Z"/>
+            <path data-zone="paha_belakang" class="zona-pijat" d="M68,266 C65,284 67,300 72,314 L95,314 C99,298 99,282 98,268 Z"/>
+            <path data-zone="paha_belakang" class="zona-pijat" d="M132 266 C135 284 133 300 128 314 L105 314 C101 298 101 282 102 268 Z"/>
+            <path fill="#cfd8e4" stroke="#b3c0d1" stroke-width="1" stroke-linejoin="round" d="M73,313 C80,318 88,318 95,313 L94,322 L74,322 Z"/>
+            <path fill="#cfd8e4" stroke="#b3c0d1" stroke-width="1" stroke-linejoin="round" d="M127 313 C120 318 112 318 105 313 L106 322 L126 322 Z"/>
+            <path data-zone="betis" class="zona-pijat" d="M74,321 C69,338 70,364 77,393 L91,393 C98,364 100,338 94,321 Z"/>
+            <path data-zone="betis" class="zona-pijat" d="M126 321 C131 338 130 364 123 393 L109 393 C102 364 100 338 106 321 Z"/>
+            <path data-zone="pergelangan_kaki" class="zona-pijat" d="M78,393 L91,393 L90,405 L79,405 Z"/>
+            <path data-zone="pergelangan_kaki" class="zona-pijat" d="M122 393 L109 393 L110 405 L121 405 Z"/>
+            <path data-zone="telapak_kaki" class="zona-pijat" d="M78,406 L91,406 C95,412 96,419 92,425 L78,425 C74,419 74,412 78,406 Z"/>
+            <path data-zone="telapak_kaki" class="zona-pijat" d="M122 406 L109 406 C105 412 104 419 108 425 L122 425 C126 419 126 412 122 406 Z"/>
+            <path data-zone="bahu" class="zona-pijat" d="M62,68 C51,68 42,75 39,89 C38,96 40,102 43,106 L59,103 C63,95 67,87 69,77 Z"/>
+            <path data-zone="bahu" class="zona-pijat" d="M138 68 C149 68 158 75 161 89 C162 96 160 102 157 106 L141 103 C137 95 133 87 131 77 Z"/>
+            <path data-zone="tengkuk" class="zona-pijat" d="M91,47 L109,47 L112,63 L88,63 Z"/>
+            <g fill="none" stroke="#8fa0b5" stroke-width="0.9" opacity="0.6" stroke-linecap="round" stroke-linejoin="round"><path d="M100,64 L100,205"/><path d="M92,70 C80,74 72,84 70,100"/><path d="M108 70 C120 74 128 84 130 100"/><path d="M84,92 C82,104 84,116 90,124"/><path d="M116 92 C118 104 116 116 110 124"/><path d="M78,132 C84,142 88,154 88,164"/><path d="M122 132 C116 142 112 154 112 164"/><path d="M62,72 C66,84 66,94 60,102"/><path d="M138 72 C134 84 134 94 140 102"/><path d="M72,232 C80,238 92,240 99,236"/><path d="M128 232 C120 238 108 240 101 236"/><path d="M100,226 L100,262"/><path d="M84,272 C82,286 84,300 88,310"/><path d="M116 272 C118 286 116 300 112 310"/><path d="M82,330 C80,346 82,368 85,388"/><path d="M118 330 C120 346 118 368 115 388"/><path d="M48,108 C46,120 46,130 47,140"/><path d="M152 108 C154 120 154 130 153 140"/></g>
         `;
     </script>
 
@@ -7735,8 +7683,8 @@
     <!-- MODAL BOOKING PIJAT TERAPIS (BIODATA + KELUHAN + HASIL TITIK) -->
     <!-- ============================================================ -->
     <style>
-        .zona-pijat { fill:#cbd5e1; stroke:#94a3b8; stroke-width:1.5; transition: fill .35s ease, stroke .35s ease; }
-        .zona-pijat.zona-aktif { fill:#f43f5e; stroke:#be123c; }
+        .zona-pijat { fill:#cfd8e4; stroke:#94a3b8; stroke-width:1; stroke-linejoin:round; transition: fill .35s ease, stroke .35s ease; }
+        .zona-pijat.zona-aktif { fill:#f43f5e; stroke:#be123c; filter:drop-shadow(0 0 2.5px rgba(244,63,94,.55)); }
         .keluhan-card { transition: all .2s ease; cursor:pointer; }
         .keluhan-card:has(input:checked) { background:#f0fdfa; border-color:#0f766e; }
         .keluhan-card:has(input:checked) .keluhan-dot { background:#0f766e; border-color:#0f766e; }

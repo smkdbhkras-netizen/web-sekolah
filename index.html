@@ -227,6 +227,86 @@
         }
         html:not(.dark) .lang-select.lang-select-light { color: #1e293b; border-color: #cbd5e1; }
     </style>
+    <style id="kg-move-style">
+    /* ===== MOVE (Informasi > Kegiatan): tampilan ramah & mudah dipakai ===== */
+    .kg-wrap{font-family:inherit;color:#334155}
+    .kg-quicknav{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 0 20px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .kg-quicknav::-webkit-scrollbar{display:none}
+    .kg-qn{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;background:#fff;border:1px solid #e2e8f0;color:#334155;font-weight:700;font-size:13px;cursor:pointer;min-height:44px;transition:.15s}
+    .kg-qn:hover{border-color:#2563eb;color:#2563eb}
+    .kg-qn i{color:#2563eb}
+    .kg-panel{background:#fff;border:1px solid #e2e8f0;border-radius:24px;padding:22px;margin-bottom:24px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+    .kg-intro-text{font-size:15px;line-height:1.75;color:#475569}
+    .kg-intro-text p{margin:0 0 12px}
+    .kg-clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+    .kg-link{margin-top:6px;background:none;border:0;color:#2563eb;font-weight:800;font-size:13px;cursor:pointer;padding:8px 0;min-height:40px}
+    .kg-sec-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;color:#0f172a;margin:0 0 4px}
+    .kg-sec-title i{color:#2563eb}
+    .kg-sec-sub{font-size:13px;color:#64748b;margin:0 0 16px}
+    .kg-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    @media(min-width:640px){.kg-stats{grid-template-columns:repeat(5,1fr)}}
+    .kg-stat{background:#f8fafc;border:1px solid #eef2f7;border-radius:18px;padding:16px 10px;text-align:center}
+    .kg-stat i{color:#2563eb;font-size:18px;margin-bottom:8px;display:block}
+    .kg-stat b{display:block;font-size:24px;font-weight:900;color:#0f172a;line-height:1.1}
+    .kg-stat span{display:block;font-size:12px;color:#64748b;font-weight:600;margin-top:4px;line-height:1.3}
+    .kg-filter{display:grid;gap:10px;margin-bottom:12px}
+    @media(min-width:640px){.kg-filter{grid-template-columns:1fr 240px}}
+    .kg-input,.kg-select{width:100%;box-sizing:border-box;border:1.5px solid #e2e8f0;background:#fff;border-radius:14px;padding:13px 14px;font-size:15px;color:#0f172a;min-height:48px;outline:none}
+    .kg-input:focus,.kg-select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .kg-searchbox{position:relative}
+    .kg-searchbox i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8}
+    .kg-searchbox .kg-input{padding-left:40px}
+    .kg-years{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+    .kegiatan-year-tab{min-height:44px}
+    .kg-info{font-size:13px;color:#64748b;font-weight:600;margin:4px 2px 14px}
+    .kg-grid{display:grid;gap:16px;grid-template-columns:1fr}
+    @media(min-width:900px){.kg-grid{grid-template-columns:1fr 1fr}}
+    .kg-card{background:#fff;border:1px solid #e2e8f0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+    .kg-card:hover{box-shadow:0 8px 24px rgba(15,23,42,.08);border-color:#cbd5e1}
+    .kg-thumb{width:100%;height:170px;object-fit:cover;display:block;background:#f1f5f9}
+    .kg-body{padding:18px;display:flex;flex-direction:column;gap:12px;flex:1}
+    .kg-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    .kg-date{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#2563eb;background:#eff6ff;padding:5px 11px;border-radius:999px}
+    .kg-ok{font-size:12px;font-weight:700;color:#16a34a;display:inline-flex;align-items:center;gap:5px}
+    .kg-name{font-size:17px;font-weight:800;color:#0f172a;line-height:1.3;margin:0}
+    .kg-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:#475569}
+    .kg-meta span{display:inline-flex;align-items:center;gap:6px}
+    .kg-meta i{color:#94a3b8;width:14px;text-align:center}
+    .kg-svc{display:inline-flex;align-self:flex-start;align-items:center;gap:6px;background:#ecfdf5;color:#0f766e;font-weight:700;font-size:13px;padding:6px 12px;border-radius:10px}
+    .kg-lbl{font-size:12px;font-weight:800;color:#64748b;margin:0 0 6px}
+    .kg-chips{display:flex;flex-wrap:wrap;gap:6px}
+    .kg-chip{background:#f1f5f9;color:#334155;font-size:13px;padding:5px 10px;border-radius:999px;font-weight:600}
+    .kg-chip-more{background:#fff;border:1px dashed #94a3b8;color:#2563eb;cursor:pointer;font-weight:800}
+    .kg-btn{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:46px;border-radius:14px;border:1.5px solid #dbe4f0;background:#f8fafc;color:#1e40af;font-weight:800;font-size:14px;cursor:pointer;transition:.15s}
+    .kg-btn:hover{background:#eff6ff;border-color:#2563eb}
+    .kg-detail{border-top:1px dashed #e2e8f0;padding-top:14px;display:grid;gap:14px}
+    .kg-detail.kg-hide{display:none}
+    .kg-row{display:grid;gap:2px}
+    .kg-row b{font-size:12px;font-weight:800;color:#64748b}
+    .kg-row div{font-size:14.5px;color:#1e293b;line-height:1.55}
+    .kg-list{margin:0;padding-left:18px;font-size:14px;color:#1e293b;line-height:1.6}
+    .kg-photos{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .kg-photos img{width:100%;border-radius:12px;border:1px solid #e2e8f0;display:block}
+    .kg-desc{background:#f8fafc;border-left:4px solid #60a5fa;border-radius:10px;padding:12px 14px;font-size:14.5px;line-height:1.65;color:#475569}
+    .kg-maprow{display:flex;gap:8px;flex-wrap:wrap}
+    .kg-mini{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;color:#0f172a;font-weight:700;font-size:13px;cursor:pointer;text-decoration:none;min-height:44px}
+    .kg-mini:hover{border-color:#2563eb;color:#2563eb}
+    .kg-mapbox{border-radius:14px;overflow:hidden;border:1px solid #e2e8f0;height:260px;margin-top:8px}
+    .kg-mapbox iframe{width:100%;height:100%;border:0}
+    .kg-empty{grid-column:1/-1;text-align:center;background:#fff;border:1px dashed #cbd5e1;border-radius:20px;padding:36px 16px;color:#64748b;font-size:14.5px;font-weight:600}
+    .kg-more{display:flex;justify-content:center;margin-top:20px}
+    .kg-more button{min-height:50px;padding:0 28px;border-radius:999px;background:#2563eb;color:#fff;font-weight:800;font-size:14px;border:0;cursor:pointer;box-shadow:0 6px 16px rgba(37,99,235,.25)}
+    .kg-mapwrap{width:100%;height:340px;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0}
+    .kg-mapwrap iframe{width:100%;height:100%;border:0}
+    .kg-videos{display:grid;gap:16px;grid-template-columns:1fr}
+    @media(min-width:768px){.kg-videos.kg-2{grid-template-columns:1fr 1fr}}
+    .kg-videos .kg-vid{aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#0f172a}
+    .kg-videos iframe{width:100%;height:100%;border:0}
+    html.dark .kg-panel,html.dark .kg-card,html.dark .kg-qn,html.dark .kg-input,html.dark .kg-select,html.dark .kg-empty,html.dark .kg-mini{background:#1e293b;border-color:#334155;color:#e2e8f0}
+    html.dark .kg-name,html.dark .kg-sec-title,html.dark .kg-stat b,html.dark .kg-row div,html.dark .kg-list{color:#f1f5f9}
+    html.dark .kg-stat,html.dark .kg-desc,html.dark .kg-chip,html.dark .kg-btn{background:#0f172a;border-color:#334155;color:#cbd5e1}
+    html.dark .kg-intro-text,html.dark .kg-meta,html.dark .kg-sec-sub,html.dark .kg-info{color:#94a3b8}
+    </style>
 </head>
 <body class="text-slate-800">
 
@@ -2090,68 +2170,45 @@
             let rawLinks = (subData && (subData.video_youtube || subData.video_url || subData.link_youtube || subData.video || '')) || '';
             let links = rawLinks.split(',').map(l => l.trim()).filter(l => l !== '');
             if (links.length === 0) return '';
-
             let cards = links.map(link => {
                 let yId = extractYoutubeId(link);
                 if (!yId) return '';
-                return `
-                    <div class="w-full aspect-video bg-slate-900 rounded-[2rem] overflow-hidden shadow-sm border border-slate-100">
-                        <iframe src="https://www.youtube.com/embed/${yId}" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                `;
+                return '<div class="kg-vid"><iframe src="https://www.youtube.com/embed/' + yId + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>';
             }).filter(c => c !== '').join('');
-
             if (!cards) return '';
-
-            let gridClass = links.length > 1 ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'grid grid-cols-1';
-            return '<div class="' + gridClass + ' mb-8">' + cards + '</div>';
+            return '<div class="kg-videos ' + (links.length > 1 ? 'kg-2' : '') + '" style="margin-bottom:24px">' + cards + '</div>';
         }
         function buildKegiatanGlobalMapHtml(mapUrls) {
             if (!mapUrls || mapUrls.length === 0) return '';
             let embedUrl = mapUrls[0];
             if (embedUrl.includes('maps/d/')) embedUrl = embedUrl.replace('/edit?', '/embed?').replace('/viewer?', '/embed?');
-
-            let mapInner = '';
-            if (embedUrl.toLowerCase().startsWith('<iframe')) {
-                mapInner = embedUrl.replace('<iframe', '<iframe class="w-full h-full border-0"');
-            } else {
-                mapInner = '<iframe src="' + embedUrl + '" class="w-full h-full border-0" allowfullscreen="" loading="lazy"></iframe>';
-            }
-
-            return '<div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100 mb-10">'
-                + '<div class="flex items-center gap-2 mb-4"><i class="fas fa-map-location-dot text-red-500"></i><span class="text-xs font-black text-slate-500 uppercase tracking-widest">Peta Sebaran Lokasi Kegiatan</span></div>'
-                + '<div class="w-full h-[350px] md:h-[450px] rounded-2xl overflow-hidden border border-slate-100 shadow-inner">' + mapInner + '</div>'
-                + '</div>';
+            let mapInner = embedUrl.toLowerCase().startsWith('<iframe')
+                ? embedUrl
+                : '<iframe src="' + embedUrl + '" allowfullscreen="" loading="lazy"></iframe>';
+            return '<div id="kg-sec-peta" class="kg-panel" style="scroll-margin-top:100px">'
+                + '<h3 class="kg-sec-title"><i class="fas fa-map-location-dot"></i> Peta Sebaran Lokasi</h3>'
+                + '<p class="kg-sec-sub">Lihat di mana saja kegiatan MOVE sudah dilaksanakan.</p>'
+                + '<div class="kg-mapwrap">' + mapInner + '</div></div>';
         }
         function buildKegiatanTestimoniHtml(subData) {
             let rawLinks = (subData && (subData.video_testimoni || subData.testimoni_video || '')) || '';
             let links = rawLinks.split(',').map(l => l.trim()).filter(l => l !== '');
             if (links.length === 0) return '';
-
             let cards = links.map(link => {
                 let yId = extractYoutubeId(link);
                 if (!yId) return '';
-                return `
-                    <div class="w-full aspect-video bg-slate-900 rounded-[2rem] overflow-hidden shadow-sm border border-slate-100">
-                        <iframe src="https://www.youtube.com/embed/${yId}" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                `;
+                return '<div class="kg-vid"><iframe src="https://www.youtube.com/embed/' + yId + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>';
             }).filter(c => c !== '').join('');
-
             if (!cards) return '';
-
-            let gridClass = links.length > 1 ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'grid grid-cols-1 max-w-2xl mx-auto';
-
-            return '<div class="mb-12">'
-                + '<div class="flex items-center gap-2 mb-2"><i class="fas fa-comment-dots text-blue-600"></i><span class="text-xs font-black text-slate-500 uppercase tracking-widest">Testimoni Pelanggan</span></div>'
-                + '<p class="text-slate-400 text-xs font-medium mb-5">Dengarkan langsung dari mereka yang sudah merasakan layanan kami</p>'
-                + '<div class="' + gridClass + '">' + cards + '</div>'
-                + '</div>';
+            return '<div id="kg-sec-testimoni" class="kg-panel" style="scroll-margin-top:100px">'
+                + '<h3 class="kg-sec-title"><i class="fas fa-comment-dots"></i> Testimoni Pelanggan</h3>'
+                + '<p class="kg-sec-sub">Dengarkan langsung dari mereka yang sudah merasakan layanan kami.</p>'
+                + '<div class="kg-videos ' + (links.length > 1 ? 'kg-2' : '') + '">' + cards + '</div></div>';
         }
         // ================== END KEGIATAN VIDEO YOUTUBE ==================
 
         // ================== KEGIATAN: FILTER TAHUN + PAGINATION (HANYA UNTUK MENU KEGIATAN) ==================
-        let KEGIATAN_STATE = { items: [], years: [], activeYear: 'semua', pageSize: 6, visibleCount: 6 };
+        let KEGIATAN_STATE = { items: [], years: [], layanan: [], activeYear: 'semua', activeLayanan: 'semua', query: '', pageSize: 6, visibleCount: 6 };
 
         function getKegiatanYear(item) {
             let t = (item.tanggal_pelaksanaan || '').toString();
@@ -2159,114 +2216,211 @@
             return m ? m[1] : 'Lainnya';
         }
 
+        // ---------- helper tampilan MOVE ----------
+        function kgEsc(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function kgTxt(v) { return String(v == null ? '' : v).trim(); }
+        function kgSplit(v, re) { return kgTxt(v).split(re).map(x => x.trim()).filter(x => x !== ''); }
+        // Nomor kontak disamarkan di halaman publik (mis. 8573••••171). Ubah ke false jika ingin tampil utuh.
+        const KG_SAMARKAN_KONTAK = true;
+        function kgKontak(v) {
+            const d = kgTxt(v).replace(/\D/g, '');
+            if (!d) return '';
+            if (!KG_SAMARKAN_KONTAK) return kgTxt(v);
+            return d.length < 7 ? '••••' : d.slice(0, 4) + '••••' + d.slice(-3);
+        }
+        function kgPhotos(item) {
+            const raw = kgTxt(item.gambar || item.foto || item.media_url || '');
+            if (!raw) return [];
+            const parts = raw.split(',').map(x => x.trim()).filter(x => /^https?:\/\//i.test(x));
+            return parts.length ? parts : [raw];
+        }
+        function kgMapEmbed(koordinat) {
+            let k = kgTxt(koordinat);
+            if (!k) return '';
+            if (k.toLowerCase().startsWith('<iframe')) return k;
+            let embedUrl = k;
+            if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(embedUrl)) {
+                embedUrl = 'https://www.google.com/maps?q=' + embedUrl.replace(/\s+/g, '') + '&output=embed';
+            } else if (embedUrl.includes('maps/d/')) {
+                embedUrl = embedUrl.replace('/edit?', '/embed?').replace('/viewer?', '/embed?');
+            }
+            return '<iframe src="' + kgEsc(embedUrl) + '" allowfullscreen="" loading="lazy"></iframe>';
+        }
+        function kgMapLink(koordinat) {
+            const k = kgTxt(koordinat);
+            if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(k)) return 'https://www.google.com/maps?q=' + k.replace(/\s+/g, '');
+            if (/^https?:\/\//i.test(k)) return k;
+            return '';
+        }
+
         function buildKegiatanCardHtml(item, i) {
-            let imgUrl = item.gambar || item.foto || item.media_url || '';
-            let deskripsi = item.deskripsi || item.caption || item.isi || '';
+            const idx = item._idx;
+            const nama = kgTxt(item.nama_pelanggan);
+            const lokasi = kgTxt(item.lokasi_desa);
+            const tanggal = kgTxt(item.tanggal_pelaksanaan);
+            const layanan = kgTxt(item.kategori_layanan);
+            const gender = kgTxt(item.jenis_kelamin);
+            const siswa = kgTxt(item.jumlah_siswa);
+            const ketua = kgTxt(item.ketua_tim_pelaksana);
+            const kontak = kgKontak(item.kontak_pelanggan);
+            const deskripsi = kgTxt(item.deskripsi || item.caption || item.isi);
+            const keluhan = kgSplit(item.keluhan, /[,;\n]+/);
+            const area = kgSplit(item.area_pijat, /;|\n/);
+            const foto = kgPhotos(item);
+            const koordinat = kgTxt(item.titik_koordinat);
+            const linkPeta = kgMapLink(koordinat);
 
-            let titleParts = [];
-            if (item.nama_pelanggan && String(item.nama_pelanggan).trim() !== '') titleParts.push(String(item.nama_pelanggan).trim());
-            if (item.lokasi_desa && String(item.lokasi_desa).trim() !== '') titleParts.push(String(item.lokasi_desa).trim());
-            let cardTitle = titleParts.length > 0 ? titleParts.join(' - ') : ('Dokumentasi Real #' + (i+1));
-
-            let infoFields = [
-                {label: 'Tanggal Pelaksanaan', value: item.tanggal_pelaksanaan, icon: 'fa-calendar-alt'},
-                {label: 'Nama Pelanggan', value: item.nama_pelanggan, icon: 'fa-user'},
-                {label: 'Lokasi/Desa', value: item.lokasi_desa, icon: 'fa-map-pin'},
-                {label: 'Kontak Pelanggan', value: item.kontak_pelanggan, icon: 'fa-phone'},
-                {label: 'Jenis Kelamin', value: item.jenis_kelamin, icon: 'fa-venus-mars'},
-                {label: 'Kategori/Jenis Layanan', value: item.kategori_layanan, icon: 'fa-briefcase-medical'},
-                {label: 'Ketua Tim Pelaksana', value: item.ketua_tim_pelaksana, icon: 'fa-user-tie'},
-                {label: 'Jumlah Siswa', value: item.jumlah_siswa, icon: 'fa-users'},
-                {label: 'Keluhan', value: item.keluhan, icon: 'fa-notes-medical'},
-                {label: 'Area Dipijat', value: item.area_pijat, icon: 'fa-hand-holding-medical'}
-            ].filter(f => f.value !== undefined && f.value !== null && String(f.value).trim() !== '');
-
-            let infoHtml = '';
-            if (infoFields.length > 0) {
-                infoHtml = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 bg-slate-50 p-5 md:p-6 rounded-2xl border border-slate-100">' + infoFields.map(f =>
-                    '<div class="flex items-start gap-3"><i class="fas ' + f.icon + ' text-blue-500 mt-0.5 text-xs w-4"></i><div><p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">' + f.label + '</p><p class="text-xs font-bold text-slate-700 mt-0.5">' + f.value + '</p></div></div>'
-                ).join('') + '</div>';
+            const title = nama || ('Kegiatan #' + (idx + 1));
+            const MAX = 4;
+            let keluhanHtml = '';
+            if (keluhan.length) {
+                keluhanHtml = '<div><p class="kg-lbl">Keluhan</p><div class="kg-chips">'
+                    + keluhan.slice(0, MAX).map(k => '<span class="kg-chip">' + kgEsc(k) + '</span>').join('')
+                    + (keluhan.length > MAX ? '<span class="kg-chip kg-chip-more" onclick="toggleKegiatanDetail(' + idx + ')">+' + (keluhan.length - MAX) + ' lainnya</span>' : '')
+                    + '</div></div>';
             }
 
-            let captionHtml = deskripsi ? '<div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 text-sm text-slate-600 leading-relaxed font-medium relative mt-5"><i class="fas fa-quote-left absolute top-4 left-4 text-slate-200 text-3xl opacity-50"></i><div class="relative z-10 pl-6 border-l-[3px] border-blue-400">' + String(deskripsi).replace(/\n/g, '<br>') + '</div></div>' : '';
+            let meta = '';
+            if (lokasi) meta += '<span><i class="fas fa-location-dot"></i>' + kgEsc(lokasi) + '</span>';
+            if (gender) meta += '<span><i class="fas fa-venus-mars"></i>' + kgEsc(gender) + '</span>';
+            if (siswa) meta += '<span><i class="fas fa-user-graduate"></i>' + kgEsc(siswa) + ' siswa terlibat</span>';
 
-            let mapHtml = '';
-            let koordinat = (item.titik_koordinat || '').trim();
-            if (koordinat !== '') {
-                let iframeInner = '';
-                if (koordinat.toLowerCase().startsWith('<iframe')) {
-                    iframeInner = koordinat.replace('<iframe', '<iframe class="w-full h-full border-0"');
-                } else {
-                    let embedUrl = koordinat;
-                    if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(embedUrl)) {
-                        embedUrl = 'https://www.google.com/maps?q=' + embedUrl.replace(/\s+/g, '') + '&output=embed';
-                    } else if (embedUrl.includes('maps/d/')) {
-                        embedUrl = embedUrl.replace('/edit?', '/embed?').replace('/viewer?', '/embed?');
-                    }
-                    iframeInner = '<iframe src="' + embedUrl + '" class="w-full h-full border-0" allowfullscreen="" loading="lazy"></iframe>';
-                }
-                mapHtml = '<div class="mt-6 pt-6 border-t border-dashed border-slate-200"><div class="flex items-center gap-2 mb-3"><i class="fas fa-map-marker-alt text-red-500"></i><span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Titik Lokasi Realisasi</span></div><div class="rounded-2xl overflow-hidden shadow-inner border-[4px] border-slate-50 h-[300px] md:h-[400px] w-full">' + iframeInner + '</div></div>';
+            let detail = '';
+            if (keluhan.length > MAX) detail += '<div class="kg-row"><b>Semua keluhan</b><div class="kg-chips">' + keluhan.map(k => '<span class="kg-chip">' + kgEsc(k) + '</span>').join('') + '</div></div>';
+            if (area.length) detail += '<div class="kg-row"><b>Bagian tubuh yang dipijat</b><ul class="kg-list">' + area.map(a => '<li>' + kgEsc(a) + '</li>').join('') + '</ul></div>';
+            if (ketua) detail += '<div class="kg-row"><b>Ketua tim pelaksana</b><div>' + kgEsc(ketua) + '</div></div>';
+            if (kontak) detail += '<div class="kg-row"><b>Kontak pelanggan</b><div>' + kgEsc(kontak) + '</div></div>';
+            if (deskripsi) detail += '<div class="kg-desc">' + kgEsc(deskripsi).replace(/\n/g, '<br>') + '</div>';
+            if (foto.length > 1) detail += '<div class="kg-row"><b>Foto kegiatan</b><div class="kg-photos">' + foto.slice(1).map(u => '<img loading="lazy" src="' + kgEsc(u) + '" alt="Foto kegiatan" onerror="this.style.display=\'none\'">').join('') + '</div></div>';
+            if (koordinat) {
+                detail += '<div class="kg-row"><b>Lokasi</b><div class="kg-maprow">'
+                    + '<button type="button" class="kg-mini" onclick="showKegiatanMap(' + idx + ')"><i class="fas fa-map"></i> Lihat peta di sini</button>'
+                    + (linkPeta ? '<a class="kg-mini" target="_blank" rel="noopener" href="' + kgEsc(linkPeta) + '"><i class="fas fa-up-right-from-square"></i> Buka Google Maps</a>' : '')
+                    + '</div><div id="kg-map-' + idx + '"></div></div>';
             }
+            if (!detail) detail = '<div class="kg-row"><div style="color:#94a3b8">Belum ada keterangan tambahan.</div></div>';
 
-            return '<div class="relative flex items-start gap-6 group"><div class="flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full border-[4px] border-white bg-blue-600 text-white shadow-lg shadow-blue-600/30 shrink-0 relative z-10"><i class="fas fa-camera-retro text-lg md:text-xl"></i></div><div class="w-full bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100 transition-all hover:shadow-xl hover:-translate-y-1 duration-300"><div class="flex items-center justify-between mb-5 pb-4 border-b border-slate-100"><h4 class="font-black text-slate-800 tracking-tight uppercase text-sm">' + cardTitle + '</h4><span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[9px] font-black tracking-widest"><i class="fas fa-check-circle mr-1"></i>VERIFIED</span></div>' + infoHtml + (imgUrl ? '<img src="' + imgUrl + '" class="w-full rounded-2xl object-cover h-auto border border-slate-100 shadow-sm">' : '') + captionHtml + mapHtml + '</div></div>';
+            return '<article class="kg-card">'
+                + (foto.length ? '<img class="kg-thumb" loading="lazy" src="' + kgEsc(foto[0]) + '" alt="Foto kegiatan ' + kgEsc(title) + '" onerror="this.style.display=\'none\'">' : '')
+                + '<div class="kg-body">'
+                + '<div class="kg-top">' + (tanggal ? '<span class="kg-date"><i class="fas fa-calendar-day"></i>' + kgEsc(tanggal) + '</span>' : '<span></span>') + '<span class="kg-ok"><i class="fas fa-circle-check"></i> Terverifikasi</span></div>'
+                + '<h4 class="kg-name">' + kgEsc(title) + '</h4>'
+                + (meta ? '<div class="kg-meta">' + meta + '</div>' : '')
+                + (layanan ? '<span class="kg-svc"><i class="fas fa-hand-holding-medical"></i>' + kgEsc(layanan) + '</span>' : '')
+                + keluhanHtml
+                + '<div id="kg-detail-' + idx + '" class="kg-detail kg-hide">' + detail + '</div>'
+                + '<button type="button" id="kg-btn-' + idx + '" class="kg-btn" onclick="toggleKegiatanDetail(' + idx + ')"><i class="fas fa-chevron-down"></i> Lihat detail</button>'
+                + '</div></article>';
+        }
+
+        function toggleKegiatanDetail(idx) {
+            const d = document.getElementById('kg-detail-' + idx);
+            const b = document.getElementById('kg-btn-' + idx);
+            if (!d) return;
+            const hidden = d.classList.toggle('kg-hide');
+            if (b) b.innerHTML = hidden ? '<i class="fas fa-chevron-down"></i> Lihat detail' : '<i class="fas fa-chevron-up"></i> Tutup detail';
+        }
+        function showKegiatanMap(idx) {
+            const it = KEGIATAN_STATE.items[idx];
+            const box = document.getElementById('kg-map-' + idx);
+            if (!it || !box) return;
+            box.innerHTML = '<div class="kg-mapbox">' + kgMapEmbed(it.titik_koordinat) + '</div>';
+        }
+        function kgScrollTo(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        function toggleKegiatanIntro(btn) {
+            const el = document.getElementById('kg-intro-text');
+            if (!el) return;
+            const collapsed = el.classList.toggle('kg-clamp');
+            btn.innerText = collapsed ? 'Baca selengkapnya' : 'Ringkas';
+        }
+
+        function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
+            let h = '<div class="kg-quicknav">';
+            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
+            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-statistik\')"><i class="fas fa-chart-simple"></i> Statistik</button>';
+            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-riwayat\')"><i class="fas fa-clipboard-list"></i> Riwayat Kegiatan</button>';
+            if (hasMap) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-peta\')"><i class="fas fa-map-location-dot"></i> Peta</button>';
+            if (hasTestimoni) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-testimoni\')"><i class="fas fa-comment-dots"></i> Testimoni</button>';
+            return h + '</div>';
         }
 
         function buildKegiatanStatsHtml(items) {
             const totalKegiatan = items.length;
-
-            const desaSet = new Set(items.map(it => (it.lokasi_desa || '').toString().trim()).filter(v => v !== ''));
-            const totalDesa = desaSet.size;
-
-            const pelangganSet = new Set(items.map(it => (it.nama_pelanggan || '').toString().trim().toLowerCase()).filter(v => v !== ''));
-            const totalOrang = pelangganSet.size;
-
+            const totalDesa = new Set(items.map(it => kgTxt(it.lokasi_desa)).filter(v => v !== '')).size;
+            const totalOrang = new Set(items.map(it => kgTxt(it.nama_pelanggan).toLowerCase()).filter(v => v !== '')).size;
             const totalSiswa = items.reduce((sum, it) => sum + (parseInt(it.jumlah_siswa, 10) || 0), 0);
-
-            const totalTitik = items.filter(it => (it.titik_koordinat || '').toString().trim() !== '').length;
-
+            const totalTitik = items.filter(it => kgTxt(it.titik_koordinat) !== '').length;
             const stats = [
-                { icon: 'fa-calendar-check', value: totalKegiatan, label: 'Kegiatan Terlaksana' },
-                { icon: 'fa-building', value: totalDesa, label: 'Desa/Kecamatan Terjangkau' },
-                { icon: 'fa-user-gear', value: totalOrang, label: 'Orang Dilayani' },
-                { icon: 'fa-user-graduate', value: totalSiswa, label: 'Keterlibatan Siswa' },
-                { icon: 'fa-map-pin', value: totalTitik, label: 'Titik Lokasi Terpetakan' }
+                { icon: 'fa-calendar-check', value: totalKegiatan, label: 'Kegiatan terlaksana' },
+                { icon: 'fa-building', value: totalDesa, label: 'Desa/kecamatan terjangkau' },
+                { icon: 'fa-users', value: totalOrang, label: 'Orang yang dilayani' },
+                { icon: 'fa-user-graduate', value: totalSiswa, label: 'Keterlibatan siswa' },
+                { icon: 'fa-map-pin', value: totalTitik, label: 'Titik lokasi terpetakan' }
             ];
+            const since = KEGIATAN_STATE.years.length ? KEGIATAN_STATE.years[KEGIATAN_STATE.years.length - 1] : '';
+            return '<div id="kg-sec-statistik" class="kg-panel" style="scroll-margin-top:100px">'
+                + '<h3 class="kg-sec-title"><i class="fas fa-chart-simple"></i> Dampak MOVE' + (since && since !== 'Lainnya' ? ' sejak ' + since : '') + '</h3>'
+                + '<p class="kg-sec-sub">Ringkasan seluruh kegiatan pelayanan yang sudah terlaksana.</p>'
+                + '<div class="kg-stats">' + stats.map(s => '<div class="kg-stat"><i class="fas ' + s.icon + '"></i><b>' + s.value.toLocaleString('id-ID') + '</b><span>' + s.label + '</span></div>').join('') + '</div></div>';
+        }
 
-            let html = '<div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-6 md:p-8 mb-10">';
-            html += '<h4 class="text-[11px] font-black text-blue-600 uppercase tracking-widest mb-6">Data Kegiatan Sejak ' + (KEGIATAN_STATE.years.length ? KEGIATAN_STATE.years[KEGIATAN_STATE.years.length - 1] : '') + '</h4>';
-            html += '<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">';
-            html += stats.map(s =>
-                '<div class="text-center">' +
-                    '<div class="w-11 h-11 mx-auto mb-3 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fas ' + s.icon + '"></i></div>' +
-                    '<p class="text-xl md:text-2xl font-black text-slate-800 tracking-tight">' + s.value.toLocaleString('id-ID') + '</p>' +
-                    '<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">' + s.label + '</p>' +
-                '</div>'
-            ).join('');
-            html += '</div></div>';
+        function buildKegiatanFilterHtml(items, years, layananList) {
+            let h = '<div id="kg-sec-riwayat" style="scroll-margin-top:100px">';
+            h += '<h3 class="kg-sec-title"><i class="fas fa-clipboard-list"></i> Riwayat Kegiatan</h3>';
+            h += '<p class="kg-sec-sub">Cari nama atau desa, atau pilih tahun dan jenis layanan. Ketuk &ldquo;Lihat detail&rdquo; untuk keterangan lengkap.</p>';
+            h += '<div class="kg-filter">';
+            h += '<div class="kg-searchbox"><i class="fas fa-magnifying-glass"></i><input id="kegiatan-search" class="kg-input" type="search" placeholder="Cari nama, desa, atau keluhan..." oninput="setKegiatanQuery(this.value)" autocomplete="off"></div>';
+            h += '<select id="kegiatan-layanan" class="kg-select" onchange="setKegiatanLayanan(this.value)"><option value="semua">Semua jenis layanan</option>'
+                + layananList.map(l => '<option value="' + kgEsc(l) + '">' + kgEsc(l) + '</option>').join('') + '</select>';
+            h += '</div>';
+            h += '<div class="kg-years" id="kegiatan-year-tabs">';
+            h += '<button onclick="filterKegiatanYear(\'semua\')" data-year="semua" class="kegiatan-year-tab px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors bg-blue-600 text-white shadow-md shadow-blue-600/20">Semua (' + items.length + ')</button>';
+            h += years.map(y => {
+                const count = items.filter(it => it._year === y).length;
+                const label = (y === 'Lainnya') ? 'Lainnya' : ('Tahun ' + y);
+                return '<button onclick="filterKegiatanYear(\'' + y + '\')" data-year="' + y + '" class="kegiatan-year-tab px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors bg-white text-slate-500 border border-slate-200 hover:bg-slate-50">' + label + ' (' + count + ')</button>';
+            }).join('');
+            h += '</div><div class="kg-info" id="kegiatan-result-info"></div>';
+            h += '<div id="kegiatan-items-container"></div><div class="kg-more" id="kegiatan-loadmore-container"></div></div>';
+            return h;
+        }
 
-            return html;
+        function getKegiatanFiltered() {
+            const q = KEGIATAN_STATE.query.toLowerCase().trim();
+            return KEGIATAN_STATE.items.filter(it => {
+                if (KEGIATAN_STATE.activeYear !== 'semua' && it._year !== KEGIATAN_STATE.activeYear) return false;
+                if (KEGIATAN_STATE.activeLayanan !== 'semua' && kgTxt(it.kategori_layanan) !== KEGIATAN_STATE.activeLayanan) return false;
+                if (q) {
+                    const hay = [it.nama_pelanggan, it.lokasi_desa, it.kategori_layanan, it.keluhan, it.area_pijat, it.ketua_tim_pelaksana].map(kgTxt).join(' ').toLowerCase();
+                    if (hay.indexOf(q) === -1) return false;
+                }
+                return true;
+            });
         }
 
         function renderKegiatanItemsUI() {
             const itemsContainer = document.getElementById('kegiatan-items-container');
             const loadMoreContainer = document.getElementById('kegiatan-loadmore-container');
+            const infoEl = document.getElementById('kegiatan-result-info');
             if (!itemsContainer) return;
 
-            let filtered = KEGIATAN_STATE.activeYear === 'semua' ? KEGIATAN_STATE.items : KEGIATAN_STATE.items.filter(it => it._year === KEGIATAN_STATE.activeYear);
-            let visible = filtered.slice(0, KEGIATAN_STATE.visibleCount);
+            const filtered = getKegiatanFiltered();
+            const visible = filtered.slice(0, KEGIATAN_STATE.visibleCount);
 
             if (visible.length === 0) {
-                itemsContainer.innerHTML = '<div class="bg-white p-10 rounded-[2rem] shadow-sm border border-slate-100 text-center text-slate-400 text-sm font-semibold">Belum ada dokumentasi pada tahun ini.</div>';
+                itemsContainer.innerHTML = '<div class="kg-grid"><div class="kg-empty"><i class="fas fa-face-frown" style="font-size:26px;display:block;margin-bottom:8px;color:#94a3b8"></i>Tidak ada kegiatan yang cocok.<br>Coba kata kunci lain atau pilih &ldquo;Semua&rdquo;.</div></div>';
             } else {
-                itemsContainer.innerHTML = '<div class="space-y-12 relative before:absolute before:inset-0 before:ml-[1.4rem] md:before:ml-[2.2rem] before:-translate-x-px before:h-full before:w-[3px] before:bg-gradient-to-b before:from-blue-500 before:via-blue-300 before:to-slate-100">' + visible.map((item, i) => buildKegiatanCardHtml(item, i)).join('') + '</div>';
+                itemsContainer.innerHTML = '<div class="kg-grid">' + visible.map((item, i) => buildKegiatanCardHtml(item, i)).join('') + '</div>';
             }
+            if (infoEl) infoEl.innerText = 'Menampilkan ' + visible.length + ' dari ' + filtered.length + ' kegiatan';
 
             if (loadMoreContainer) {
-                if (filtered.length > visible.length) {
-                    loadMoreContainer.innerHTML = '<button onclick="loadMoreKegiatan()" class="px-8 py-4 bg-white border border-slate-200 hover:border-blue-500 hover:text-blue-600 text-slate-600 rounded-full font-black text-xs uppercase tracking-widest shadow-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-down"></i> Muat Lebih Banyak (' + (filtered.length - visible.length) + ' lagi)</button>';
-                } else {
-                    loadMoreContainer.innerHTML = '';
-                }
+                loadMoreContainer.innerHTML = filtered.length > visible.length
+                    ? '<button type="button" onclick="loadMoreKegiatan()"><i class="fas fa-chevron-down"></i>&nbsp; Tampilkan lebih banyak (' + (filtered.length - visible.length) + ' lagi)</button>'
+                    : '';
             }
 
             document.querySelectorAll('.kegiatan-year-tab').forEach(btn => {
@@ -2280,7 +2434,16 @@
             KEGIATAN_STATE.visibleCount = KEGIATAN_STATE.pageSize;
             renderKegiatanItemsUI();
         }
-
+        function setKegiatanQuery(v) {
+            KEGIATAN_STATE.query = v || '';
+            KEGIATAN_STATE.visibleCount = KEGIATAN_STATE.pageSize;
+            renderKegiatanItemsUI();
+        }
+        function setKegiatanLayanan(v) {
+            KEGIATAN_STATE.activeLayanan = v || 'semua';
+            KEGIATAN_STATE.visibleCount = KEGIATAN_STATE.pageSize;
+            renderKegiatanItemsUI();
+        }
         function loadMoreKegiatan() {
             KEGIATAN_STATE.visibleCount += KEGIATAN_STATE.pageSize;
             renderKegiatanItemsUI();
@@ -2372,7 +2535,8 @@
                     if (introDisplayText && introDisplayText.trim() !== '') {
                         let introParagraphs = introDisplayText.split(/\n\s*\n/).filter(p => p.trim() !== '');
                         let introParagraphsHtml = introParagraphs.map(p => '<p>' + p.split('\n').map(l => l.trim()).join('<br>') + '</p>').join('');
-                        html += '<div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-slate-100 mb-8 relative overflow-hidden group"><div class="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 rounded-bl-full -z-10 transition-transform"></div><div class="text-base text-slate-600 leading-relaxed space-y-4 font-medium">' + introParagraphsHtml + '</div></div>';
+                        const kgLong = introDisplayText.length > 450;
+                        html += '<div class="kg-panel"><div id="kg-intro-text" class="kg-intro-text' + (kgLong ? ' kg-clamp' : '') + '">' + introParagraphsHtml + '</div>' + (kgLong ? '<button type="button" class="kg-link" onclick="toggleKegiatanIntro(this)">Baca selengkapnya</button>' : '') + '</div>';
                     }
 
                     // GALERI FOTO OTOMATIS (SETELAH NARASI)
@@ -2381,7 +2545,7 @@
                     }
 
                     // CTA BOOKING PIJAT TERAPIS
-                    html += '<div class="bg-gradient-to-r from-teal-600 to-[#0f766e] rounded-[2rem] p-6 md:p-8 mb-12 flex flex-col md:flex-row items-center justify-between gap-5 shadow-lg shadow-teal-600/20 relative overflow-hidden">'
+                    html += '<div id="kg-sec-booking" style="scroll-margin-top:100px" class="bg-gradient-to-r from-teal-600 to-[#0f766e] rounded-[2rem] p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-5 shadow-lg shadow-teal-600/20 relative overflow-hidden">'
                           + '<i class="fas fa-spa absolute -bottom-6 -right-4 text-[6rem] text-white/10"></i>'
                           + '<div class="relative z-10 text-center md:text-left">'
                           + '<span class="text-[10px] font-black text-teal-100 uppercase tracking-widest block mb-1">Layanan Pijat Terapis</span>'
@@ -2393,7 +2557,7 @@
 
                     if (kegiatanItems.length > 0) {
                         let itemsDesc = kegiatanItems.slice().reverse();
-                        itemsDesc.forEach(it => { it._year = getKegiatanYear(it); });
+                        itemsDesc.forEach((it, n) => { it._year = getKegiatanYear(it); it._idx = n; });
 
                         let years = Array.from(new Set(itemsDesc.map(it => it._year)));
                         years.sort((a, b) => {
@@ -2401,32 +2565,28 @@
                             if (b === 'Lainnya') return -1;
                             return b - a;
                         });
+                        let layananList = Array.from(new Set(itemsDesc.map(it => kgTxt(it.kategori_layanan)).filter(v => v !== ''))).sort();
 
                         KEGIATAN_STATE.items = itemsDesc;
                         KEGIATAN_STATE.years = years;
+                        KEGIATAN_STATE.layanan = layananList;
                         KEGIATAN_STATE.activeYear = 'semua';
+                        KEGIATAN_STATE.activeLayanan = 'semua';
+                        KEGIATAN_STATE.query = '';
                         KEGIATAN_STATE.visibleCount = KEGIATAN_STATE.pageSize;
 
-                        html += buildKegiatanGlobalMapHtml(mapUrls);
+                        const testimoniHtml = buildKegiatanTestimoniHtml(subData);
+                        const mapHtml = buildKegiatanGlobalMapHtml(mapUrls);
 
+                        html += buildKegiatanQuickNavHtml(mapHtml !== '', testimoniHtml !== '');
                         html += buildKegiatanStatsHtml(itemsDesc);
-
-                        html += buildKegiatanTestimoniHtml(subData);
-
-                        html += '<div class="flex flex-wrap gap-2 mb-8" id="kegiatan-year-tabs">';
-                        html += '<button onclick="filterKegiatanYear(\'semua\')" data-year="semua" class="kegiatan-year-tab px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors bg-blue-600 text-white shadow-md shadow-blue-600/20">Semua (' + itemsDesc.length + ')</button>';
-                        html += years.map(y => {
-                            let count = itemsDesc.filter(it => it._year === y).length;
-                            let label = (y === 'Lainnya') ? 'Lainnya' : ('Tahun ' + y);
-                            return '<button onclick="filterKegiatanYear(\'' + y + '\')" data-year="' + y + '" class="kegiatan-year-tab px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors bg-white text-slate-500 border border-slate-200 hover:bg-slate-50">' + label + ' (' + count + ')</button>';
-                        }).join('');
-                        html += '</div>';
-
-                        html += '<div id="kegiatan-items-container"></div>';
-                        html += '<div class="flex justify-center mt-10" id="kegiatan-loadmore-container"></div>';
+                        html += buildKegiatanFilterHtml(itemsDesc, years, layananList);
+                        html += '<div style="height:28px"></div>';
+                        html += mapHtml;
+                        html += testimoniHtml;
 
                         html += '</div>';
-                        container.innerHTML = html;
+                        container.innerHTML = html.replace('<div class="w-full">', '<div class="w-full kg-wrap">');
                         if (imageUrls.length > 0) initAutoGallery('kegiatan-narasi', imageUrls.length, 4500);
                         renderKegiatanItemsUI();
                         return;

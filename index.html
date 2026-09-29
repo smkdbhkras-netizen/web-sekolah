@@ -395,7 +395,8 @@
     .kg-leg i{width:10px;height:10px;border-radius:50%;background:#f43f5e;display:inline-block}
     .kg-figs{display:grid;grid-template-columns:1fr;gap:6px;background:#f8fafc;border:1px solid #e8edf4;border-radius:16px;padding:12px 6px 10px}
     .kg-fig{margin:0;text-align:center}
-    .kg-fig svg{width:100%;max-width:360px;height:auto;display:block;margin:0 auto;overflow:visible}
+    .kg-fig svg{width:100%;max-width:360px;height:auto;display:block;margin:0 auto;overflow:hidden}
+    .kg-fig svg.kg-crop{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%)}
     .kg-fig .kg-lead{stroke:#be123c;stroke-width:1.1;fill:none;opacity:.9}
     .kg-fig .kg-dot{fill:#fff;stroke:#be123c;stroke-width:1.6}
     .kg-fig .kg-lbl-t{fill:#9f1239;font-size:12px;font-weight:700;font-family:inherit}
@@ -2607,7 +2608,8 @@
             // potong bagian yang tidak perlu supaya gambar tidak terlalu tinggi
             let y0 = Math.max(0, Math.floor(yMin - 85)), y1 = Math.min(436, Math.ceil(yMax + 70));
             if (y1 - y0 > 330) { y0 = 0; y1 = 436; }
-            return '<figure class="kg-fig"><svg viewBox="-84 ' + y0 + ' 368 ' + (y1 - y0) + '" role="img" aria-label="' + caption + '">'
+            const cropped = (y0 > 0 || y1 < 436);
+            return '<figure class="kg-fig"><svg' + (cropped ? ' class="kg-crop"' : '') + ' viewBox="-84 ' + y0 + ' 368 ' + (y1 - y0) + '" role="img" aria-label="' + caption + '">'
                 + svgBase + out + '</svg><figcaption>' + caption + '</figcaption></figure>';
         }
         function kgAnatomiHtml(zones) {

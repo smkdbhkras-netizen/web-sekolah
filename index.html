@@ -385,6 +385,32 @@
     html.dark .kg-tile,html.dark .kg-tile-all{background:#1e293b;border-color:#334155}
     html.dark .kg-tile-ico{background:#0f172a}
     html.dark .kg-tile-on{background:linear-gradient(135deg,#2563eb,#0ea5e9)}
+    /* --- kartu seragam + slider foto --- */
+    .kg-cards{display:grid;grid-template-columns:1fr;gap:20px;align-items:stretch}
+    @media(min-width:900px){.kg-cards{grid-template-columns:1fr 1fr}}
+    .kg-card{height:100%;box-sizing:border-box}
+    .kg-body{flex:1}
+    .kg-foot{margin-top:auto;display:grid;gap:14px}
+    .kg-slider{position:relative;aspect-ratio:4/3;background:#0f172a;overflow:hidden;border-bottom:1px solid #e8edf4}
+    .kg-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .kg-track::-webkit-scrollbar{display:none}
+    .kg-slide{position:relative;flex:0 0 100%;height:100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;overflow:hidden;line-height:0}
+    .kg-slide-bg{position:absolute;inset:-20px;background-size:cover;background-position:center;filter:blur(22px) brightness(.75);transform:scale(1.1)}
+    .kg-slide img{position:relative;z-index:1;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+    .kg-slide-err{background:#1e293b}
+    .kg-slide-err img{display:none}
+    .kg-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:42px;height:42px;border-radius:50%;border:0;background:rgba(15,23,42,.55);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:.15s}
+    .kg-nav:hover{background:rgba(37,99,235,.9)}
+    .kg-prev{left:10px}.kg-next{right:10px}
+    .kg-count{position:absolute;top:10px;right:10px;z-index:3;background:rgba(15,23,42,.6);color:#fff;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px}
+    .kg-dots{position:absolute;bottom:10px;left:0;right:0;z-index:3;display:flex;justify-content:center;gap:6px}
+    .kg-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);cursor:pointer;transition:.2s}
+    .kg-dots i.on{width:22px;border-radius:6px;background:#fff}
+    .kg-nophoto{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#e0ecff,#f1f5f9);color:#94a3b8;font-weight:700;font-size:14px}
+    .kg-nophoto i{font-size:44px;color:#b6c8e6}
+    .kg-desc{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+    .kg-mapbox{height:210px}
+    html.dark .kg-nophoto{background:linear-gradient(135deg,#1e293b,#0f172a)}
     </style>
 </head>
 <body class="text-slate-800">
@@ -2318,12 +2344,20 @@
             if (!KG_SAMARKAN_KONTAK) return kgTxt(v);
             return d.length < 7 ? '••••' : d.slice(0, 4) + '••••' + d.slice(-3);
         }
-        function kgPhotos(item) {
-            const raw = kgTxt(item.gambar || item.foto || item.media_url || '');
-            if (!raw) return [];
-            const parts = raw.split(',').map(x => x.trim()).filter(x => /^https?:\/\//i.test(x));
-            return parts.length ? parts : [raw];
+        function kgPhotoUrl(u) {
+            const m = u.match(/drive\.google\.com\/file\/d\/([^\/?#]+)/);
+            return m ? 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w1600' : u;
         }
+        function kgPhotos(item) {
+            const raws = [item.gambar, item.foto, item.media_url, item.foto_kegiatan].map(kgTxt).filter(Boolean);
+            const out = [];
+            raws.forEach(raw => {
+                const parts = raw.split(/[\s,;|]+/).filter(x => /^https?:\/\//i.test(x));
+                (parts.length ? parts : [raw]).forEach(u => { u = kgPhotoUrl(u); if (out.indexOf(u) === -1) out.push(u); });
+            });
+            return out;
+        }
+
         function kgCoords(k) {
             k = kgTxt(k);
             let m = k.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
@@ -2390,14 +2424,24 @@
 
             const title = nama || ('Kegiatan #' + (idx + 1));
             const MAX = 4;
+            const DESC_MAX = 170;
 
-            // FOTO: tampil penuh (tidak dipotong), semua foto langsung terlihat
-            let fotoHtml = '';
+            // FOTO: bingkai seragam, foto tampil penuh, bisa digeser jika lebih dari satu
+            let fotoHtml;
             if (foto.length) {
-                const imgTag = (u, cls) => '<a href="' + kgEsc(u) + '" target="_blank" rel="noopener" class="' + cls + '" title="Ketuk untuk memperbesar"><img loading="lazy" src="' + kgEsc(u) + '" alt="Foto kegiatan ' + kgEsc(title) + '" onerror="this.parentNode.style.display=\'none\'"></a>';
-                fotoHtml = '<div class="kg-media">' + imgTag(foto[0], 'kg-photo-main');
-                if (foto.length > 1) fotoHtml += '<div class="kg-photo-grid">' + foto.slice(1).map(u => imgTag(u, 'kg-photo-sm')).join('') + '</div>';
-                fotoHtml += '</div>';
+                const slides = foto.map(u => '<a class="kg-slide" href="' + kgEsc(u) + '" target="_blank" rel="noopener" title="Ketuk untuk memperbesar">'
+                    + '<span class="kg-slide-bg" style="background-image:url(&quot;' + kgEsc(u) + '&quot;)"></span>'
+                    + '<img loading="lazy" src="' + kgEsc(u) + '" alt="Foto kegiatan ' + kgEsc(title) + '" onerror="this.parentNode.classList.add(\'kg-slide-err\')"></a>').join('');
+                let ctrl = '';
+                if (foto.length > 1) {
+                    ctrl = '<button type="button" class="kg-nav kg-prev" onclick="kgSlide(' + idx + ',-1)" aria-label="Foto sebelumnya"><i class="fas fa-chevron-left"></i></button>'
+                        + '<button type="button" class="kg-nav kg-next" onclick="kgSlide(' + idx + ',1)" aria-label="Foto berikutnya"><i class="fas fa-chevron-right"></i></button>'
+                        + '<span class="kg-count" id="kg-count-' + idx + '">1 / ' + foto.length + '</span>'
+                        + '<div class="kg-dots" id="kg-dots-' + idx + '">' + foto.map((u, n) => '<i class="' + (n === 0 ? 'on' : '') + '" onclick="kgSlideTo(' + idx + ',' + n + ')"></i>').join('') + '</div>';
+                }
+                fotoHtml = '<div class="kg-slider"><div class="kg-track" id="kg-track-' + idx + '" onscroll="kgSlideScroll(' + idx + ')">' + slides + '</div>' + ctrl + '</div>';
+            } else {
+                fotoHtml = '<div class="kg-slider kg-nophoto"><i class="fas fa-image"></i><span>Foto belum tersedia</span></div>';
             }
 
             let meta = '';
@@ -2414,9 +2458,10 @@
                     + '</div></div>';
             }
 
-            const descHtml = deskripsi ? '<div class="kg-desc"><i class="fas fa-quote-left"></i>' + kgEsc(deskripsi).replace(/\n/g, '<br>') + '</div>' : '';
+            const descLong = deskripsi.length > DESC_MAX;
+            const descShow = descLong ? deskripsi.slice(0, DESC_MAX).replace(/\s+\S*$/, '') + '…' : deskripsi;
+            const descHtml = deskripsi ? '<div class="kg-desc"><i class="fas fa-quote-left"></i>' + kgEsc(descShow).replace(/\n/g, '<br>') + '</div>' : '';
 
-            // PETA: langsung tampil di kartu (dimuat saat kartu terlihat di layar)
             let mapHtml = '';
             if (koordinat) {
                 mapHtml = '<div class="kg-mapblock"><p class="kg-lbl"><i class="fas fa-location-dot" style="color:#ef4444"></i> Titik lokasi</p>'
@@ -2425,11 +2470,15 @@
                     + '</div>';
             }
 
-            // DETAIL (tersembunyi): hanya info tambahan yang panjang
             let detail = '';
+            if (descLong) detail += '<div class="kg-row"><b>Testimoni lengkap</b><div>' + kgEsc(deskripsi).replace(/\n/g, '<br>') + '</div></div>';
             if (keluhan.length > MAX) detail += '<div class="kg-row"><b>Semua keluhan</b><div class="kg-chips">' + keluhan.map(k => '<span class="kg-chip">' + kgEsc(k) + '</span>').join('') + '</div></div>';
             if (area.length) detail += '<div class="kg-row"><b>Bagian tubuh yang dipijat</b><ul class="kg-list">' + area.map(a => '<li>' + kgEsc(a) + '</li>').join('') + '</ul></div>';
             if (kontak) detail += '<div class="kg-row"><b>Kontak pelanggan</b><div>' + kgEsc(kontak) + '</div></div>';
+
+            const foot = mapHtml
+                + (detail ? '<div id="kg-detail-' + idx + '" class="kg-detail kg-hide">' + detail + '</div>'
+                    + '<button type="button" id="kg-btn-' + idx + '" class="kg-btn" onclick="toggleKegiatanDetail(' + idx + ')"><i class="fas fa-chevron-down"></i> Lihat info lengkap</button>' : '');
 
             return '<article class="kg-card">'
                 + fotoHtml
@@ -2440,10 +2489,31 @@
                 + (layanan ? '<span class="kg-svc"><i class="fas fa-hand-holding-medical"></i>' + kgEsc(layanan) + '</span>' : '')
                 + descHtml
                 + keluhanHtml
-                + mapHtml
-                + (detail ? '<div id="kg-detail-' + idx + '" class="kg-detail kg-hide">' + detail + '</div>'
-                    + '<button type="button" id="kg-btn-' + idx + '" class="kg-btn" onclick="toggleKegiatanDetail(' + idx + ')"><i class="fas fa-chevron-down"></i> Lihat info lengkap</button>' : '')
+                + (foot ? '<div class="kg-foot">' + foot + '</div>' : '')
                 + '</div></article>';
+        }
+
+        // ---------- slider foto ----------
+        function kgSlide(idx, dir) {
+            const t = document.getElementById('kg-track-' + idx);
+            if (!t) return;
+            const n = t.children.length;
+            const cur = Math.round(t.scrollLeft / t.clientWidth);
+            kgSlideTo(idx, (cur + dir + n) % n);
+        }
+        function kgSlideTo(idx, n) {
+            const t = document.getElementById('kg-track-' + idx);
+            if (!t) return;
+            t.scrollTo({ left: n * t.clientWidth, behavior: 'smooth' });
+        }
+        function kgSlideScroll(idx) {
+            const t = document.getElementById('kg-track-' + idx);
+            if (!t || !t.clientWidth) return;
+            const cur = Math.round(t.scrollLeft / t.clientWidth);
+            const c = document.getElementById('kg-count-' + idx);
+            if (c) c.textContent = (cur + 1) + ' / ' + t.children.length;
+            const d = document.getElementById('kg-dots-' + idx);
+            if (d) Array.from(d.children).forEach((el, i) => el.classList.toggle('on', i === cur));
         }
 
         function toggleKegiatanDetail(idx) {
@@ -2662,10 +2732,7 @@
                     const vis = g.items.slice(0, shown);
                     const orang = new Set(g.items.map(it => kgTxt(it.nama_pelanggan).toLowerCase()).filter(Boolean)).size;
                     const terakhir = kgTxt(g.items[0].tanggal_pelaksanaan);
-                    const cols = [];
-                    for (let c = 0; c < nCols; c++) cols.push('');
-                    vis.forEach((it, i) => { cols[i % nCols] += buildKegiatanCardHtml(it, i); });
-                    const body = '<div class="kg-masonry">' + cols.map(h => '<div class="kg-col">' + h + '</div>').join('') + '</div>'
+                    const body = '<div class="kg-cards">' + vis.map((it, i) => buildKegiatanCardHtml(it, i)).join('') + '</div>'
                         + (g.items.length > vis.length ? '<div class="kg-more"><button type="button" onclick="moreKegiatanGroup(' + id + ')"><i class="fas fa-chevron-down"></i>&nbsp; Tampilkan lebih banyak (' + (g.items.length - vis.length) + ' lagi)</button></div>' : '');
                     return '<section class="kg-group' + (isOpen ? ' kg-open' : '') + '">'
                         + '<button type="button" class="kg-ghead" onclick="toggleKegiatanGroup(' + id + ')" aria-expanded="' + (isOpen ? 'true' : 'false') + '">'

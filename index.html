@@ -306,6 +306,27 @@
     html.dark .kg-name,html.dark .kg-sec-title,html.dark .kg-stat b,html.dark .kg-row div,html.dark .kg-list{color:#f1f5f9}
     html.dark .kg-stat,html.dark .kg-desc,html.dark .kg-chip,html.dark .kg-btn{background:#0f172a;border-color:#334155;color:#cbd5e1}
     html.dark .kg-intro-text,html.dark .kg-meta,html.dark .kg-sec-sub,html.dark .kg-info{color:#94a3b8}
+    /* --- penyempurnaan: foto penuh, peta langsung tampil --- */
+    .kg-grid{align-items:start;gap:22px}
+    .kg-card{border-radius:24px;box-shadow:0 2px 6px rgba(15,23,42,.05),0 12px 28px rgba(15,23,42,.06);border:1px solid #e8edf4;position:relative}
+    .kg-card:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(15,23,42,.06),0 20px 40px rgba(15,23,42,.12)}
+    .kg-media{background:#f1f5f9;border-bottom:1px solid #e8edf4}
+    .kg-photo-main{display:block;line-height:0}
+    .kg-photo-main img{width:100%;height:auto;display:block}
+    .kg-photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-top:3px}
+    .kg-photo-sm{display:block;line-height:0}
+    .kg-photo-sm img{width:100%;height:auto;display:block}
+    .kg-body{padding:20px;gap:14px}
+    .kg-name{font-size:19px}
+    .kg-desc{position:relative;background:linear-gradient(135deg,#eff6ff,#f8fafc);border-left:4px solid #3b82f6;border-radius:12px;padding:14px 16px 14px 40px;font-size:15px;font-style:italic;color:#334155}
+    .kg-desc i{position:absolute;left:14px;top:14px;color:#93c5fd;font-size:16px}
+    .kg-mapblock{display:grid;gap:8px}
+    .kg-mapblock .kg-lbl{margin:0;font-size:13px}
+    .kg-mapbox{height:240px;margin-top:0;border-radius:16px;box-shadow:inset 0 0 0 1px #e2e8f0}
+    .kg-mini-block{justify-content:center;width:100%;box-sizing:border-box;background:#f8fafc}
+    .kg-btn{margin-top:2px}
+    .kg-masonry{display:flex;gap:22px;align-items:flex-start}
+    .kg-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:22px}
     </style>
 </head>
 <body class="text-slate-800">
@@ -2234,21 +2255,29 @@
             const parts = raw.split(',').map(x => x.trim()).filter(x => /^https?:\/\//i.test(x));
             return parts.length ? parts : [raw];
         }
+        function kgCoords(k) {
+            k = kgTxt(k);
+            let m = k.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+            if (!m) m = k.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+            if (!m) m = k.match(/[?&](?:q|query|ll|destination)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/i);
+            if (!m) m = k.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+            return m ? { lat: m[1], lng: m[2] } : null;
+        }
+        // Mengembalikan HTML iframe, atau '' jika link tidak bisa di-embed (mis. link pendek maps.app.goo.gl)
         function kgMapEmbed(koordinat) {
-            let k = kgTxt(koordinat);
+            const k = kgTxt(koordinat);
             if (!k) return '';
             if (k.toLowerCase().startsWith('<iframe')) return k;
-            let embedUrl = k;
-            if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(embedUrl)) {
-                embedUrl = 'https://www.google.com/maps?q=' + embedUrl.replace(/\s+/g, '') + '&output=embed';
-            } else if (embedUrl.includes('maps/d/')) {
-                embedUrl = embedUrl.replace('/edit?', '/embed?').replace('/viewer?', '/embed?');
-            }
-            return '<iframe src="' + kgEsc(embedUrl) + '" allowfullscreen="" loading="lazy"></iframe>';
+            const c = kgCoords(k);
+            if (c) return '<iframe src="https://www.google.com/maps?q=' + c.lat + ',' + c.lng + '&z=16&output=embed" loading="lazy" allowfullscreen="" referrerpolicy="no-referrer-when-downgrade"></iframe>';
+            if (k.includes('maps/d/')) return '<iframe src="' + kgEsc(k.replace('/edit?', '/embed?').replace('/viewer?', '/embed?')) + '" loading="lazy" allowfullscreen=""></iframe>';
+            if (/output=embed|\/maps\/embed/i.test(k)) return '<iframe src="' + kgEsc(k) + '" loading="lazy" allowfullscreen=""></iframe>';
+            return '';
         }
         function kgMapLink(koordinat) {
             const k = kgTxt(koordinat);
-            if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(k)) return 'https://www.google.com/maps?q=' + k.replace(/\s+/g, '');
+            const c = kgCoords(k);
+            if (c) return 'https://www.google.com/maps?q=' + c.lat + ',' + c.lng;
             if (/^https?:\/\//i.test(k)) return k;
             return '';
         }
@@ -2268,10 +2297,27 @@
             const area = kgSplit(item.area_pijat, /;|\n/);
             const foto = kgPhotos(item);
             const koordinat = kgTxt(item.titik_koordinat);
+            const embed = kgMapEmbed(koordinat);
             const linkPeta = kgMapLink(koordinat);
 
             const title = nama || ('Kegiatan #' + (idx + 1));
             const MAX = 4;
+
+            // FOTO: tampil penuh (tidak dipotong), semua foto langsung terlihat
+            let fotoHtml = '';
+            if (foto.length) {
+                const imgTag = (u, cls) => '<a href="' + kgEsc(u) + '" target="_blank" rel="noopener" class="' + cls + '" title="Ketuk untuk memperbesar"><img loading="lazy" src="' + kgEsc(u) + '" alt="Foto kegiatan ' + kgEsc(title) + '" onerror="this.parentNode.style.display=\'none\'"></a>';
+                fotoHtml = '<div class="kg-media">' + imgTag(foto[0], 'kg-photo-main');
+                if (foto.length > 1) fotoHtml += '<div class="kg-photo-grid">' + foto.slice(1).map(u => imgTag(u, 'kg-photo-sm')).join('') + '</div>';
+                fotoHtml += '</div>';
+            }
+
+            let meta = '';
+            if (lokasi) meta += '<span><i class="fas fa-location-dot"></i>' + kgEsc(lokasi) + '</span>';
+            if (gender) meta += '<span><i class="fas fa-venus-mars"></i>' + kgEsc(gender) + '</span>';
+            if (siswa) meta += '<span><i class="fas fa-user-graduate"></i>' + kgEsc(siswa) + ' siswa terlibat</span>';
+            if (ketua) meta += '<span><i class="fas fa-user-tie"></i>Ketua tim: ' + kgEsc(ketua) + '</span>';
+
             let keluhanHtml = '';
             if (keluhan.length) {
                 keluhanHtml = '<div><p class="kg-lbl">Keluhan</p><div class="kg-chips">'
@@ -2280,36 +2326,35 @@
                     + '</div></div>';
             }
 
-            let meta = '';
-            if (lokasi) meta += '<span><i class="fas fa-location-dot"></i>' + kgEsc(lokasi) + '</span>';
-            if (gender) meta += '<span><i class="fas fa-venus-mars"></i>' + kgEsc(gender) + '</span>';
-            if (siswa) meta += '<span><i class="fas fa-user-graduate"></i>' + kgEsc(siswa) + ' siswa terlibat</span>';
+            const descHtml = deskripsi ? '<div class="kg-desc"><i class="fas fa-quote-left"></i>' + kgEsc(deskripsi).replace(/\n/g, '<br>') + '</div>' : '';
 
+            // PETA: langsung tampil di kartu (dimuat saat kartu terlihat di layar)
+            let mapHtml = '';
+            if (koordinat) {
+                mapHtml = '<div class="kg-mapblock"><p class="kg-lbl"><i class="fas fa-location-dot" style="color:#ef4444"></i> Titik lokasi</p>'
+                    + (embed ? '<div class="kg-mapbox">' + embed + '</div>' : '')
+                    + (linkPeta ? '<a class="kg-mini kg-mini-block" target="_blank" rel="noopener" href="' + kgEsc(linkPeta) + '"><i class="fas fa-up-right-from-square"></i> Buka di Google Maps</a>' : '')
+                    + '</div>';
+            }
+
+            // DETAIL (tersembunyi): hanya info tambahan yang panjang
             let detail = '';
             if (keluhan.length > MAX) detail += '<div class="kg-row"><b>Semua keluhan</b><div class="kg-chips">' + keluhan.map(k => '<span class="kg-chip">' + kgEsc(k) + '</span>').join('') + '</div></div>';
             if (area.length) detail += '<div class="kg-row"><b>Bagian tubuh yang dipijat</b><ul class="kg-list">' + area.map(a => '<li>' + kgEsc(a) + '</li>').join('') + '</ul></div>';
-            if (ketua) detail += '<div class="kg-row"><b>Ketua tim pelaksana</b><div>' + kgEsc(ketua) + '</div></div>';
             if (kontak) detail += '<div class="kg-row"><b>Kontak pelanggan</b><div>' + kgEsc(kontak) + '</div></div>';
-            if (deskripsi) detail += '<div class="kg-desc">' + kgEsc(deskripsi).replace(/\n/g, '<br>') + '</div>';
-            if (foto.length > 1) detail += '<div class="kg-row"><b>Foto kegiatan</b><div class="kg-photos">' + foto.slice(1).map(u => '<img loading="lazy" src="' + kgEsc(u) + '" alt="Foto kegiatan" onerror="this.style.display=\'none\'">').join('') + '</div></div>';
-            if (koordinat) {
-                detail += '<div class="kg-row"><b>Lokasi</b><div class="kg-maprow">'
-                    + '<button type="button" class="kg-mini" onclick="showKegiatanMap(' + idx + ')"><i class="fas fa-map"></i> Lihat peta di sini</button>'
-                    + (linkPeta ? '<a class="kg-mini" target="_blank" rel="noopener" href="' + kgEsc(linkPeta) + '"><i class="fas fa-up-right-from-square"></i> Buka Google Maps</a>' : '')
-                    + '</div><div id="kg-map-' + idx + '"></div></div>';
-            }
-            if (!detail) detail = '<div class="kg-row"><div style="color:#94a3b8">Belum ada keterangan tambahan.</div></div>';
 
             return '<article class="kg-card">'
-                + (foto.length ? '<img class="kg-thumb" loading="lazy" src="' + kgEsc(foto[0]) + '" alt="Foto kegiatan ' + kgEsc(title) + '" onerror="this.style.display=\'none\'">' : '')
+                + fotoHtml
                 + '<div class="kg-body">'
                 + '<div class="kg-top">' + (tanggal ? '<span class="kg-date"><i class="fas fa-calendar-day"></i>' + kgEsc(tanggal) + '</span>' : '<span></span>') + '<span class="kg-ok"><i class="fas fa-circle-check"></i> Terverifikasi</span></div>'
                 + '<h4 class="kg-name">' + kgEsc(title) + '</h4>'
                 + (meta ? '<div class="kg-meta">' + meta + '</div>' : '')
                 + (layanan ? '<span class="kg-svc"><i class="fas fa-hand-holding-medical"></i>' + kgEsc(layanan) + '</span>' : '')
+                + descHtml
                 + keluhanHtml
-                + '<div id="kg-detail-' + idx + '" class="kg-detail kg-hide">' + detail + '</div>'
-                + '<button type="button" id="kg-btn-' + idx + '" class="kg-btn" onclick="toggleKegiatanDetail(' + idx + ')"><i class="fas fa-chevron-down"></i> Lihat detail</button>'
+                + mapHtml
+                + (detail ? '<div id="kg-detail-' + idx + '" class="kg-detail kg-hide">' + detail + '</div>'
+                    + '<button type="button" id="kg-btn-' + idx + '" class="kg-btn" onclick="toggleKegiatanDetail(' + idx + ')"><i class="fas fa-chevron-down"></i> Lihat info lengkap</button>' : '')
                 + '</div></article>';
         }
 
@@ -2318,7 +2363,7 @@
             const b = document.getElementById('kg-btn-' + idx);
             if (!d) return;
             const hidden = d.classList.toggle('kg-hide');
-            if (b) b.innerHTML = hidden ? '<i class="fas fa-chevron-down"></i> Lihat detail' : '<i class="fas fa-chevron-up"></i> Tutup detail';
+            if (b) b.innerHTML = hidden ? '<i class="fas fa-chevron-down"></i> Lihat info lengkap' : '<i class="fas fa-chevron-up"></i> Tutup info lengkap';
         }
         function showKegiatanMap(idx) {
             const it = KEGIATAN_STATE.items[idx];
@@ -2370,7 +2415,7 @@
         function buildKegiatanFilterHtml(items, years, layananList) {
             let h = '<div id="kg-sec-riwayat" style="scroll-margin-top:100px">';
             h += '<h3 class="kg-sec-title"><i class="fas fa-clipboard-list"></i> Riwayat Kegiatan</h3>';
-            h += '<p class="kg-sec-sub">Cari nama atau desa, atau pilih tahun dan jenis layanan. Ketuk &ldquo;Lihat detail&rdquo; untuk keterangan lengkap.</p>';
+            h += '<p class="kg-sec-sub">Cari nama atau desa, atau pilih tahun dan jenis layanan. Foto dan peta lokasi tampil langsung di setiap kartu. Ketuk foto untuk memperbesar.</p>';
             h += '<div class="kg-filter">';
             h += '<div class="kg-searchbox"><i class="fas fa-magnifying-glass"></i><input id="kegiatan-search" class="kg-input" type="search" placeholder="Cari nama, desa, atau keluhan..." oninput="setKegiatanQuery(this.value)" autocomplete="off"></div>';
             h += '<select id="kegiatan-layanan" class="kg-select" onchange="setKegiatanLayanan(this.value)"><option value="semua">Semua jenis layanan</option>'
@@ -2413,7 +2458,12 @@
             if (visible.length === 0) {
                 itemsContainer.innerHTML = '<div class="kg-grid"><div class="kg-empty"><i class="fas fa-face-frown" style="font-size:26px;display:block;margin-bottom:8px;color:#94a3b8"></i>Tidak ada kegiatan yang cocok.<br>Coba kata kunci lain atau pilih &ldquo;Semua&rdquo;.</div></div>';
             } else {
-                itemsContainer.innerHTML = '<div class="kg-grid">' + visible.map((item, i) => buildKegiatanCardHtml(item, i)).join('') + '</div>';
+                const nCols = window.innerWidth >= 900 ? 2 : 1;
+                KEGIATAN_STATE._cols = nCols;
+                const colsHtml = [];
+                for (let c = 0; c < nCols; c++) colsHtml.push('');
+                visible.forEach((item, i) => { colsHtml[i % nCols] += buildKegiatanCardHtml(item, i); });
+                itemsContainer.innerHTML = '<div class="kg-masonry">' + colsHtml.map(h => '<div class="kg-col">' + h + '</div>').join('') + '</div>';
             }
             if (infoEl) infoEl.innerText = 'Menampilkan ' + visible.length + ' dari ' + filtered.length + ' kegiatan';
 
@@ -2429,6 +2479,14 @@
             });
         }
 
+        if (!window.__kgResizeBound) {
+            window.__kgResizeBound = true;
+            window.addEventListener('resize', function () {
+                if (!document.getElementById('kegiatan-items-container')) return;
+                const want = window.innerWidth >= 900 ? 2 : 1;
+                if (KEGIATAN_STATE._cols && KEGIATAN_STATE._cols !== want) renderKegiatanItemsUI();
+            });
+        }
         function filterKegiatanYear(year) {
             KEGIATAN_STATE.activeYear = year;
             KEGIATAN_STATE.visibleCount = KEGIATAN_STATE.pageSize;

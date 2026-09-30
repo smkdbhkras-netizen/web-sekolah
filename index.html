@@ -269,6 +269,20 @@
     .bm-or{text-align:center;font-size:12px;font-weight:800;color:#94a3b8;margin:12px 0 0}
     .bm-form-actions{display:flex;gap:10px;margin-top:20px}
     .bm-form-actions .bm-btn{flex:1}
+    .bm-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 0 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .bm-tabs::-webkit-scrollbar{display:none}
+    .bm-tab{--c:#475569;flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;color:#334155;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+    .bm-tab i{color:var(--c)}
+    .bm-tab em{font-style:normal;font-size:11px;font-weight:800;background:#f1f5f9;color:#475569;border-radius:999px;padding:2px 8px}
+    .bm-tab.on{background:var(--c);border-color:var(--c);color:#fff}
+    .bm-tab.on i{color:#fff}.bm-tab.on em{background:rgba(255,255,255,.25);color:#fff}
+    .bm-group-h{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:900;margin:20px 2px 10px}
+    .bm-group-h:first-child{margin-top:6px}
+    .bm-group-h span{font-size:11px;font-weight:800;background:#f1f5f9;color:#475569;border-radius:999px;padding:2px 9px}
+    .bm-fase-badge{border:1px solid transparent;border-radius:999px}
+    html.dark .bm-tab{background:#0f172a;border-color:#334155;color:#cbd5e1}
+    html.dark .bm-tab em,html.dark .bm-group-h span{background:#334155;color:#cbd5e1}
+    html.dark .bm-tab.on{background:var(--c);color:#fff}
     html.dark .bm-card,html.dark .bm-apanel,html.dark .bm-box{background:#1e293b;border-color:#334155}
     html.dark .bm-title,html.dark .bm-ahead h2,html.dark .bm-box h3{color:#f1f5f9}
     html.dark .bm-desc,html.dark .bm-info-line,html.dark .bm-ahead p,html.dark .bm-hint,html.dark .bm-lbl,html.dark .bm-empty{color:#94a3b8}
@@ -2834,22 +2848,39 @@
             const m = map[k] || ['File', 'fa-file-lines'];
             return { key: k || 'file', label: m[0], icon: m[1] };
         }
+        // Fase kegiatan MOVE: dokumen dikelompokkan lewat kolom 'kategori'.
+        const BM_FASE = [
+            { key: 'investigasi', label: 'Fase Investigasi', icon: 'fa-magnifying-glass', c: '#2563eb', re: /investigasi/i },
+            { key: 'aksi', label: 'Fase Aksi', icon: 'fa-person-running', c: '#16a34a', re: /\baksi\b/i },
+            { key: 'refleksi', label: 'Fase Refleksi', icon: 'fa-lightbulb', c: '#d97706', re: /refleksi/i },
+            { key: 'demonstrasi', label: 'Fase Demonstrasi', icon: 'fa-bullhorn', c: '#9333ea', re: /demonstrasi/i }
+        ];
+        const BM_UMUM = { key: 'umum', label: 'Umum / Lainnya', icon: 'fa-folder-open', c: '#475569' };
+        function bmFase(r) {
+            const t = String((r && r.kategori) || '');
+            for (let i = 0; i < BM_FASE.length; i++) if (BM_FASE[i].re.test(t)) return BM_FASE[i];
+            return BM_UMUM;
+        }
+        function bmFaseOrder(f) { const i = BM_FASE.findIndex(x => x.key === f.key); return i < 0 ? 99 : i; }
         function bmSorted(onlyValid) {
             let rows = (DATA.berkas_move || []).slice();
             if (onlyValid) rows = rows.filter(r => String(r.judul || '').trim() !== '' && bmSafeUrl(r.link) !== '');
             return rows.sort((a, b) => {
+                const fo = bmFaseOrder(bmFase(a)) - bmFaseOrder(bmFase(b));
+                if (fo) return fo;
                 const ua = parseInt(a.urutan, 10), ub = parseInt(b.urutan, 10);
                 const na = isNaN(ua) ? 1e9 : ua, nb = isNaN(ub) ? 1e9 : ub;
                 return (na - nb) || ((b._rowId || 0) - (a._rowId || 0));
             });
         }
         function bmCardHtml(r, admin) {
-            const t = bmTipeInfo(r);
+            const t = bmTipeInfo(r), f = bmFase(r);
             let h = '<div class="bm-card"><div class="bm-ico bm-t-' + t.key + '"><i class="fas ' + t.icon + '"></i></div>';
             h += '<div class="bm-info"><b class="bm-title">' + kgEsc(r.judul || '(tanpa judul)') + '</b>';
             if (String(r.deskripsi || '').trim() !== '') h += '<span class="bm-desc">' + kgEsc(r.deskripsi) + '</span>';
             h += '<div class="bm-meta">';
-            if (String(r.kategori || '').trim() !== '') h += '<span class="bm-badge">' + kgEsc(r.kategori) + '</span>';
+            const fl = (f.key === 'umum') ? String(r.kategori || '').trim() : f.label;
+            if (fl !== '') h += '<span class="bm-fase-badge" style="background:' + f.c + '1a;border-color:' + f.c + '55;color:' + f.c + '"><i class="fas ' + f.icon + '"></i> ' + kgEsc(fl) + '</span>';
             h += '<span>' + kgEsc(t.label) + '</span>';
             if (String(r.ukuran || '').trim() !== '') h += '<span>' + kgEsc(r.ukuran) + '</span>';
             if (admin && String(r.urutan || '').trim() !== '') h += '<span>Urutan ' + kgEsc(r.urutan) + '</span>';
@@ -2865,18 +2896,45 @@
             }
             return h + '</div></div>';
         }
+        /** Daftar berkas dikelompokkan per fase (urutan: Investigasi, Aksi, Refleksi, Demonstrasi, lalu Umum). */
+        function bmGroupedHtml(rows, admin) {
+            let h = '';
+            BM_FASE.concat([BM_UMUM]).forEach(f => {
+                const items = rows.filter(r => bmFase(r).key === f.key);
+                if (!items.length) return;
+                h += '<div class="bm-group-h" style="color:' + f.c + '"><i class="fas ' + f.icon + '"></i> ' + kgEsc(f.label) + '<span>' + items.length + '</span></div>';
+                h += '<div class="bm-list">' + items.map(r => bmCardHtml(r, admin)).join('') + '</div>';
+            });
+            return h;
+        }
+        function bmTabsHtml() {
+            const all = bmSorted(true);
+            const cnt = {}; all.forEach(r => { const k = bmFase(r).key; cnt[k] = (cnt[k] || 0) + 1; });
+            const keys = BM_FASE.concat([BM_UMUM]).filter(f => cnt[f.key]);
+            if (keys.length < 2) return '';
+            let h = '<div class="bm-tabs">';
+            h += '<button type="button" class="bm-tab' + (BERKAS_STATE.kat === 'semua' ? ' on' : '') + '" onclick="bmKat(\'semua\')"><i class="fas fa-layer-group"></i> Semua <em>' + all.length + '</em></button>';
+            keys.forEach(f => {
+                h += '<button type="button" class="bm-tab' + (BERKAS_STATE.kat === f.key ? ' on' : '') + '" style="--c:' + f.c + '" onclick="bmKat(\'' + f.key + '\')"><i class="fas ' + f.icon + '"></i> ' + kgEsc(f.label) + ' <em>' + cnt[f.key] + '</em></button>';
+            });
+            return h + '</div>';
+        }
         function bmListHtml() {
             const all = bmSorted(true);
             const q = (BERKAS_STATE.q || '').toLowerCase().trim();
-            let rows = all.filter(r => (BERKAS_STATE.kat === 'semua' || String(r.kategori || '').trim() === BERKAS_STATE.kat)
+            const rows = all.filter(r => (BERKAS_STATE.kat === 'semua' || bmFase(r).key === BERKAS_STATE.kat)
                 && (!q || [r.judul, r.deskripsi, r.kategori].map(v => String(v || '')).join(' ').toLowerCase().indexOf(q) !== -1));
             if (!rows.length) return '<div class="bm-empty"><i class="fas fa-folder-open"></i><br>Tidak ada berkas yang cocok.</div>';
+            if (BERKAS_STATE.kat === 'semua' && !q) return bmGroupedHtml(rows, false);
             const shown = rows.slice(0, BERKAS_STATE.visible);
             let h = '<div class="bm-info-line">Menampilkan ' + shown.length + ' dari ' + rows.length + ' berkas</div><div class="bm-list">' + shown.map(r => bmCardHtml(r, false)).join('') + '</div>';
             if (rows.length > shown.length) h += '<button type="button" class="bm-btn bm-more" onclick="bmMore()"><i class="fas fa-chevron-down"></i> Tampilkan lebih banyak</button>';
             return h;
         }
-        function bmRefreshList() { const el = document.getElementById('bm-list-wrap'); if (el) el.innerHTML = bmListHtml(); }
+        function bmRefreshList() {
+            const el = document.getElementById('bm-list-wrap'); if (el) el.innerHTML = bmListHtml();
+            const tb = document.getElementById('bm-tabs-wrap'); if (tb) tb.innerHTML = bmTabsHtml();
+        }
         function bmSearch(v) { BERKAS_STATE.q = v; BERKAS_STATE.visible = BERKAS_PAGE; bmRefreshList(); }
         function bmKat(v) { BERKAS_STATE.kat = v; BERKAS_STATE.visible = BERKAS_PAGE; bmRefreshList(); }
         function bmMore() { BERKAS_STATE.visible += BERKAS_PAGE; bmRefreshList(); }
@@ -2885,16 +2943,11 @@
             const all = bmSorted(true);
             if (!all.length) return '';
             BERKAS_STATE.q = ''; BERKAS_STATE.kat = 'semua'; BERKAS_STATE.visible = BERKAS_PAGE;
-            const kats = Array.from(new Set(all.map(r => String(r.kategori || '').trim()).filter(v => v !== ''))).sort();
             let h = '<div class="kg-panel" id="kg-sec-berkas" style="scroll-margin-top:100px">';
             h += '<h3 class="kg-sec-title"><i class="fas fa-file-arrow-down"></i> Berkas Persiapan MOVE</h3>';
-            h += '<p class="kg-sec-sub">Unduh dokumen persiapan kegiatan langsung dari sini, tidak perlu mencari-cari lagi di Google Drive.</p>';
-            if (all.length > 5 || kats.length > 1) {
-                h += '<div class="bm-filter">';
-                h += '<div class="kg-searchbox"><i class="fas fa-search"></i><input type="search" class="kg-input" placeholder="Cari berkas..." oninput="bmSearch(this.value)"></div>';
-                if (kats.length > 1) h += '<select class="kg-select" onchange="bmKat(this.value)"><option value="semua">Semua kategori</option>' + kats.map(k => '<option value="' + kgEsc(k) + '">' + kgEsc(k) + '</option>').join('') + '</select>';
-                h += '</div>';
-            }
+            h += '<p class="kg-sec-sub">Unduh dokumen setiap fase kegiatan langsung dari sini, tidak perlu mencari-cari lagi di Google Drive.</p>';
+            h += '<div id="bm-tabs-wrap">' + bmTabsHtml() + '</div>';
+            if (all.length > 5) h += '<div class="bm-filter" style="grid-template-columns:1fr"><div class="kg-searchbox"><i class="fas fa-search"></i><input type="search" class="kg-input" placeholder="Cari berkas..." oninput="bmSearch(this.value)"></div></div>';
             h += '<div id="bm-list-wrap">' + bmListHtml() + '</div></div>';
             return h;
         }
@@ -2910,10 +2963,10 @@
             if (btn) { btn.classList.add('active'); if (btn.scrollIntoView) { try { btn.scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) {} } }
             const rows = bmSorted(false);
             let h = '<div class="bm-apanel"><div class="bm-ahead"><div><h2><i class="fas fa-file-arrow-down"></i> Berkas Persiapan MOVE</h2>'
-                + '<p>Berkas di sini tampil di menu Informasi &gt; Kegiatan (MOVE) dan bisa diunduh pengunjung.</p></div>'
+                + '<p>Berkas dikelompokkan per fase (Investigasi, Aksi, Refleksi, Demonstrasi) dan tampil di menu Informasi &gt; Kegiatan (MOVE).</p></div>'
                 + '<button type="button" class="bm-btn bm-btn-primary" onclick="openBerkasForm(0)"><i class="fas fa-plus"></i> Tambah Berkas</button></div>';
             if (!rows.length) h += '<div class="bm-empty"><i class="fas fa-folder-open"></i><br>Belum ada berkas. Klik <b>Tambah Berkas</b> untuk mengunggah file pertama.</div>';
-            else h += '<div class="bm-list">' + rows.map(r => bmCardHtml(r, true)).join('') + '</div>';
+            else h += bmGroupedHtml(rows, true);
             container.innerHTML = h + '</div>';
         }
 
@@ -2924,7 +2977,7 @@
             d.innerHTML = '<div class="bm-box"><h3 id="bm-modal-title">Tambah Berkas</h3>'
                 + '<label class="bm-lbl">Judul berkas *</label><input id="bm-f-judul" class="bm-in" type="text" placeholder="Mis. Format Laporan Kegiatan MOVE">'
                 + '<label class="bm-lbl">Keterangan singkat</label><textarea id="bm-f-deskripsi" class="bm-in" rows="2" placeholder="Untuk apa berkas ini dipakai"></textarea>'
-                + '<label class="bm-lbl">Kategori</label><input id="bm-f-kategori" class="bm-in" list="bm-kat-list" type="text" placeholder="Mis. Formulir, Panduan, Surat"><datalist id="bm-kat-list"></datalist>'
+                + '<label class="bm-lbl">Masuk ke fase</label><select id="bm-f-kategori" class="bm-in"><option value="">Umum (tanpa fase)</option>' + BM_FASE.map(f => '<option value="' + f.label + '">' + f.label + '</option>').join('') + '</select>'
                 + '<label class="bm-lbl">Unggah file dari perangkat</label><input id="bm-f-file" class="bm-in" type="file">'
                 + '<p class="bm-hint" id="bm-file-hint">Maksimal 15 MB. File otomatis disimpan di Google Drive sekolah dan bisa diunduh siapa pun yang membuka website.</p>'
                 + '<div class="bm-or">— ATAU —</div>'
@@ -2944,8 +2997,12 @@
             document.getElementById('bm-modal-title').innerText = row ? 'Edit Berkas' : 'Tambah Berkas';
             set('bm-f-judul', row && row.judul); set('bm-f-deskripsi', row && row.deskripsi); set('bm-f-kategori', row && row.kategori);
             set('bm-f-link', row && row.link); set('bm-f-tipe', row && row.tipe); set('bm-f-urutan', row && row.urutan); set('bm-f-file', '');
-            const kats = Array.from(new Set((DATA.berkas_move || []).map(r => String(r.kategori || '').trim()).filter(v => v !== '')));
-            document.getElementById('bm-kat-list').innerHTML = kats.map(k => '<option value="' + kgEsc(k) + '">').join('');
+            // kategori lama yang bukan fase tetap dipertahankan supaya tidak hilang saat diedit
+            const selK = document.getElementById('bm-f-kategori');
+            Array.from(selK.querySelectorAll('option[data-old]')).forEach(o => o.remove());
+            const oldK = row ? String(row.kategori || '').trim() : '';
+            if (oldK !== '' && bmFase(row).key === 'umum') { const o = document.createElement('option'); o.value = oldK; o.text = oldK + ' (kategori lama)'; o.setAttribute('data-old', '1'); selK.appendChild(o); }
+            selK.value = oldK ? (bmFase(row).key === 'umum' ? oldK : bmFase(row).label) : '';
             document.getElementById('bm-file-hint').innerText = row ? 'Pilih file baru hanya jika ingin mengganti berkas lama (maks. 15 MB).' : 'Maksimal 15 MB. File otomatis disimpan di Google Drive sekolah dan bisa diunduh siapa pun yang membuka website.';
             document.getElementById('bm-modal').classList.add('open');
         }

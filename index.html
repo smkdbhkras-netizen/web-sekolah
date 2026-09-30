@@ -578,6 +578,29 @@
     .kg-mapbox{height:210px}
     html.dark .kg-nophoto{background:linear-gradient(135deg,#1e293b,#0f172a)}
     </style>
+<style id="mv-hub-style">
+/* ===== MOVE: tombol sekolah lain + tombol utama Penggawa MOVE ===== */
+.mv-hub{background:linear-gradient(135deg,#eff6ff,#f0fdfa);border:1px solid #dbeafe;border-radius:24px;padding:18px;margin-bottom:20px;display:flex;flex-direction:column;gap:16px}
+@media(min-width:768px){.mv-hub{flex-direction:row;align-items:center;gap:22px;padding:20px 24px}}
+.mv-main{display:flex;align-items:center;gap:14px;padding:12px 18px 12px 12px;border-radius:18px;background:linear-gradient(135deg,#2563eb,#0f766e);color:#fff !important;text-decoration:none;box-shadow:0 10px 22px rgba(37,99,235,.28);transition:.2s;min-height:60px;flex-shrink:0}
+.mv-main:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(37,99,235,.36)}
+.mv-main:active{transform:scale(.98)}
+.mv-ic{width:42px;height:42px;border-radius:13px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.mv-main small{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;font-weight:800}
+.mv-main b{display:block;font-size:15px;font-weight:800;line-height:1.25}
+.mv-arr{margin-left:auto;padding-left:10px;font-size:13px;opacity:.85}
+.mv-side{flex:1;min-width:0}
+.mv-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#64748b;margin:0 0 10px}
+.mv-chips{display:flex;flex-wrap:wrap;gap:8px}
+.mv-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:999px;background:#fff;border:1.5px solid #e2e8f0;color:#334155 !important;font-weight:700;font-size:13px;text-decoration:none;min-height:40px;transition:.15s}
+.mv-chip .fa-school{color:#2563eb}
+.mv-chip .mv-ext{font-size:10px;color:#94a3b8}
+.mv-chip:hover{border-color:#2563eb;color:#2563eb !important;background:#eff6ff;transform:translateY(-1px)}
+html.dark .mv-hub{background:linear-gradient(135deg,#132038,#0f2a2a);border-color:#1e3a5f}
+html.dark .mv-chip{background:#151f32;border-color:#23324f;color:#e2e8f0 !important}
+html.dark .mv-chip:hover{background:#1c2942;border-color:#60a5fa;color:#93c5fd !important}
+html.dark .mv-label{color:#94a3b8}
+</style>
 </head>
 <body class="text-slate-800">
 
@@ -1539,6 +1562,7 @@
                     <button onclick="renderAdmin('profil')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-building-columns w-5"></i> Profil & Sub-Menu</button>
                     <button onclick="renderAdmin('kegiatan')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-camera-retro w-5"></i> Data Kegiatan</button>
                     <button onclick="renderAdmin('berkas_move')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-file-arrow-down w-5"></i> Berkas MOVE</button>
+                    <button onclick="renderAdmin('sekolah_move')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-school w-5"></i> Sekolah MOVE</button>
                     <button onclick="renderAdmin('jurnal_guru')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-shield-halved w-5"></i> Jurnal Guru</button>
                     <button onclick="renderAdmin('siswa')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-user-graduate w-5"></i> Data Siswa</button>
                     <button onclick="renderAdmin('kehadiran')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-clipboard-check w-5"></i> Rekap Kehadiran</button>
@@ -3465,6 +3489,41 @@
         }
         // ================== END KEGIATAN FILTER + PAGINATION ==================
 
+        // ================== TOMBOL SEKOLAH MOVE + PENGGAWA MOVE ==================
+        // Data dari sheet 'sekolah_move' (kolom: nama, link, tipe, urutan). Diisi lewat CMS > "Sekolah MOVE".
+        // tipe = "utama" -> tombol besar Penggawa MOVE; selain itu -> tombol sekolah lain.
+        function mvSafeUrl(u) { u = String(u == null ? '' : u).trim(); return /^https?:\/\//i.test(u) ? u : ''; }
+        function buildMoveHubHtml() {
+            const rows = (DATA.sekolah_move || []).filter(r => mvSafeUrl(r.link) !== '');
+            if (rows.length === 0) return '';
+            const isMain = r => /utama|penggawa|koordinator/i.test(String(r.tipe || ''));
+            const main = rows.find(isMain);
+            const others = rows.filter(r => !isMain(r) && String(r.nama || '').trim() !== '').sort((a, b) => {
+                const ua = parseInt(a.urutan, 10), ub = parseInt(b.urutan, 10);
+                const na = isNaN(ua) ? 1e9 : ua, nb = isNaN(ub) ? 1e9 : ub;
+                return (na - nb) || ((a._rowId || 0) - (b._rowId || 0));
+            });
+            if (!main && others.length === 0) return '';
+            let h = '<div class="mv-hub">';
+            if (main) {
+                h += '<a class="mv-main" href="' + kgEsc(mvSafeUrl(main.link)) + '" target="_blank" rel="noopener">'
+                   + '<span class="mv-ic"><i class="fas fa-people-group"></i></span>'
+                   + '<span><small>Penggawa MOVE</small><b>' + kgEsc(String(main.nama || '').trim() || 'Kunjungi Sekarang') + '</b></span>'
+                   + '<i class="fas fa-arrow-right mv-arr"></i></a>';
+            }
+            if (others.length > 0) {
+                h += '<div class="mv-side"><p class="mv-label"><i class="fas fa-school"></i> Sekolah lain yang punya MOVE</p><div class="mv-chips">';
+                others.forEach(r => {
+                    h += '<a class="mv-chip" href="' + kgEsc(mvSafeUrl(r.link)) + '" target="_blank" rel="noopener">'
+                       + '<i class="fas fa-school"></i><span>' + kgEsc(String(r.nama).trim()) + '</span>'
+                       + '<i class="fas fa-arrow-up-right-from-square mv-ext"></i></a>';
+                });
+                h += '</div></div>';
+            }
+            return h + '</div>';
+        }
+        // ================== END TOMBOL SEKOLAH MOVE ==================
+
         function renderSubMenuPage(sectionKey) {
             const container = document.getElementById('info-detail');
             if(!container) return;
@@ -3508,6 +3567,7 @@
 
                     let html = '<div class="w-full">';
 
+                    html += buildMoveHubHtml();
                     html += buildKegiatanVideoHtml(subData);
 
                     if (introDisplayText && introDisplayText.trim() !== '') {

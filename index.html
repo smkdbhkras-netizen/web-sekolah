@@ -227,6 +227,14 @@
         }
         html:not(.dark) .lang-select.lang-select-light { color: #1e293b; border-color: #cbd5e1; }
     </style>
+    <style id="nav-autohide-style">
+    /* Navigasi bawah HP: sembunyi saat scroll ke bawah, muncul lagi saat scroll ke atas / ada popup */
+    #mobile-nav-bar{transition:transform .28s ease;will-change:transform}
+    #mobile-nav-bar.nav-hidden{transform:translateY(125%)}
+    #floating-action-stack{transition:bottom .28s ease}
+    @media(max-width:767px){#floating-action-stack.nav-away{bottom:20px !important}}
+    #floating-action-stack.fab-modal-hide{display:none !important}
+    </style>
     <style id="bm-style">
     /* ===== BERKAS PERSIAPAN MOVE (unduh dokumen) ===== */
     .bm-filter{display:grid;gap:10px;margin-bottom:12px}
@@ -1587,6 +1595,60 @@
             }
         }
         setInterval(forceBottomNav, 500);
+
+        // ================================================================
+        // NAVIGASI BAWAH HP: AUTO-SEMBUNYI SAAT SCROLL BAWAH (ditambahkan)
+        // ================================================================
+        // Scroll ke bawah  -> menu bawah turun & menghilang (konten lebih luas, tombol tidak tertutup)
+        // Scroll ke atas   -> menu muncul lagi.   Saat popup/form terbuka -> menu otomatis disembunyikan.
+        (function () {
+            const MODAL_IDS = ['modal-pijat', 'modal-login', 'modal-komentar-karya', 'modal-book-reader', 'modal-karya', 'modal-program', 'modal-jurnal', 'modal-kehadiran'];
+            let scrollHidden = false;
+            let lastWin = window.pageYOffset || 0;
+            const lastPos = new WeakMap();
+            function anyModalOpen() {
+                return MODAL_IDS.some(function (id) {
+                    const m = document.getElementById(id);
+                    return m && !m.classList.contains('hidden') && getComputedStyle(m).display !== 'none';
+                });
+            }
+            function apply() {
+                const n = document.getElementById('mobile-nav-bar');
+                const modal = anyModalOpen();
+                if (n) n.classList.toggle('nav-hidden', scrollHidden || modal);
+                // tombol chat/WA melayang: turun saat menu bawah hilang, dan disembunyikan saat popup/form terbuka
+                const fab = document.getElementById('floating-action-stack');
+                if (fab) { fab.classList.toggle('nav-away', scrollHidden || modal); fab.classList.toggle('fab-modal-hide', modal); }
+            }
+            function onScroll(e) {
+                if (anyModalOpen()) return;
+                const t = e.target;
+                let y, prev;
+                if (t === document || t === document.documentElement || t === document.body) {
+                    y = window.pageYOffset || document.documentElement.scrollTop || 0;
+                    prev = lastWin; lastWin = y;
+                } else if (t && t.nodeType === 1) {
+                    y = t.scrollTop;
+                    prev = lastPos.has(t) ? lastPos.get(t) : y;
+                    lastPos.set(t, y);
+                } else { return; }
+                const d = y - prev;
+                if (Math.abs(d) < 6) return;
+                if (d > 0 && y > 60) scrollHidden = true;
+                else if (d < 0 || y <= 60) scrollHidden = false;
+                apply();
+            }
+            document.addEventListener('scroll', onScroll, { capture: true, passive: true });
+            function watchModals() {
+                const mo = new MutationObserver(apply);
+                MODAL_IDS.forEach(function (id) {
+                    const m = document.getElementById(id);
+                    if (m) mo.observe(m, { attributes: true, attributeFilter: ['class', 'style'] });
+                });
+                apply();
+            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watchModals); else watchModals();
+        })();
 
         // ================================================================
         // TEMA GELAP (DARK MODE) — ditambahkan

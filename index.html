@@ -3514,7 +3514,7 @@ html.dark .mv-label{color:#94a3b8}
             if (main) {
                 h += '<a class="mv-main" href="' + kgEsc(mvSafeUrl(main.link)) + '" target="_blank" rel="noopener">'
                    + '<span class="mv-ic"><i class="fas fa-people-group"></i></span>'
-                   + '<span><small>SMK Negeri 1 Paringin</small><b>' + kgEsc(String(main.nama || '').trim() || 'Kunjungi Sekarang') + '</b></span>'
+                   + '<span><small>Penggawa MOVE</small><b>' + kgEsc(String(main.nama || '').trim() || 'Kunjungi Sekarang') + '</b></span>'
                    + '<i class="fas fa-arrow-right mv-arr"></i></a>';
             }
             if (others.length > 0) {
@@ -3827,6 +3827,11 @@ html.dark .mv-label{color:#94a3b8}
 
             // Link aplikasi E-Supervisi (diatur dari CMS Admin > Pengaturan > key: link_e_supervisi)
             const supervisiUrl = (config.link_e_supervisi || '').toString().trim();
+            // Link E-Voting OSIS (diatur dari CMS Admin > Pengaturan > key: link_e_voting_osis)
+            const evotingUrl = (config.link_e_voting_osis || '').toString().trim();
+            window.notifEvotingKosong = function() {
+                Swal.fire({icon: 'info', title: 'Link Belum Diatur', text: 'Link E-Voting OSIS belum diisi. Admin dapat mengisinya di Pengaturan (key: link_e_voting_osis).', customClass: { popup: 'rounded-3xl' }});
+            };
             window.notifSupervisiKosong = function() {
                 Swal.fire({icon: 'info', title: 'Link Belum Diatur', text: 'Link aplikasi E-Supervisi belum diisi. Admin dapat mengisinya di Pengaturan (key: link_e_supervisi).', customClass: { popup: 'rounded-3xl' }});
             };
@@ -3849,6 +3854,7 @@ html.dark .mv-label{color:#94a3b8}
                                     <a href="javascript:void(0)" onclick="showSection('informasi', 'alumni')" class="block px-6 py-3 hover:bg-slate-50 hover:text-blue-700 font-black text-[10px] uppercase tracking-wider text-slate-500 transition-colors">Alumni</a>
                                     <a href="javascript:void(0)" onclick="showSection('informasi', 'kegiatan')" class="block px-6 py-3 hover:bg-slate-50 hover:text-blue-700 font-black text-[10px] uppercase tracking-wider text-slate-500 transition-colors">MOVE</a>
                                     <a href="javascript:void(0)" onclick="showSection('informasi', 'Pengumuman')" class="block px-6 py-3 hover:bg-slate-50 hover:text-blue-700 font-black text-[10px] uppercase tracking-wider text-slate-500 transition-colors">Pengumuman</a>
+                                    <a href="${evotingUrl || 'javascript:void(0)'}" ${evotingUrl ? 'target="_blank" rel="noopener"' : 'onclick="notifEvotingKosong()"'} class="flex items-center justify-between px-6 py-3 hover:bg-slate-50 hover:text-blue-700 font-black text-[10px] uppercase tracking-wider text-slate-500 transition-colors">E-Voting OSIS <i class="fas fa-arrow-up-right-from-square text-[8px]"></i></a>
                                 </div>
                             </div>
                         `;
@@ -3895,6 +3901,7 @@ html.dark .mv-label{color:#94a3b8}
                                     <a href="javascript:void(0)" onclick="showSection('informasi', 'alumni'); toggleMobileMenu();" class="block text-[11px] font-bold text-slate-500 hover:text-blue-600 uppercase tracking-wider">● Alumni</a>
                                     <a href="javascript:void(0)" onclick="showSection('informasi', 'kegiatan'); toggleMobileMenu();" class="block text-[11px] font-bold text-slate-500 hover:text-blue-600 uppercase tracking-wider">● MOVE</a>
                                     <a href="javascript:void(0)" onclick="showSection('informasi', 'Pengumuman'); toggleMobileMenu();" class="block text-[11px] font-bold text-slate-500 hover:text-blue-600 uppercase tracking-wider">● Pengumuman</a>
+                                    <a href="${evotingUrl || 'javascript:void(0)'}" ${evotingUrl ? 'target="_blank" rel="noopener" onclick="toggleMobileMenu();"' : 'onclick="notifEvotingKosong(); toggleMobileMenu();"'} class="block text-[11px] font-bold text-slate-500 hover:text-blue-600 uppercase tracking-wider">● E-Voting OSIS <i class="fas fa-arrow-up-right-from-square text-[8px]"></i></a>
                                 </div>
                             </div>
                         `;
@@ -7696,7 +7703,7 @@ html.dark .mv-label{color:#94a3b8}
                 'deskripsi_sekolah', 'email_sekolah', 'jam_kerja', 'google_maps_embed',
                 'tiktok_url', 'instagram_url', 'youtube_url',
                 'statistik_siswa', 'statistik_guru', 'statistik_ekstrakurikuler', 'statistik_alumni',
-                'sekilas_info', 'link_ppdb', 'link_lms', 'link_kktp', 'link_rpm', 'link_e_supervisi',
+                'sekilas_info', 'link_ppdb', 'link_lms', 'link_kktp', 'link_rpm', 'link_e_supervisi', 'link_e_voting_osis',
                 'fonnte_token', 'wa_notif_number', 'notif_berita_aktif', 'notif_jurnal_aktif'
             ];
 

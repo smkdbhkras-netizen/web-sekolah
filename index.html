@@ -1903,8 +1903,12 @@ html.dark .mv-label{color:#94a3b8}
         const VIA_SERVER_BERITA_ID = _QS.get('berita_id') || "";
         // Ditambahkan: menu (page) & sub-menu yang diminta lewat URL, dipakai untuk
         // membuka menu yang sesuai secara otomatis saat link hasil share dibuka orang lain.
-        const VIA_SERVER_PAGE = _QS.get('page') || "";
-        const VIA_SERVER_SUB = _QS.get('sub') || "";
+        // Alias URL: ?page=informasi&sub=move  ==>  sub-menu 'kegiatan' (MOVE). Link lama (sub=kegiatan) & ?page=move tetap jalan.
+        let _pgQ = _QS.get('page') || "", _sbQ = _QS.get('sub') || "";
+        if (_pgQ.toLowerCase() === 'move') { _pgQ = 'informasi'; _sbQ = 'kegiatan'; }
+        if (_pgQ.toLowerCase() === 'informasi' && _sbQ.toLowerCase() === 'move') { _sbQ = 'kegiatan'; }
+        const VIA_SERVER_PAGE = _pgQ;
+        const VIA_SERVER_SUB = _sbQ;
 
         // ================================================================
         // DATA KELUHAN & PEMETAAN AREA PIJAT (FORM BOOKING PIJAT TERAPIS)
@@ -2348,8 +2352,10 @@ html.dark .mv-label{color:#94a3b8}
                 try {
                     const usp = new URLSearchParams();
                     const pg = LAST_SECTION || 'home';
+                    // Sub-menu 'kegiatan' ditampilkan di address bar sebagai sub=move
+                    const subUrl = (pg === 'informasi' && String(LAST_SUBPARAM || '').toLowerCase() === 'kegiatan') ? 'move' : LAST_SUBPARAM;
                     if (pg !== 'home') usp.set('page', pg);
-                    if (LAST_SUBPARAM) usp.set('sub', LAST_SUBPARAM);
+                    if (subUrl) usp.set('sub', subUrl);
                     if (CURRENT_OPEN_BERITA_ID !== '' && CURRENT_OPEN_BERITA_ID != null) usp.set('berita_id', CURRENT_OPEN_BERITA_ID);
                     const q = usp.toString();
                     history.replaceState(null, '', window.location.pathname + (q ? '?' + q : ''));
@@ -2360,7 +2366,7 @@ html.dark .mv-label{color:#94a3b8}
                 window.top.postMessage({
                     type: 'NAV_STATE',
                     page: LAST_SECTION || 'home',
-                    sub: LAST_SUBPARAM || '',
+                    sub: (LAST_SECTION === 'informasi' && String(LAST_SUBPARAM || '').toLowerCase() === 'kegiatan') ? 'move' : (LAST_SUBPARAM || ''),
                     berita_id: CURRENT_OPEN_BERITA_ID || ''
                 }, '*');
             } catch (e) { /* abaikan */ }

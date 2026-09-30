@@ -227,6 +227,55 @@
         }
         html:not(.dark) .lang-select.lang-select-light { color: #1e293b; border-color: #cbd5e1; }
     </style>
+    <style id="bm-style">
+    /* ===== BERKAS PERSIAPAN MOVE (unduh dokumen) ===== */
+    .bm-filter{display:grid;gap:10px;margin-bottom:12px}
+    @media(min-width:640px){.bm-filter{grid-template-columns:1fr 220px}}
+    .bm-list{display:grid;gap:12px}
+    .bm-card{display:flex;flex-wrap:wrap;align-items:center;gap:14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:14px}
+    .bm-ico{flex:0 0 52px;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px}
+    .bm-t-pdf{background:#fee2e2;color:#dc2626}.bm-t-word{background:#dbeafe;color:#2563eb}.bm-t-excel{background:#dcfce7;color:#16a34a}
+    .bm-t-ppt{background:#ffedd5;color:#ea580c}.bm-t-zip{background:#fef9c3;color:#ca8a04}.bm-t-img{background:#f3e8ff;color:#9333ea}.bm-t-file{background:#e2e8f0;color:#475569}
+    .bm-info{flex:1 1 200px;min-width:0}
+    .bm-title{display:block;font-size:15px;font-weight:800;color:#0f172a;line-height:1.3;word-break:break-word}
+    .bm-desc{display:block;font-size:13px;color:#64748b;margin-top:3px;line-height:1.5}
+    .bm-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .bm-meta span{font-size:11px;font-weight:700;color:#64748b;background:#fff;border:1px solid #e2e8f0;border-radius:999px;padding:3px 9px}
+    .bm-meta .bm-badge{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+    .bm-actions{display:flex;gap:8px;flex:0 0 auto}
+    @media(max-width:520px){.bm-actions{flex:1 1 100%}.bm-actions .bm-btn{flex:1}}
+    .bm-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:12px;font-size:13px;font-weight:800;text-decoration:none;border:1.5px solid #cbd5e1;background:#fff;color:#334155;cursor:pointer;font-family:inherit}
+    .bm-btn:hover{border-color:#2563eb;color:#2563eb}
+    .bm-btn-primary{background:#2563eb;border-color:#2563eb;color:#fff}
+    .bm-btn-primary:hover{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
+    .bm-btn-danger{color:#dc2626;border-color:#fecaca;background:#fef2f2}
+    .bm-btn-danger:hover{background:#dc2626;border-color:#dc2626;color:#fff}
+    .bm-more{display:block;width:100%;margin-top:12px}
+    .bm-empty{text-align:center;color:#64748b;font-size:14px;font-weight:600;padding:22px 10px}
+    .bm-info-line{font-size:13px;color:#64748b;font-weight:600;margin:4px 2px 12px}
+    .bm-apanel{background:#fff;border:1px solid #e2e8f0;border-radius:24px;padding:22px}
+    .bm-ahead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+    .bm-ahead h2{font-size:20px;font-weight:900;color:#0f172a;margin:0}
+    .bm-ahead p{font-size:13px;color:#64748b;margin:4px 0 0}
+    .bm-modal{position:fixed;inset:0;z-index:1000000;background:rgba(15,23,42,.6);display:none;overflow-y:auto;padding:16px 16px 24px}
+    .swal2-container{z-index:2000000 !important}
+    .bm-modal.open{display:flex}
+    .bm-box{background:#fff;border-radius:22px;padding:22px;width:100%;max-width:520px;margin:auto;box-sizing:border-box}
+    .bm-box h3{font-size:18px;font-weight:900;color:#0f172a;margin:0 0 14px}
+    .bm-lbl{display:block;font-size:12px;font-weight:800;color:#475569;margin:12px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+    .bm-in{width:100%;box-sizing:border-box;border:1.5px solid #e2e8f0;background:#fff;color:#0f172a;border-radius:12px;padding:12px 14px;font-size:14px;font-family:inherit;outline:none}
+    .bm-in:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .bm-hint{font-size:12px;color:#64748b;margin:6px 0 0;line-height:1.5}
+    .bm-or{text-align:center;font-size:12px;font-weight:800;color:#94a3b8;margin:12px 0 0}
+    .bm-form-actions{display:flex;gap:10px;margin-top:20px}
+    .bm-form-actions .bm-btn{flex:1}
+    html.dark .bm-card,html.dark .bm-apanel,html.dark .bm-box{background:#1e293b;border-color:#334155}
+    html.dark .bm-title,html.dark .bm-ahead h2,html.dark .bm-box h3{color:#f1f5f9}
+    html.dark .bm-desc,html.dark .bm-info-line,html.dark .bm-ahead p,html.dark .bm-hint,html.dark .bm-lbl,html.dark .bm-empty{color:#94a3b8}
+    html.dark .bm-meta span,html.dark .bm-btn,html.dark .bm-in{background:#0f172a;border-color:#334155;color:#cbd5e1}
+    html.dark .bm-meta .bm-badge{background:#1e3a8a;border-color:#1e40af;color:#bfdbfe}
+    html.dark .bm-btn-primary{background:#2563eb;border-color:#2563eb;color:#fff}
+    </style>
     <style id="kg-move-style">
     /* ===== MOVE (Informasi > Kegiatan): tampilan ramah & mudah dipakai ===== */
     .kg-wrap{font-family:inherit;color:#334155}
@@ -1467,6 +1516,7 @@
                     <button onclick="renderAdmin('menu')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-compass w-5"></i> Menu Navigasi</button>
                     <button onclick="renderAdmin('profil')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-building-columns w-5"></i> Profil & Sub-Menu</button>
                     <button onclick="renderAdmin('kegiatan')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-camera-retro w-5"></i> Data Kegiatan</button>
+                    <button onclick="renderAdmin('berkas_move')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-file-arrow-down w-5"></i> Berkas MOVE</button>
                     <button onclick="renderAdmin('jurnal_guru')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-shield-halved w-5"></i> Jurnal Guru</button>
                     <button onclick="renderAdmin('siswa')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-user-graduate w-5"></i> Data Siswa</button>
                     <button onclick="renderAdmin('kehadiran')" class="admin-btn w-full text-left px-5 py-4 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-4 text-sm"><i class="fas fa-clipboard-check w-5"></i> Rekap Kehadiran</button>
@@ -2732,9 +2782,241 @@
             btn.innerText = collapsed ? 'Baca selengkapnya' : 'Ringkas';
         }
 
+        // ================== BERKAS PERSIAPAN MOVE (unduh dokumen) ==================
+        // Data dari sheet 'berkas_move' (kolom: judul, deskripsi, kategori, link, tipe, ukuran, urutan).
+        // Dikelola dari CMS Admin > "Berkas MOVE"; pengunjung cukup menekan tombol Unduh.
+        const BERKAS_STATE = { q: '', kat: 'semua', visible: 8 };
+        const BERKAS_PAGE = 8;
+
+        function bmSafeUrl(u) { u = String(u == null ? '' : u).trim(); return /^https?:\/\//i.test(u) ? u : ''; }
+        function bmDriveId(url) {
+            const m = String(url || '').match(/\/d\/([a-zA-Z0-9_-]{15,})|[?&]id=([a-zA-Z0-9_-]{15,})/);
+            return m ? (m[1] || m[2]) : '';
+        }
+        function bmDownloadUrl(url) {
+            url = bmSafeUrl(url);
+            const id = bmDriveId(url);
+            const g = url.match(/docs\.google\.com\/(document|spreadsheets|presentation)\//i);
+            if (g && id) {
+                const t = g[1].toLowerCase();
+                return 'https://docs.google.com/' + t + '/d/' + id + '/export?format=' + (t === 'document' ? 'docx' : (t === 'spreadsheets' ? 'xlsx' : 'pptx'));
+            }
+            if (id && /drive\.google\.com|googleusercontent\.com/i.test(url)) return 'https://drive.google.com/uc?export=download&id=' + id;
+            return url;
+        }
+        function bmViewUrl(url) {
+            url = bmSafeUrl(url);
+            const id = bmDriveId(url);
+            if (id && /drive\.google\.com|googleusercontent\.com/i.test(url) && !/docs\.google\.com/i.test(url)) return 'https://drive.google.com/file/d/' + id + '/view';
+            return url;
+        }
+        function bmPickTipe(s) {
+            s = String(s || '').toLowerCase();
+            if (/pdf/.test(s)) return 'pdf';
+            if (/doc|word/.test(s)) return 'word';
+            if (/xls|excel|sheet|csv/.test(s)) return 'excel';
+            if (/ppt|power|slide|presentation/.test(s)) return 'ppt';
+            if (/zip|rar|7z/.test(s)) return 'zip';
+            if (/png|jpe?g|gif|webp|gambar|image|foto/.test(s)) return 'img';
+            return '';
+        }
+        function bmTipeInfo(row) {
+            let k = bmPickTipe(row.tipe);
+            if (!k) { const e = (String(row.judul || '').match(/\.([a-z0-9]{2,4})$/i) || [])[1] || ''; k = bmPickTipe(e); }
+            if (!k) {
+                const u = String(row.link || '');
+                if (/docs\.google\.com\/document/i.test(u)) k = 'word';
+                else if (/docs\.google\.com\/spreadsheets/i.test(u)) k = 'excel';
+                else if (/docs\.google\.com\/presentation/i.test(u)) k = 'ppt';
+                else { const e2 = (u.split('?')[0].match(/\.([a-z0-9]{2,4})$/i) || [])[1] || ''; k = bmPickTipe(e2); }
+            }
+            const map = { pdf: ['PDF', 'fa-file-pdf'], word: ['Word', 'fa-file-word'], excel: ['Excel', 'fa-file-excel'], ppt: ['PowerPoint', 'fa-file-powerpoint'], zip: ['ZIP', 'fa-file-zipper'], img: ['Gambar', 'fa-file-image'] };
+            const m = map[k] || ['File', 'fa-file-lines'];
+            return { key: k || 'file', label: m[0], icon: m[1] };
+        }
+        function bmSorted(onlyValid) {
+            let rows = (DATA.berkas_move || []).slice();
+            if (onlyValid) rows = rows.filter(r => String(r.judul || '').trim() !== '' && bmSafeUrl(r.link) !== '');
+            return rows.sort((a, b) => {
+                const ua = parseInt(a.urutan, 10), ub = parseInt(b.urutan, 10);
+                const na = isNaN(ua) ? 1e9 : ua, nb = isNaN(ub) ? 1e9 : ub;
+                return (na - nb) || ((b._rowId || 0) - (a._rowId || 0));
+            });
+        }
+        function bmCardHtml(r, admin) {
+            const t = bmTipeInfo(r);
+            let h = '<div class="bm-card"><div class="bm-ico bm-t-' + t.key + '"><i class="fas ' + t.icon + '"></i></div>';
+            h += '<div class="bm-info"><b class="bm-title">' + kgEsc(r.judul || '(tanpa judul)') + '</b>';
+            if (String(r.deskripsi || '').trim() !== '') h += '<span class="bm-desc">' + kgEsc(r.deskripsi) + '</span>';
+            h += '<div class="bm-meta">';
+            if (String(r.kategori || '').trim() !== '') h += '<span class="bm-badge">' + kgEsc(r.kategori) + '</span>';
+            h += '<span>' + kgEsc(t.label) + '</span>';
+            if (String(r.ukuran || '').trim() !== '') h += '<span>' + kgEsc(r.ukuran) + '</span>';
+            if (admin && String(r.urutan || '').trim() !== '') h += '<span>Urutan ' + kgEsc(r.urutan) + '</span>';
+            h += '</div></div><div class="bm-actions">';
+            const dl = bmDownloadUrl(r.link), vw = bmViewUrl(r.link);
+            if (admin) {
+                if (dl) h += '<a class="bm-btn" href="' + kgEsc(dl) + '" target="_blank" rel="noopener" title="Uji unduh"><i class="fas fa-download"></i></a>';
+                h += '<button type="button" class="bm-btn" onclick="openBerkasForm(' + (parseInt(r._rowId, 10) || 0) + ')"><i class="fas fa-pen"></i> Edit</button>';
+                h += '<button type="button" class="bm-btn bm-btn-danger" onclick="hapusBerkas(' + (parseInt(r._rowId, 10) || 0) + ')"><i class="fas fa-trash"></i></button>';
+            } else {
+                if (dl) h += '<a class="bm-btn bm-btn-primary" href="' + kgEsc(dl) + '" target="_blank" rel="noopener"><i class="fas fa-download"></i> Unduh</a>';
+                if (vw && vw !== dl) h += '<a class="bm-btn" href="' + kgEsc(vw) + '" target="_blank" rel="noopener"><i class="fas fa-eye"></i> Lihat</a>';
+            }
+            return h + '</div></div>';
+        }
+        function bmListHtml() {
+            const all = bmSorted(true);
+            const q = (BERKAS_STATE.q || '').toLowerCase().trim();
+            let rows = all.filter(r => (BERKAS_STATE.kat === 'semua' || String(r.kategori || '').trim() === BERKAS_STATE.kat)
+                && (!q || [r.judul, r.deskripsi, r.kategori].map(v => String(v || '')).join(' ').toLowerCase().indexOf(q) !== -1));
+            if (!rows.length) return '<div class="bm-empty"><i class="fas fa-folder-open"></i><br>Tidak ada berkas yang cocok.</div>';
+            const shown = rows.slice(0, BERKAS_STATE.visible);
+            let h = '<div class="bm-info-line">Menampilkan ' + shown.length + ' dari ' + rows.length + ' berkas</div><div class="bm-list">' + shown.map(r => bmCardHtml(r, false)).join('') + '</div>';
+            if (rows.length > shown.length) h += '<button type="button" class="bm-btn bm-more" onclick="bmMore()"><i class="fas fa-chevron-down"></i> Tampilkan lebih banyak</button>';
+            return h;
+        }
+        function bmRefreshList() { const el = document.getElementById('bm-list-wrap'); if (el) el.innerHTML = bmListHtml(); }
+        function bmSearch(v) { BERKAS_STATE.q = v; BERKAS_STATE.visible = BERKAS_PAGE; bmRefreshList(); }
+        function bmKat(v) { BERKAS_STATE.kat = v; BERKAS_STATE.visible = BERKAS_PAGE; bmRefreshList(); }
+        function bmMore() { BERKAS_STATE.visible += BERKAS_PAGE; bmRefreshList(); }
+
+        function buildBerkasMoveHtml() {
+            const all = bmSorted(true);
+            if (!all.length) return '';
+            BERKAS_STATE.q = ''; BERKAS_STATE.kat = 'semua'; BERKAS_STATE.visible = BERKAS_PAGE;
+            const kats = Array.from(new Set(all.map(r => String(r.kategori || '').trim()).filter(v => v !== ''))).sort();
+            let h = '<div class="kg-panel" id="kg-sec-berkas" style="scroll-margin-top:100px">';
+            h += '<h3 class="kg-sec-title"><i class="fas fa-file-arrow-down"></i> Berkas Persiapan MOVE</h3>';
+            h += '<p class="kg-sec-sub">Unduh dokumen persiapan kegiatan langsung dari sini, tidak perlu mencari-cari lagi di Google Drive.</p>';
+            if (all.length > 5 || kats.length > 1) {
+                h += '<div class="bm-filter">';
+                h += '<div class="kg-searchbox"><i class="fas fa-search"></i><input type="search" class="kg-input" placeholder="Cari berkas..." oninput="bmSearch(this.value)"></div>';
+                if (kats.length > 1) h += '<select class="kg-select" onchange="bmKat(this.value)"><option value="semua">Semua kategori</option>' + kats.map(k => '<option value="' + kgEsc(k) + '">' + kgEsc(k) + '</option>').join('') + '</select>';
+                h += '</div>';
+            }
+            h += '<div id="bm-list-wrap">' + bmListHtml() + '</div></div>';
+            return h;
+        }
+
+        // ---------- ADMIN: kelola berkas ----------
+        let BM_EDIT_ROWID = null;
+        function renderAdminBerkasUI() {
+            const container = document.getElementById('admin-content');
+            if (!container) return;
+            sessionStorage.setItem('edudigital_last_tab', 'berkas_move');
+            document.querySelectorAll('.admin-btn').forEach(b => b.classList.remove('active'));
+            const btn = Array.from(document.querySelectorAll('.admin-btn')).find(b => (b.getAttribute('onclick') || '').indexOf("renderAdmin('berkas_move')") !== -1);
+            if (btn) { btn.classList.add('active'); if (btn.scrollIntoView) { try { btn.scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) {} } }
+            const rows = bmSorted(false);
+            let h = '<div class="bm-apanel"><div class="bm-ahead"><div><h2><i class="fas fa-file-arrow-down"></i> Berkas Persiapan MOVE</h2>'
+                + '<p>Berkas di sini tampil di menu Informasi &gt; Kegiatan (MOVE) dan bisa diunduh pengunjung.</p></div>'
+                + '<button type="button" class="bm-btn bm-btn-primary" onclick="openBerkasForm(0)"><i class="fas fa-plus"></i> Tambah Berkas</button></div>';
+            if (!rows.length) h += '<div class="bm-empty"><i class="fas fa-folder-open"></i><br>Belum ada berkas. Klik <b>Tambah Berkas</b> untuk mengunggah file pertama.</div>';
+            else h += '<div class="bm-list">' + rows.map(r => bmCardHtml(r, true)).join('') + '</div>';
+            container.innerHTML = h + '</div>';
+        }
+
+        function ensureBerkasModal() {
+            if (document.getElementById('bm-modal')) return;
+            const d = document.createElement('div');
+            d.id = 'bm-modal'; d.className = 'bm-modal';
+            d.innerHTML = '<div class="bm-box"><h3 id="bm-modal-title">Tambah Berkas</h3>'
+                + '<label class="bm-lbl">Judul berkas *</label><input id="bm-f-judul" class="bm-in" type="text" placeholder="Mis. Format Laporan Kegiatan MOVE">'
+                + '<label class="bm-lbl">Keterangan singkat</label><textarea id="bm-f-deskripsi" class="bm-in" rows="2" placeholder="Untuk apa berkas ini dipakai"></textarea>'
+                + '<label class="bm-lbl">Kategori</label><input id="bm-f-kategori" class="bm-in" list="bm-kat-list" type="text" placeholder="Mis. Formulir, Panduan, Surat"><datalist id="bm-kat-list"></datalist>'
+                + '<label class="bm-lbl">Unggah file dari perangkat</label><input id="bm-f-file" class="bm-in" type="file">'
+                + '<p class="bm-hint" id="bm-file-hint">Maksimal 15 MB. File otomatis disimpan di Google Drive sekolah dan bisa diunduh siapa pun yang membuka website.</p>'
+                + '<div class="bm-or">— ATAU —</div>'
+                + '<label class="bm-lbl">Tempel link Google Drive / link lain</label><input id="bm-f-link" class="bm-in" type="url" placeholder="https://drive.google.com/file/d/...">'
+                + '<p class="bm-hint">Pastikan akses Drive diatur ke &quot;Siapa saja yang memiliki link&quot;.</p>'
+                + '<label class="bm-lbl">Jenis file</label><select id="bm-f-tipe" class="bm-in"><option value="">Otomatis</option><option>PDF</option><option>Word</option><option>Excel</option><option>PowerPoint</option><option>Gambar</option><option>ZIP</option><option>Lainnya</option></select>'
+                + '<label class="bm-lbl">Urutan tampil (angka kecil tampil lebih dulu)</label><input id="bm-f-urutan" class="bm-in" type="number" min="0" placeholder="Kosongkan bila tidak perlu">'
+                + '<div class="bm-form-actions"><button type="button" class="bm-btn" onclick="closeBerkasForm()">Batal</button><button type="button" class="bm-btn bm-btn-primary" onclick="saveBerkasForm()"><i class="fas fa-save"></i> Simpan</button></div></div>';
+            d.addEventListener('click', function (e) { if (e.target === d) closeBerkasForm(); });
+            document.body.appendChild(d);
+        }
+        function openBerkasForm(rowId) {
+            ensureBerkasModal();
+            BM_EDIT_ROWID = rowId || null;
+            const row = rowId ? (DATA.berkas_move || []).find(r => r._rowId === rowId) : null;
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = (v == null ? '' : v); };
+            document.getElementById('bm-modal-title').innerText = row ? 'Edit Berkas' : 'Tambah Berkas';
+            set('bm-f-judul', row && row.judul); set('bm-f-deskripsi', row && row.deskripsi); set('bm-f-kategori', row && row.kategori);
+            set('bm-f-link', row && row.link); set('bm-f-tipe', row && row.tipe); set('bm-f-urutan', row && row.urutan); set('bm-f-file', '');
+            const kats = Array.from(new Set((DATA.berkas_move || []).map(r => String(r.kategori || '').trim()).filter(v => v !== '')));
+            document.getElementById('bm-kat-list').innerHTML = kats.map(k => '<option value="' + kgEsc(k) + '">').join('');
+            document.getElementById('bm-file-hint').innerText = row ? 'Pilih file baru hanya jika ingin mengganti berkas lama (maks. 15 MB).' : 'Maksimal 15 MB. File otomatis disimpan di Google Drive sekolah dan bisa diunduh siapa pun yang membuka website.';
+            document.getElementById('bm-modal').classList.add('open');
+        }
+        function closeBerkasForm() { const m = document.getElementById('bm-modal'); if (m) m.classList.remove('open'); BM_EDIT_ROWID = null; }
+
+        function saveBerkasForm() {
+            const g = id => (document.getElementById(id) || {}).value || '';
+            const judul = g('bm-f-judul').trim();
+            const fileEl = document.getElementById('bm-f-file');
+            const file = fileEl && fileEl.files && fileEl.files[0];
+            const link = g('bm-f-link').trim();
+            if (!judul) { Swal.fire({ icon: 'warning', title: 'Judul belum diisi', customClass: { popup: 'rounded-3xl' } }); return; }
+            if (!file && !bmSafeUrl(link)) { Swal.fire({ icon: 'warning', title: 'Berkas belum ada', text: 'Pilih file dari perangkat, atau tempel link (diawali https://).', customClass: { popup: 'rounded-3xl' } }); return; }
+            if (file && file.size > 15 * 1024 * 1024) { Swal.fire({ icon: 'warning', title: 'File terlalu besar', text: 'Maksimal 15 MB. Untuk file lebih besar, unggah ke Google Drive lalu tempel linknya.', customClass: { popup: 'rounded-3xl' } }); return; }
+            const rowId = BM_EDIT_ROWID;
+            const old = rowId ? (DATA.berkas_move || []).find(r => r._rowId === rowId) : null;
+            Swal.fire({ title: file ? 'Mengunggah berkas...' : 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading(), customClass: { popup: 'rounded-3xl' } });
+            const fail = err => Swal.fire({ icon: 'error', title: 'Gagal', text: (err && err.message) ? err.message : String(err), customClass: { popup: 'rounded-3xl' } });
+            const finish = (finalLink, autoTipe, ukuran) => {
+                const tipePilih = g('bm-f-tipe').trim();
+                const dataObj = {
+                    judul: judul, deskripsi: g('bm-f-deskripsi').trim(), kategori: g('bm-f-kategori').trim(),
+                    link: finalLink, tipe: tipePilih || autoTipe || '', ukuran: ukuran || '', urutan: g('bm-f-urutan').trim()
+                };
+                google.script.run
+                    .withSuccessHandler(() => {
+                        google.script.run.withSuccessHandler(res => {
+                            if (res && !res.error) DATA = res;
+                            closeBerkasForm();
+                            renderAdminBerkasUI();
+                            Swal.fire({ icon: 'success', title: 'Tersimpan', timer: 1400, showConfirmButton: false, customClass: { popup: 'rounded-3xl' } });
+                        }).withFailureHandler(fail).getFullData('id');
+                    })
+                    .withFailureHandler(fail)
+                    .saveData('berkas_move', dataObj, rowId || null);
+            };
+            if (file) {
+                const reader = new FileReader();
+                reader.onerror = () => fail(new Error('File tidak bisa dibaca.'));
+                reader.onload = () => {
+                    const b64 = String(reader.result).split(',')[1] || '';
+                    google.script.run.withSuccessHandler(r => finish(r.url, r.tipe, r.ukuran)).withFailureHandler(fail)
+                        .uploadBerkasToDrive(b64, file.name, file.type || 'application/octet-stream');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                finish(link, '', (old && old.link === link) ? (old.ukuran || '') : '');
+            }
+        }
+
+        function hapusBerkas(rowId) {
+            const row = (DATA.berkas_move || []).find(r => r._rowId === rowId);
+            Swal.fire({ icon: 'warning', title: 'Hapus berkas ini?', text: row ? row.judul : '', showCancelButton: true, confirmButtonText: 'Ya, hapus', cancelButtonText: 'Batal', confirmButtonColor: '#dc2626', customClass: { popup: 'rounded-3xl' } }).then(r => {
+                if (!r.isConfirmed) return;
+                Swal.fire({ title: 'Menghapus...', allowOutsideClick: false, didOpen: () => Swal.showLoading(), customClass: { popup: 'rounded-3xl' } });
+                const fail = err => Swal.fire({ icon: 'error', title: 'Gagal Menghapus', text: (err && err.message) ? err.message : String(err), customClass: { popup: 'rounded-3xl' } });
+                google.script.run.withSuccessHandler(() => {
+                    google.script.run.withSuccessHandler(res => {
+                        if (res && !res.error) DATA = res;
+                        renderAdminBerkasUI();
+                        Swal.fire({ icon: 'success', title: 'Terhapus', timer: 1200, showConfirmButton: false, customClass: { popup: 'rounded-3xl' } });
+                    }).withFailureHandler(fail).getFullData('id');
+                }).withFailureHandler(fail).deleteData('berkas_move', rowId);
+            });
+        }
+        // ================== END BERKAS PERSIAPAN MOVE ==================
+
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
+            if (bmSorted(true).length) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-berkas\')"><i class="fas fa-file-arrow-down"></i> Berkas</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-statistik\')"><i class="fas fa-chart-simple"></i> Statistik</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-riwayat\')"><i class="fas fa-clipboard-list"></i> Riwayat Kegiatan</button>';
             if (hasMap) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-peta\')"><i class="fas fa-map-location-dot"></i> Peta</button>';
@@ -3115,6 +3397,9 @@
                         const kgLong = introDisplayText.length > 450;
                         html += '<div class="kg-panel"><div id="kg-intro-text" class="kg-intro-text' + (kgLong ? ' kg-clamp' : '') + '">' + introParagraphsHtml + '</div>' + (kgLong ? '<button type="button" class="kg-link" onclick="toggleKegiatanIntro(this)">Baca selengkapnya</button>' : '') + '</div>';
                     }
+
+                    // BERKAS PERSIAPAN (unduh dokumen)
+                    html += buildBerkasMoveHtml();
 
                     // PETA SEBARAN (di atas, langsung tampil)
                     const kgTopMapHtml = (kegiatanItems.length > 0) ? buildKegiatanGlobalMapHtml(mapUrls) : '';
@@ -7000,6 +7285,7 @@
 
         function renderAdmin(sheetName) {
             sessionStorage.setItem('edudigital_last_tab', sheetName);
+            if (sheetName === 'berkas_move') { renderAdminBerkasUI(); return; }
             const container = document.getElementById('admin-content');
             
             if (!DATA[sheetName] || DATA[sheetName].length === 0) {

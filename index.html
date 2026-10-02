@@ -1958,7 +1958,7 @@ html.dark .mv-label{color:#94a3b8}
         }
 
         /** Menyusun link + judul + penulis + tanggal + cuplikan untuk dibagikan. */
-        function susunDataShareBerita(index) {
+        function susunDataShareBerita(index, pakaiHalamanShare) {
             const b = DATA.berita && DATA.berita[index];
             if (!b) return null;
             // Link dibuat dari domain yang SEDANG dipakai (bukan "www." hardcode); kalau lewat iframe/domain lain, pakai domain utama.
@@ -1966,7 +1966,9 @@ html.dark .mv-label{color:#94a3b8}
             const baseUrl = /(^|\.)smkitalmubarok\.online$/.test(host)
                 ? window.location.origin + '/'
                 : 'https://smkitalmubarok.online/';
-            const url = baseUrl + '?berita_id=' + index;
+            // Halaman share statis (b/<nomor>.html) berisi og:image = foto berita, supaya preview link di WhatsApp/FB/Telegram sesuai berita.
+            // Kalau halamannya belum ada (berita lama / belum dibuat), pakai link biasa.
+            const url = pakaiHalamanShare ? (baseUrl + 'b/' + index + '.html') : (baseUrl + '?berita_id=' + index);
             const penulis = getPenulisBerita(b);
             const cuplikan = buatCuplikanBerita(b.konten, 220);
             const baris = ['📰 *' + b.judul + '*'];
@@ -1984,8 +1986,21 @@ html.dark .mv-label{color:#94a3b8}
         }
         function _shareSheetEsc(e) { if (e.key === 'Escape') tutupShareSheet(); }
 
-        window.shareNews = function(index) {
-            const d = susunDataShareBerita(index);
+        window.shareNews = async function(index) {
+            if (!(DATA.berita && DATA.berita[index])) return;
+            // Cek cepat apakah halaman share (preview foto) untuk berita ini sudah ada.
+            let punyaHalamanShare = false;
+            try {
+                const host = window.location.hostname || '';
+                if (/(^|\.)smkitalmubarok\.online$/.test(host)) {
+                    const ctrl = new AbortController();
+                    const tm = setTimeout(() => ctrl.abort(), 2000);
+                    const r = await fetch('/b/' + index + '.html', { method: 'HEAD', cache: 'no-store', signal: ctrl.signal });
+                    clearTimeout(tm);
+                    punyaHalamanShare = r.ok;
+                }
+            } catch (e) { punyaHalamanShare = false; }
+            const d = susunDataShareBerita(index, punyaHalamanShare);
             if (!d) return;
             tutupShareSheet();
 

@@ -1944,45 +1944,79 @@ html.dark .mv-label{color:#94a3b8}
         let isAppInit = false; 
 
         window.shareNews = function(index) {
-            const b = DATA.berita[index];
-            const baseUrl = "https://www.smkitalmubarok.online/";
-            const shareUrl = baseUrl + "?berita_id=" + index; 
+            const b = DATA.berita && DATA.berita[index];
+            if (!b) return;
+            // Link dibuat dari domain yang SEDANG dipakai (smkitalmubarok.online), bukan "www." yang di-hardcode,
+            // supaya link hasil share pasti terbuka. Kalau halaman dibuka lewat iframe/domain lain, pakai domain utama.
+            const host = window.location.hostname || '';
+            const baseUrl = /(^|\.)smkitalmubarok\.online$/.test(host)
+                ? window.location.origin + '/'
+                : 'https://smkitalmubarok.online/';
+            const shareUrl = baseUrl + '?berita_id=' + index;
             const shareTitle = b.judul;
-            const shareText = "Kabar terbaru dari SMK IT AL MUBAROK: " + b.judul + "\n\nBaca di sini: " + shareUrl;
+            // Teks TIDAK memuat link lagi (link dikirim lewat field url) supaya tidak dobel di WhatsApp dll.
+            const shareText = 'Kabar terbaru dari SMK IT AL MUBAROK: ' + b.judul;
 
             if (navigator.share) {
-                navigator.share({
-                    title: shareTitle,
-                    text: shareText,
-                    url: shareUrl
-                }).catch((error) => {
-                    console.log('Error membagikan', error);
-                    fallbackCopyLink(shareUrl);
-                });
+                navigator.share({ title: shareTitle, text: shareText, url: shareUrl })
+                    .catch((error) => {
+                        // Pengguna menutup menu share = bukan error, jangan lakukan apa-apa.
+                        if (error && error.name === 'AbortError') return;
+                        fallbackCopyLink(shareUrl);
+                    });
             } else {
                 fallbackCopyLink(shareUrl);
             }
         };
 
+        /** Notifikasi kecil yang TIDAK menutup modal berita yang sedang terbuka (Swal.fire akan menggantikan modalnya). */
+        function showShareToast(pesan, sukses) {
+            const old = document.getElementById('share-toast');
+            if (old) old.remove();
+            const t = document.createElement('div');
+            t.id = 'share-toast';
+            t.style.cssText = 'position:fixed;left:50%;bottom:32px;transform:translateX(-50%);z-index:999999;max-width:90vw;'
+                + 'padding:12px 20px;border-radius:14px;font:700 13px/1.4 Inter,system-ui,sans-serif;color:#fff;'
+                + 'box-shadow:0 10px 30px rgba(0,0,0,.25);background:' + (sukses ? '#16a34a' : '#dc2626') + ';';
+            t.textContent = pesan;
+            document.body.appendChild(t);
+            setTimeout(() => { if (t.parentNode) t.remove(); }, 2500);
+        }
+
         function fallbackCopyLink(urlToCopy) {
-            const tempInput = document.createElement("input");
-            tempInput.value = urlToCopy;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            try {
-                document.execCommand("copy");
+            const ok = () => showShareToast('Tautan tersalin! Silakan tempel & bagikan ke teman Anda.', true);
+            const gagal = () => {
+                // Salinan otomatis gagal -> tampilkan link agar bisa disalin manual.
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Tautan Tersalin!',
-                    text: 'Link telah disalin. Bagikan ke teman Anda!',
-                    timer: 2000,
-                    showConfirmButton: false,
-                    customClass: { popup: 'rounded-[2rem]' }
+                    title: 'Salin tautan ini',
+                    input: 'text',
+                    inputValue: urlToCopy,
+                    confirmButtonText: 'Tutup',
+                    customClass: { popup: 'rounded-[2rem]' },
+                    didOpen: () => { const i = Swal.getInput(); if (i) { i.focus(); i.select(); } }
                 });
-            } catch (err) {
-                console.error("Gagal menyalin", err);
+            };
+            const execFallback = () => {
+                // Elemen sementara diletakkan DI DALAM modal Swal bila ada (focus-trap Swal merebut fokus dari elemen di luarnya).
+                const host = (window.Swal && Swal.getPopup && Swal.getPopup()) || document.body;
+                const ta = document.createElement('textarea');
+                ta.value = urlToCopy;
+                ta.setAttribute('readonly', '');
+                ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+                host.appendChild(ta);
+                ta.focus();
+                ta.select();
+                ta.setSelectionRange(0, ta.value.length);
+                let berhasil = false;
+                try { berhasil = document.execCommand('copy'); } catch (err) { berhasil = false; }
+                host.removeChild(ta);
+                berhasil ? ok() : gagal();
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(urlToCopy).then(ok).catch(execFallback);
+            } else {
+                execFallback();
             }
-            document.body.removeChild(tempInput);
         }
 
         function initApp() {
@@ -4102,7 +4136,7 @@ html.dark .mv-label{color:#94a3b8}
 
             const gridBerita = document.getElementById('grid-berita');
             if(gridBerita) {
-                gridBerita.innerHTML = (DATA.berita || []).map((b, idx) => {
+                gridBerita.innerHTML = ambilNTerbaruByTanggal(DATA.berita || [], (DATA.berita || []).length).map(({ item: b, idx }) => {
                     const firstImage = (b.gambar_url || b.gambar || '').split(',')[0].trim();
                     return `
                     <div class="bg-white rounded-2xl overflow-hidden shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-slate-200 flex flex-col hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group w-full md:w-[30%]">
@@ -7781,6 +7815,12 @@ html.dark .mv-label{color:#94a3b8}
                         <option value="Izin" ${val=='Izin'?'selected':''}>Izin</option>
                         <option value="Alpa" ${val=='Alpa'?'selected':''}>Alpa</option>
                     </select>`;
+                } else if (sheetName === 'berita' && h.toLowerCase() === 'tanggal') {
+                    // Tanggal berita dipilih lewat kalender (bukan ketik manual). Nilai lama dari spreadsheet dikonversi ke yyyy-mm-dd;
+                    // kalau berita baru, otomatis diisi tanggal hari ini.
+                    const dBerita = parseTanggalJurnal(val);
+                    const valKalender = dBerita ? Utilities_formatDateInput(dBerita) : (val ? '' : Utilities_formatDateInput(new Date()));
+                    inputHtml = `<input type="date" id="form-${h}" value="${valKalender}" data-orig="${String(val).replace(/"/g, '&quot;')}" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:bg-white transition-colors font-semibold text-slate-700">`;
                 } else if (['jurnal_guru', 'kehadiran', 'jurnal_program', 'karya'].includes(sheetName) && h.toLowerCase() === 'tanggal') {
                     inputHtml = `<input type="date" id="form-${h}" value="${val}" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:bg-white transition-colors font-semibold text-slate-700">`;
                 } else if (sheetName === 'jurnal_guru' && ['tujuan_pembelajaran', 'metode_pembelajaran', 'kehadiran_murid', 'refleksi_guru', 'kemajuan_pembelajaran', 'kemajuan_pembelajran'].includes(h.toLowerCase())) {
@@ -7866,6 +7906,17 @@ html.dark .mv-label{color:#94a3b8}
             if (formValues) {
                 const dataToSave = {};
                 headers.forEach(h => { dataToSave[h] = document.getElementById('form-' + h).value; });
+                // Berita: tanggal dari kalender (yyyy-mm-dd) disimpan sebagai "dd MMM yyyy" (contoh: 02 Oct 2026) agar sama dengan format lama.
+                if (sheetName === 'berita' && dataToSave.tanggal !== undefined) {
+                    const elTgl = document.getElementById('form-tanggal');
+                    const mTgl = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dataToSave.tanggal || '');
+                    if (mTgl) {
+                        const bln = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                        dataToSave.tanggal = mTgl[3] + ' ' + bln[parseInt(mTgl[2], 10) - 1] + ' ' + mTgl[1];
+                    } else if (elTgl && elTgl.dataset.orig) {
+                        dataToSave.tanggal = elTgl.dataset.orig; // kalender dikosongkan -> pertahankan tanggal lama
+                    }
+                }
                 Swal.showLoading();
                 google.script.run.withSuccessHandler(() => {
                     google.script.run.withSuccessHandler(res => {

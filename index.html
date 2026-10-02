@@ -1943,30 +1943,102 @@ html.dark .mv-label{color:#94a3b8}
         let slideInterval;
         let isAppInit = false; 
 
-        window.shareNews = function(index) {
+        /** Nama penulis berita dari spreadsheet. Kolom yang dikenali: penulis / nama_penulis / author / ditulis_oleh. Kosong = tidak ditampilkan. */
+        function getPenulisBerita(b) {
+            return ((b && (b.penulis || b.nama_penulis || b.author || b.ditulis_oleh || b.penulis_berita)) || '').toString().trim();
+        }
+
+        /** Cuplikan isi berita: rapikan baris baru, potong di batas kata (bukan di tengah kata). */
+        function buatCuplikanBerita(teks, maxLen) {
+            const bersih = (teks || '').toString().replace(/\s+/g, ' ').trim();
+            if (bersih.length <= maxLen) return bersih;
+            const potong = bersih.slice(0, maxLen);
+            const spasi = potong.lastIndexOf(' ');
+            return (spasi > maxLen * 0.6 ? potong.slice(0, spasi) : potong).trim() + '…';
+        }
+
+        /** Menyusun link + judul + penulis + tanggal + cuplikan untuk dibagikan. */
+        function susunDataShareBerita(index) {
             const b = DATA.berita && DATA.berita[index];
-            if (!b) return;
-            // Link dibuat dari domain yang SEDANG dipakai (smkitalmubarok.online), bukan "www." yang di-hardcode,
-            // supaya link hasil share pasti terbuka. Kalau halaman dibuka lewat iframe/domain lain, pakai domain utama.
+            if (!b) return null;
+            // Link dibuat dari domain yang SEDANG dipakai (bukan "www." hardcode); kalau lewat iframe/domain lain, pakai domain utama.
             const host = window.location.hostname || '';
             const baseUrl = /(^|\.)smkitalmubarok\.online$/.test(host)
                 ? window.location.origin + '/'
                 : 'https://smkitalmubarok.online/';
-            const shareUrl = baseUrl + '?berita_id=' + index;
-            const shareTitle = b.judul;
-            // Teks TIDAK memuat link lagi (link dikirim lewat field url) supaya tidak dobel di WhatsApp dll.
-            const shareText = 'Kabar terbaru dari SMK IT AL MUBAROK: ' + b.judul;
+            const url = baseUrl + '?berita_id=' + index;
+            const penulis = getPenulisBerita(b);
+            const cuplikan = buatCuplikanBerita(b.konten, 220);
+            const baris = ['📰 *' + b.judul + '*'];
+            if (penulis) baris.push('✍️ Penulis: ' + penulis);
+            if (b.tanggal) baris.push('📅 ' + b.tanggal);
+            if (cuplikan) baris.push('', cuplikan);
+            baris.push('', '👉 Baca selengkapnya:', url, '', '— SMK IT Al Mubarok Kras Kediri');
+            return { b, url, penulis, cuplikan, pesan: baris.join('\n') };
+        }
 
+        function tutupShareSheet() {
+            const el = document.getElementById('share-sheet-overlay');
+            if (el) el.remove();
+            document.removeEventListener('keydown', _shareSheetEsc);
+        }
+        function _shareSheetEsc(e) { if (e.key === 'Escape') tutupShareSheet(); }
+
+        window.shareNews = function(index) {
+            const d = susunDataShareBerita(index);
+            if (!d) return;
+            tutupShareSheet();
+
+            const enc = encodeURIComponent;
+            // Teks tanpa format tebal (*) untuk platform selain WhatsApp.
+            const pesanPolos = d.pesan.replace(/\*/g, '');
+            const targets = [
+                { nama: 'WhatsApp', ikon: 'fa-brands fa-whatsapp', warna: '#25D366', href: 'https://wa.me/?text=' + enc(d.pesan) },
+                { nama: 'Facebook', ikon: 'fa-brands fa-facebook-f', warna: '#1877F2', href: 'https://www.facebook.com/sharer/sharer.php?u=' + enc(d.url) + '&quote=' + enc(pesanPolos.replace(d.url, '').trim()) },
+                { nama: 'X / Twitter', ikon: 'fa-brands fa-x-twitter', warna: '#0f172a', href: 'https://twitter.com/intent/tweet?text=' + enc(d.b.judul + (d.penulis ? ' — oleh ' + d.penulis : '') + '\n\n' + buatCuplikanBerita(d.b.konten, 120)) + '&url=' + enc(d.url) },
+                { nama: 'Telegram', ikon: 'fa-brands fa-telegram', warna: '#229ED9', href: 'https://t.me/share/url?url=' + enc(d.url) + '&text=' + enc(pesanPolos.replace(d.url, '').trim()) }
+            ];
+
+            const overlay = document.createElement('div');
+            overlay.id = 'share-sheet-overlay';
+            overlay.style.cssText = 'position:fixed;inset:0;z-index:999998;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;padding:16px;';
+            overlay.innerHTML =
+                '<div style="background:#fff;border-radius:28px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 25px 60px rgba(0,0,0,.35);text-align:left;">'
+                + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">'
+                + '<h3 style="font-weight:900;font-size:18px;color:#0f172a;margin:0;">Bagikan Berita</h3>'
+                + '<button id="share-sheet-close" type="button" style="width:34px;height:34px;border-radius:50%;border:0;background:#f1f5f9;color:#475569;font-size:16px;cursor:pointer;">✕</button></div>'
+                + '<textarea id="share-sheet-text" readonly style="width:100%;height:170px;resize:none;border:1px solid #e2e8f0;background:#f8fafc;border-radius:14px;padding:12px;font:600 12px/1.55 Inter,system-ui,sans-serif;color:#334155;"></textarea>'
+                + (d.penulis ? '' : '<p style="font-size:10px;color:#94a3b8;font-weight:700;margin:6px 2px 0;">Nama penulis belum diisi pada data berita ini.</p>')
+                + '<div id="share-sheet-btns" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;"></div>'
+                + '</div>';
+            document.body.appendChild(overlay);
+            overlay.querySelector('#share-sheet-text').value = d.pesan;
+
+            const btnWrap = overlay.querySelector('#share-sheet-btns');
+            const buatTombol = (label, ikon, warna, onClick, href) => {
+                const el = document.createElement(href ? 'a' : 'button');
+                if (href) { el.href = href; el.target = '_blank'; el.rel = 'noopener'; } else { el.type = 'button'; }
+                el.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 10px;border-radius:14px;border:0;cursor:pointer;text-decoration:none;'
+                    + 'font:800 12px Inter,system-ui,sans-serif;color:#fff;background:' + warna + ';';
+                el.innerHTML = '<i class="' + ikon + '"></i><span>' + label + '</span>';
+                if (onClick) el.addEventListener('click', onClick);
+                btnWrap.appendChild(el);
+                return el;
+            };
+            targets.forEach(t => buatTombol(t.nama, t.ikon, t.warna, () => setTimeout(tutupShareSheet, 150), t.href));
+            buatTombol('Salin Teks + Link', 'fas fa-copy', '#475569', () => fallbackCopyLink(d.pesan, 'Teks & link tersalin! Tempel di Instagram, TikTok, atau mana saja.'));
             if (navigator.share) {
-                navigator.share({ title: shareTitle, text: shareText, url: shareUrl })
-                    .catch((error) => {
-                        // Pengguna menutup menu share = bukan error, jangan lakukan apa-apa.
-                        if (error && error.name === 'AbortError') return;
-                        fallbackCopyLink(shareUrl);
-                    });
-            } else {
-                fallbackCopyLink(shareUrl);
+                const lain = buatTombol('Aplikasi Lain', 'fas fa-share-nodes', '#2563eb', () => {
+                    navigator.share({ title: d.b.judul, text: d.pesan.replace(d.url, '').trim(), url: d.url })
+                        .then(tutupShareSheet)
+                        .catch(err => { if (!(err && err.name === 'AbortError')) fallbackCopyLink(d.pesan); });
+                });
+                lain.style.gridColumn = 'span 2';
             }
+
+            overlay.addEventListener('click', e => { if (e.target === overlay) tutupShareSheet(); });
+            overlay.querySelector('#share-sheet-close').addEventListener('click', tutupShareSheet);
+            document.addEventListener('keydown', _shareSheetEsc);
         };
 
         /** Notifikasi kecil yang TIDAK menutup modal berita yang sedang terbuka (Swal.fire akan menggantikan modalnya). */
@@ -1983,17 +2055,17 @@ html.dark .mv-label{color:#94a3b8}
             setTimeout(() => { if (t.parentNode) t.remove(); }, 2500);
         }
 
-        function fallbackCopyLink(urlToCopy) {
-            const ok = () => showShareToast('Tautan tersalin! Silakan tempel & bagikan ke teman Anda.', true);
+        function fallbackCopyLink(urlToCopy, pesanOk) {
+            const ok = () => showShareToast(pesanOk || 'Tautan tersalin! Silakan tempel & bagikan ke teman Anda.', true);
             const gagal = () => {
                 // Salinan otomatis gagal -> tampilkan link agar bisa disalin manual.
                 Swal.fire({
-                    title: 'Salin tautan ini',
-                    input: 'text',
+                    title: 'Salin teks ini',
+                    input: 'textarea',
                     inputValue: urlToCopy,
                     confirmButtonText: 'Tutup',
                     customClass: { popup: 'rounded-[2rem]' },
-                    didOpen: () => { const i = Swal.getInput(); if (i) { i.focus(); i.select(); } }
+                    didOpen: () => { const c = Swal.getContainer(); if (c) c.style.zIndex = 1000000; const i = Swal.getInput(); if (i) { i.focus(); i.select(); } }
                 });
             };
             const execFallback = () => {
@@ -4413,7 +4485,7 @@ html.dark .mv-label{color:#94a3b8}
 
             Swal.fire({
                 title: '<span class="font-black text-2xl md:text-3xl text-left block leading-tight text-slate-900">' + b.judul + '</span>',
-                html: '<div class="text-left mt-6 overflow-y-auto max-h-[60vh] pr-4">' + mediaHtml + '<div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-4"><p class="text-[10px] font-black text-blue-600 uppercase tracking-widest inline-block bg-blue-50 px-3 py-1 rounded-full">' + b.tanggal + '</p><div class="flex items-center gap-4 text-slate-500 text-[11px] font-bold"><span id="view-modal-' + index + '" class="flex items-center gap-1.5"><i class="fas fa-eye text-blue-500"></i> ' + (b.views || 0) + ' x dilihat</span><button onclick="shareNews(' + index + ')" class="flex items-center gap-1.5 hover:text-blue-600 transition-colors bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm"><i class="fas fa-share-nodes text-blue-500"></i> Bagikan</button></div></div><div class="text-slate-600 leading-[1.8] space-y-4 font-medium text-base">' + (b.konten||'').split('\n').map(p => '<p>' + p + '</p>').join('') + '</div></div>',
+                html: '<div class="text-left mt-6 overflow-y-auto max-h-[60vh] pr-4">' + mediaHtml + '<div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-4"><div class="flex flex-col gap-1.5 items-start"><p class="text-[10px] font-black text-blue-600 uppercase tracking-widest inline-block bg-blue-50 px-3 py-1 rounded-full">' + b.tanggal + '</p>' + (getPenulisBerita(b) ? '<p class="text-[11px] font-bold text-slate-500"><i class="fas fa-pen-nib text-blue-500 mr-1.5"></i>Oleh ' + getPenulisBerita(b) + '</p>' : '') + '</div><div class="flex items-center gap-4 text-slate-500 text-[11px] font-bold"><span id="view-modal-' + index + '" class="flex items-center gap-1.5"><i class="fas fa-eye text-blue-500"></i> ' + (b.views || 0) + ' x dilihat</span><button onclick="shareNews(' + index + ')" class="flex items-center gap-1.5 hover:text-blue-600 transition-colors bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm"><i class="fas fa-share-nodes text-blue-500"></i> Bagikan</button></div></div><div class="text-slate-600 leading-[1.8] space-y-4 font-medium text-base">' + (b.konten||'').split('\n').map(p => '<p>' + p + '</p>').join('') + '</div></div>',
                 width: '800px', showConfirmButton: false, showCloseButton: true, customClass: { popup: 'rounded-[2.5rem] p-8 md:p-12' },
                 didClose: () => {
                     // Ditambahkan: modal berita ditutup -> hapus berita_id dari URL address bar.

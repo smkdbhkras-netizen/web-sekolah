@@ -4478,83 +4478,179 @@ html.dark .mv-label{color:#94a3b8}
             }, 400);
         }
 
-        function readFullNews(index) {
-            const b = DATA.berita[index];
-            // Ditambahkan: catat berita yang sedang dibuka & sinkronkan ke URL address bar.
-            CURRENT_OPEN_BERITA_ID = index;
+        // ================================================================
+        // HALAMAN BERITA (FULL PAGE) — pengganti popup/modal berita
+        // ================================================================
+        let BERITA_PAGE_PUSHED = false;      // true = pembukaan halaman ini menambah 1 entri history (tombol Back menutupnya)
+        let BERITA_PAGE_PREV_OVERFLOW = '';
+
+        function _beritaPageEsc(e) { if (e.key === 'Escape') window.tutupBeritaPageBtn(); }
+
+        function tutupBeritaPage() {
+            const el = document.getElementById('berita-page-overlay');
+            if (el) el.remove();
+            document.body.style.overflow = BERITA_PAGE_PREV_OVERFLOW || '';
+            document.removeEventListener('keydown', _beritaPageEsc);
+            CURRENT_OPEN_BERITA_ID = '';
             syncUrlToParent();
+        }
+
+        /** Tombol Kembali / X / Esc: kalau halaman ini punya entri history sendiri, mundurkan history (popstate yang menutup). */
+        window.tutupBeritaPageBtn = function () {
+            if (BERITA_PAGE_PUSHED) { history.back(); }
+            else { tutupBeritaPage(); }
+        };
+
+        // Tombol Back/Forward browser: Back menutup halaman berita, Forward membukanya lagi.
+        window.addEventListener('popstate', function (e) {
+            const terbuka = !!document.getElementById('berita-page-overlay');
+            if (terbuka) {
+                BERITA_PAGE_PUSHED = false;
+                tutupBeritaPage();
+            } else if (e.state && e.state.beritaIdx !== undefined && DATA.berita && DATA.berita[e.state.beritaIdx]) {
+                readFullNews(e.state.beritaIdx, true);
+            }
+        });
+
+        window.geserBeritaSlider = function (arah) {
+            const c = document.getElementById('news-slider-container');
+            if (!c) return;
+            const w = c.clientWidth || 1;
+            const sekarang = Math.round(c.scrollLeft / w);
+            const total = c.children.length;
+            const tujuan = Math.max(0, Math.min(total - 1, sekarang + arah));
+            c.scrollTo({ left: w * tujuan, behavior: 'smooth' });
+        };
+
+        function readFullNews(index, dariHistory) {
+            const b = DATA.berita && DATA.berita[index];
+            if (!b) return;
+
             const rawImages = b.gambar_url || b.gambar || '';
-            const imageUrls = rawImages.split(',').map(url => url.trim()).filter(url => url !== "");
+            const imageUrls = rawImages.split(',').map(url => url.trim()).filter(url => url !== '');
+            const penulis = getPenulisBerita(b);
+            const paragraf = (b.konten || '').toString().split('\n').map(t => t.trim()).filter(t => t !== '');
+            const jumlahKata = (b.konten || '').toString().split(/\s+/).filter(Boolean).length;
+            const menitBaca = Math.max(1, Math.round(jumlahKata / 200));
 
+            // ---------- Media (foto) ----------
             let mediaHtml = '';
-
             if (imageUrls.length > 1) {
-                let imagesHtml = imageUrls.map((url) => '<img src="' + url + '" class="w-full h-[250px] md:h-[350px] flex-shrink-0 snap-center object-cover pointer-events-none">').join('');
-                
-                let dotsHtml = imageUrls.map((_, i) => '<button class="slider-dot w-2 h-2 rounded-full bg-slate-300 transition-all duration-300 ' + (i === 0 ? 'bg-blue-600 w-6' : '') + '" onclick="scrollToModalImage(' + i + ')"></button>').join('');
-
-                mediaHtml = '<div class="relative w-full mb-6 group"><div id="news-slider-container" class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide rounded-[2rem] shadow-md border border-slate-100 cursor-grab select-none" onscroll="syncSliderDots(this)">' + imagesHtml + '</div><div class="flex justify-center gap-1.5 mt-4">' + dotsHtml + '</div><div class="text-center mt-2 md:hidden"><span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest animate-pulse"><i class="fas fa-arrows-left-right mr-1"></i> Geser Foto</span></div></div>';
+                const imagesHtml = imageUrls.map(url => '<img src="' + url + '" class="w-full h-[240px] sm:h-[360px] md:h-[440px] flex-shrink-0 snap-center object-cover pointer-events-none">').join('');
+                const dotsHtml = imageUrls.map((_, i) => '<button class="slider-dot w-2 h-2 rounded-full bg-slate-300 transition-all duration-300 ' + (i === 0 ? 'bg-blue-600 w-6' : '') + '" onclick="scrollToModalImage(' + i + ')"></button>').join('');
+                mediaHtml = '<div class="relative w-full mb-8 group">'
+                    + '<div id="news-slider-container" class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide rounded-3xl shadow-lg border border-slate-200 cursor-grab select-none" onscroll="syncSliderDots(this)">' + imagesHtml + '</div>'
+                    + '<button type="button" onclick="geserBeritaSlider(-1)" class="hidden md:flex absolute left-3 top-[40%] w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white items-center justify-center transition-colors"><i class="fas fa-chevron-left"></i></button>'
+                    + '<button type="button" onclick="geserBeritaSlider(1)" class="hidden md:flex absolute right-3 top-[40%] w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white items-center justify-center transition-colors"><i class="fas fa-chevron-right"></i></button>'
+                    + '<div class="flex justify-center gap-1.5 mt-4">' + dotsHtml + '</div>'
+                    + '<div class="text-center mt-2 md:hidden"><span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest animate-pulse"><i class="fas fa-arrows-left-right mr-1"></i> Geser Foto</span></div>'
+                    + '</div>';
             } else if (imageUrls.length === 1) {
-                mediaHtml = '<img src="' + imageUrls[0] + '" class="w-full rounded-[2rem] mb-6 shadow-md border border-slate-100 object-cover max-h-[350px]">';
+                mediaHtml = '<img src="' + imageUrls[0] + '" class="w-full rounded-3xl mb-8 shadow-lg border border-slate-200 object-cover max-h-[480px]">';
             }
 
-            Swal.fire({
-                title: '<span class="font-black text-2xl md:text-3xl text-left block leading-tight text-slate-900">' + b.judul + '</span>',
-                html: '<div class="text-left mt-6 overflow-y-auto max-h-[60vh] pr-4">' + mediaHtml + '<div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-4"><div class="flex flex-col gap-1.5 items-start"><p class="text-[10px] font-black text-blue-600 uppercase tracking-widest inline-block bg-blue-50 px-3 py-1 rounded-full">' + b.tanggal + '</p>' + (getPenulisBerita(b) ? '<p class="text-[11px] font-bold text-slate-500"><i class="fas fa-pen-nib text-blue-500 mr-1.5"></i>Oleh ' + getPenulisBerita(b) + '</p>' : '') + '</div><div class="flex items-center gap-4 text-slate-500 text-[11px] font-bold"><span id="view-modal-' + index + '" class="flex items-center gap-1.5"><i class="fas fa-eye text-blue-500"></i> ' + (b.views || 0) + ' x dilihat</span><button onclick="shareNews(' + index + ')" class="flex items-center gap-1.5 hover:text-blue-600 transition-colors bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm"><i class="fas fa-share-nodes text-blue-500"></i> Bagikan</button></div></div><div class="text-slate-600 leading-[1.8] space-y-4 font-medium text-base">' + (b.konten||'').split('\n').map(p => '<p>' + p + '</p>').join('') + '</div></div>',
-                width: '800px', showConfirmButton: false, showCloseButton: true, customClass: { popup: 'rounded-[2.5rem] p-8 md:p-12' },
-                didClose: () => {
-                    // Ditambahkan: modal berita ditutup -> hapus berita_id dari URL address bar.
-                    CURRENT_OPEN_BERITA_ID = '';
-                    syncUrlToParent();
-                },
-                didOpen: () => {
-                    const slider = document.getElementById('news-slider-container');
-                    if (slider) {
-                        let isDown = false;
-                        let startX;
-                        let scrollLeft;
+            // ---------- Berita lainnya (3 terbaru selain yang dibuka) ----------
+            const lainnya = ambilNTerbaruByTanggal(DATA.berita || [], (DATA.berita || []).length)
+                .filter(x => x.idx !== index).slice(0, 3);
+            const lainnyaHtml = lainnya.length === 0 ? '' :
+                '<section class="max-w-5xl mx-auto px-5 pb-16"><h2 class="font-black text-xl text-slate-900 mb-5 flex items-center gap-2"><i class="fas fa-newspaper text-blue-600"></i> Berita Lainnya</h2>'
+                + '<div class="grid grid-cols-1 md:grid-cols-3 gap-5">'
+                + lainnya.map(({ item, idx }) => {
+                    const g = (item.gambar_url || item.gambar || '').split(',')[0].trim();
+                    return '<button type="button" onclick="readFullNews(' + idx + ')" class="text-left bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">'
+                        + (g ? '<img src="' + g + '" class="w-full h-40 object-cover">' : '<div class="w-full h-40 bg-slate-100"></div>')
+                        + '<div class="p-4"><span class="text-[9px] font-black text-blue-600 uppercase tracking-widest">' + (item.tanggal || '') + '</span>'
+                        + '<h3 class="font-bold text-slate-900 mt-1.5 leading-snug line-clamp-2">' + (item.judul || '') + '</h3></div></button>';
+                }).join('')
+                + '</div></section>';
 
-                        slider.addEventListener('mousedown', (e) => {
-                            isDown = true;
-                            slider.style.scrollSnapType = 'none';
-                            slider.classList.add('cursor-grabbing');
-                            slider.classList.remove('cursor-grab');
-                            startX = e.pageX - slider.offsetLeft;
-                            scrollLeft = slider.scrollLeft;
-                        });
+            // ---------- Halaman ----------
+            const html =
+                '<div style="position:sticky;top:0;z-index:5;background:rgba(11,22,42,.96);backdrop-filter:blur(8px);border-bottom:2px solid #eab308;">'
+                + '<div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-3">'
+                + '<button type="button" onclick="tutupBeritaPageBtn()" class="flex items-center gap-2 text-white font-bold text-sm hover:text-[#ffc107] transition-colors"><i class="fas fa-arrow-left"></i> Kembali</button>'
+                + '<span class="hidden sm:block text-[#ffc107] font-black text-[11px] tracking-widest uppercase">SMK IT Al Mubarok &bull; Artikel &amp; Berita</span>'
+                + '<button type="button" onclick="shareNews(' + index + ')" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-3.5 py-2 rounded-lg text-xs font-bold transition-colors"><i class="fas fa-share-nodes"></i> Bagikan</button>'
+                + '</div></div>'
+                + '<article class="max-w-3xl mx-auto px-5 pt-8 pb-12 md:pt-12">'
+                + '<span class="inline-block text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-full mb-4">Artikel &amp; Berita</span>'
+                + '<h1 class="font-black text-3xl md:text-5xl text-slate-900 leading-[1.15] tracking-tight">' + (b.judul || '') + '</h1>'
+                + '<div class="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 pb-6 mb-8 border-b border-slate-200 text-[13px] text-slate-500 font-semibold">'
+                + (penulis ? '<span class="flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-black">' + penulis.charAt(0).toUpperCase() + '</span><span class="text-slate-700 font-bold">' + penulis + '</span></span>' : '')
+                + '<span class="flex items-center gap-1.5"><i class="far fa-calendar text-blue-500"></i> ' + (b.tanggal || '') + '</span>'
+                + '<span id="view-modal-' + index + '" class="flex items-center gap-1.5"><i class="fas fa-eye text-blue-500"></i> ' + (b.views || 0) + ' x dilihat</span>'
+                + '<span class="flex items-center gap-1.5"><i class="far fa-clock text-blue-500"></i> ' + menitBaca + ' menit baca</span>'
+                + '</div>'
+                + mediaHtml
+                + '<div class="text-slate-700 text-[17px] md:text-lg leading-[1.9] space-y-5 font-medium">' + paragraf.map(t => '<p>' + t + '</p>').join('') + '</div>'
+                + '<div class="mt-10 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">'
+                + '<button type="button" onclick="tutupBeritaPageBtn()" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 font-bold text-sm transition-colors"><i class="fas fa-arrow-left"></i> Kembali ke daftar berita</button>'
+                + '<button type="button" onclick="shareNews(' + index + ')" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow transition-colors"><i class="fas fa-share-nodes"></i> Bagikan berita ini</button>'
+                + '</div>'
+                + '</article>'
+                + lainnyaHtml;
 
-                        const stopDragging = () => {
-                            if(!isDown) return;
-                            isDown = false;
-                            slider.classList.remove('cursor-grabbing');
-                            slider.classList.add('cursor-grab');
-                            slider.style.scrollSnapType = 'x mandatory';
-                        };
+            // ---------- Pasang / perbarui overlay ----------
+            let overlay = document.getElementById('berita-page-overlay');
+            const sudahTerbuka = !!overlay;
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'berita-page-overlay';
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:99990;overflow-y:auto;background:#f8fafc;-webkit-overflow-scrolling:touch;';
+                document.body.appendChild(overlay);
+                BERITA_PAGE_PREV_OVERFLOW = document.body.style.overflow;
+                document.body.style.overflow = 'hidden';
+                document.addEventListener('keydown', _beritaPageEsc);
+            }
+            overlay.innerHTML = html;
+            overlay.scrollTop = 0;
 
-                        slider.addEventListener('mouseleave', stopDragging);
-                        slider.addEventListener('mouseup', stopDragging);
-                        
-                        slider.addEventListener('mousemove', (e) => {
-                            if (!isDown) return;
-                            e.preventDefault(); 
-                            const x = e.pageX - slider.offsetLeft;
-                            const walk = (x - startX) * 1.5; 
-                            slider.scrollLeft = scrollLeft - walk;
-                        });
-                    }
-                }
-            });
+            // ---------- URL & history ----------
+            const diTop = (window.self === window.top);
+            if (diTop && !dariHistory && !sudahTerbuka) {
+                try { history.pushState({ beritaIdx: index }, '', window.location.href); BERITA_PAGE_PUSHED = true; } catch (e) { BERITA_PAGE_PUSHED = false; }
+            } else if (diTop && dariHistory) {
+                BERITA_PAGE_PUSHED = true;
+            }
+            CURRENT_OPEN_BERITA_ID = index;
+            syncUrlToParent();
+            if (diTop) { try { history.replaceState({ beritaIdx: index }, '', window.location.href); } catch (e) {} }
 
+            // ---------- Geser foto dengan mouse (drag) ----------
+            const slider = document.getElementById('news-slider-container');
+            if (slider) {
+                let isDown = false, startX = 0, scrollLeft = 0;
+                slider.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    slider.style.scrollSnapType = 'none';
+                    slider.classList.add('cursor-grabbing');
+                    slider.classList.remove('cursor-grab');
+                    startX = e.pageX - slider.offsetLeft;
+                    scrollLeft = slider.scrollLeft;
+                });
+                const stopDragging = () => {
+                    if (!isDown) return;
+                    isDown = false;
+                    slider.classList.remove('cursor-grabbing');
+                    slider.classList.add('cursor-grab');
+                    slider.style.scrollSnapType = 'x mandatory';
+                };
+                slider.addEventListener('mouseleave', stopDragging);
+                slider.addEventListener('mouseup', stopDragging);
+                slider.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    slider.scrollLeft = scrollLeft - (e.pageX - slider.offsetLeft - startX) * 1.5;
+                });
+            }
+
+            // ---------- Hitung jumlah dilihat ----------
             if (b._rowId) {
-                google.script.run.withSuccessHandler(function(newViews) {
+                google.script.run.withSuccessHandler(function (newViews) {
                     const modalView = document.getElementById('view-modal-' + index);
-                    if (modalView) {
-                        modalView.innerHTML = '<i class="fas fa-eye text-blue-500"></i> ' + newViews + ' x dilihat';
-                    }
+                    if (modalView) modalView.innerHTML = '<i class="fas fa-eye text-blue-500"></i> ' + newViews + ' x dilihat';
                     const cardView = document.getElementById('view-card-' + index);
-                    if (cardView) {
-                        cardView.innerHTML = '<i class="fas fa-eye text-blue-500"></i> ' + newViews;
-                    }
+                    if (cardView) cardView.innerHTML = '<i class="fas fa-eye text-blue-500"></i> ' + newViews;
                 }).tambahViewBerita(b._rowId);
             }
         }

@@ -1021,6 +1021,48 @@ html.dark .mv-label{color:#94a3b8}
     html.dark #program-keahlian .mb-10 .group p{color:#94a3b8!important}
     html.dark #program-keahlian .mb-10 .group::before{color:#1c2942}
     </style>
+    <style id="usu-hero-its">
+    /* ===== HERO GAYA ITS: layar penuh, navbar transparan menumpuk di atas hero ===== */
+    html.usu-home nav.sticky{margin-bottom:-80px}
+    @media(min-width:768px){html.usu-home nav.sticky{margin-bottom:-90px}}
+    nav.sticky{transition:background .3s,box-shadow .3s}
+    html.usu-onhero nav.sticky{background:linear-gradient(180deg,rgba(10,31,68,.78),rgba(10,31,68,0))!important;border-bottom:0!important;box-shadow:none!important}
+    html.usu-onhero nav.sticky #header-nama-sekolah{color:#fff!important}
+    html.usu-onhero nav.sticky .group span.uppercase{color:#fde68a!important}
+    html.usu-onhero nav.sticky #nav-container>a,html.usu-onhero nav.sticky #nav-container button{color:#fff!important}
+    html.usu-onhero nav.sticky #nav-container>a:hover,html.usu-onhero nav.sticky #nav-container button:hover{color:#fde68a!important}
+    html.usu-onhero nav.sticky button.md\:block{background:#fff!important;color:#0f2f6b!important}
+    html.usu-onhero nav.sticky button.md\:hidden{color:#fff!important}
+    html.usu-onhero nav.sticky .group>div:first-child img{filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+    header[class*="h-[85vh]"]{width:100%!important;max-width:none!important;margin:0!important;border-radius:0!important;box-shadow:none!important;height:clamp(600px,calc(100vh - 36px),900px)!important;background:#0a1f44!important}
+    header[class*="h-[85vh]"]::after{z-index:11!important;-webkit-mask-image:linear-gradient(90deg,#000 0%,transparent 62%)!important;mask-image:linear-gradient(90deg,#000 0%,transparent 62%)!important;opacity:.9}
+    #hero-slides-wrapper{max-width:none!important;width:100%!important;height:100%!important;align-self:stretch}
+    .hero-slide{height:100%!important}
+    .hero-slide .absolute.inset-0 .bg-black\/45{background:linear-gradient(90deg,rgba(10,31,68,.96) 0%,rgba(15,47,107,.82) 36%,rgba(15,47,107,.25) 72%,rgba(15,47,107,.05) 100%)!important}
+    .hero-slide .relative.z-10{height:100%!important;padding-top:70px}
+    .hero-slide .relative.z-10>div{max-width:1180px!important}
+    .hero-slide h2{text-transform:none!important;font-weight:700!important;letter-spacing:-.015em!important;font-size:clamp(2.1rem,5vw,4rem)!important;line-height:1.12!important;text-shadow:0 4px 24px rgba(0,0,0,.35)}
+    .hero-slide .max-w-2xl{max-width:640px!important}
+    .hero-slide .border-l-\[4px\]{border:0!important;background:none!important;padding:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-radius:0!important}
+    .hero-slide .border-l-\[4px\] p{font-style:normal!important;color:rgba(255,255,255,.94)!important;font-weight:500!important;font-size:clamp(.95rem,1.4vw,1.12rem)!important;line-height:1.75!important}
+    /* tombol CTA */
+    .usu-hero-cta{position:absolute;z-index:30;left:max(24px,calc((100vw - 1180px)/2 + 24px));bottom:118px;display:flex;align-items:center;gap:22px}
+    .usu-hero-cta .c1{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.55);color:#fff;font-weight:700;font-size:14px;padding:13px 26px;border-radius:999px;backdrop-filter:blur(6px);display:inline-flex;gap:10px;align-items:center;transition:.25s}
+    .usu-hero-cta .c1:hover{background:#fff;color:#0f2f6b}
+    .usu-hero-cta .c2{color:#fff;font-weight:700;font-size:14px;display:inline-flex;gap:8px;align-items:center;background:none;border:0;transition:.25s}
+    .usu-hero-cta .c2:hover{color:#fde68a;gap:12px}
+    /* indikator slide gaya tab ITS */
+    header[class*="h-[85vh]"] #hero-dots-container{left:max(24px,calc((100vw - 1180px)/2 + 24px))!important;transform:none!important;bottom:56px!important;gap:12px!important;justify-content:flex-start}
+    .hero-dot{width:90px!important;height:4px!important;border-radius:4px!important;background:rgba(255,255,255,.35)!important}
+    .hero-dot.w-8{width:150px!important;background:#fbbf24!important}
+    section.relative.z-20.max-w-7xl{margin-top:34px!important}
+    @media(max-width:767px){
+      header[class*="h-[85vh]"]{height:clamp(560px,100svh,780px)!important}
+      .usu-hero-cta{left:20px;bottom:96px;gap:14px}.usu-hero-cta .c1{padding:11px 20px;font-size:13px}
+      header[class*="h-[85vh]"] #hero-dots-container{left:20px!important;bottom:46px!important}
+      .hero-dot{width:44px!important}.hero-dot.w-8{width:80px!important}
+    }
+    </style>
 </head>
 <body class="text-slate-800">
 
@@ -1106,6 +1148,7 @@ html.dark .mv-label{color:#94a3b8}
                     </div>
 
                     <div class="wv wv-b wv-page"><svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="wv-back" fill="currentColor" d="M0,48 C200,8 420,96 700,64 C980,32 1200,10 1440,56 L1440,120 L0,120 Z"/><path fill="currentColor" d="M0,72 C240,118 480,24 720,64 C960,104 1200,112 1440,58 L1440,120 L0,120 Z"/></svg></div>
+                    <div class="usu-hero-cta"><button type="button" class="c1" onclick="scrollToSection('berita')">Berita Terbaru <i class="fas fa-chevron-right text-[11px]"></i></button><button type="button" class="c2" onclick="showSection('profil')">Jelajahi Sekolah <i class="fas fa-chevron-right text-[11px]"></i></button></div>
                     <div class="absolute bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30" id="hero-dots-container">
                         <!-- Bulatan navigasi diisi dinamis via JavaScript -->
                     </div>
@@ -9690,6 +9733,11 @@ html.dark .mv-label{color:#94a3b8}
     setTimeout(function(){els.forEach(function(el){el.classList.add('rv-in');});},4000);
   }catch(e){}
 })();
+</script>
+<script>
+/* Tampilan hero gaya ITS: navbar transparan hanya saat di beranda & paling atas */
+(function(){var h=document.documentElement;function f(){var c=document.getElementById('content-home');var home=!!(c&&c.getClientRects().length>0);h.classList.toggle('usu-home',home);h.classList.toggle('usu-onhero',home&&(window.scrollY||0)<40)}
+window.addEventListener('scroll',f,{passive:true});document.addEventListener('click',function(){setTimeout(f,80)},true);setInterval(f,400);f()})();
 </script>
 </body>
 </html>

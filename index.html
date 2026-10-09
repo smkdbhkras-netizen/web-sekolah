@@ -1045,6 +1045,9 @@ html.dark .mv-label{color:#94a3b8}
     .hero-slide .max-w-2xl{max-width:640px!important}
     .hero-slide .border-l-\[4px\]{border:0!important;background:none!important;padding:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-radius:0!important}
     .hero-slide .border-l-\[4px\] p{font-style:normal!important;color:rgba(255,255,255,.94)!important;font-weight:500!important;font-size:clamp(.95rem,1.4vw,1.12rem)!important;line-height:1.75!important}
+    /* sisakan ruang di bawah teks hero supaya tidak menumpuk dengan tombol CTA */
+    .hero-slide .relative.z-10{padding-bottom:190px!important;box-sizing:border-box}
+    .hero-slide .border-l-\[4px\] p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
     /* tombol CTA */
     .usu-hero-cta{position:absolute;z-index:30;left:max(24px,calc((100vw - 1180px)/2 + 24px));bottom:118px;display:flex;align-items:center;gap:22px}
     .usu-hero-cta .c1{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.55);color:#fff;font-weight:700;font-size:14px;padding:13px 26px;border-radius:999px;backdrop-filter:blur(6px);display:inline-flex;gap:10px;align-items:center;transition:.25s}
@@ -1058,6 +1061,8 @@ html.dark .mv-label{color:#94a3b8}
     section.relative.z-20.max-w-7xl{margin-top:34px!important}
     @media(max-width:767px){
       header[class*="h-[85vh]"]{height:clamp(560px,100svh,780px)!important}
+      .hero-slide .relative.z-10{padding-bottom:165px!important}
+      .hero-slide .border-l-\[4px\] p{-webkit-line-clamp:4}
       .usu-hero-cta{left:20px;bottom:96px;gap:14px}.usu-hero-cta .c1{padding:11px 20px;font-size:13px}
       header[class*="h-[85vh]"] #hero-dots-container{left:20px!important;bottom:46px!important}
       .hero-dot{width:44px!important}.hero-dot.w-8{width:80px!important}

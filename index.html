@@ -1785,6 +1785,27 @@ html.dark #program-keahlian.kp .kp-row-num{color:#2b3a58}
 #program-keahlian.kp .kp-row-arrow{font-size:13px;color:#94a3b8;transition:.28s}
 #program-keahlian.kp .kp-row.is-active .kp-row-arrow{color:var(--kp-amber);transform:translateX(4px)}
 
+
+/* ---------- Corak pada baris kompetensi (sebelum dipilih) ---------- */
+#program-keahlian.kp .kp-row{--a:37,99,201;--ah:#2563c9;overflow:hidden;background-color:var(--kp-card);
+ background-image:linear-gradient(105deg,rgba(var(--a),.13) 0%,rgba(var(--a),.04) 55%,transparent 80%),var(--kp-pat);
+ background-repeat:no-repeat,repeat;background-size:100% 100%,48px 48px}
+#program-keahlian.kp .kp-row:nth-child(1){--a:37,99,201;--ah:#2563c9;--kp-pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg fill='none' stroke='%232563c9' stroke-opacity='.16' stroke-width='1.5'%3E%3Cpath d='M24 3l21 21-21 21L3 24z'/%3E%3Cpath d='M24 14l10 10-10 10-10-10z'/%3E%3C/g%3E%3C/svg%3E")}
+#program-keahlian.kp .kp-row:nth-child(2){--a:225,29,72;--ah:#e11d48;--kp-pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg fill='none' stroke='%23e11d48' stroke-opacity='.16' stroke-width='1.5'%3E%3Cpath d='M24 3l21 21-21 21L3 24z'/%3E%3Cpath d='M24 14l10 10-10 10-10-10z'/%3E%3C/g%3E%3C/svg%3E")}
+#program-keahlian.kp .kp-row:nth-child(3){--a:245,158,11;--ah:#f59e0b;--kp-pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg fill='none' stroke='%23f59e0b' stroke-opacity='.22' stroke-width='1.5'%3E%3Cpath d='M24 3l21 21-21 21L3 24z'/%3E%3Cpath d='M24 14l10 10-10 10-10-10z'/%3E%3C/g%3E%3C/svg%3E")}
+/* corak memudar ke arah kiri agar teks tetap jelas */
+#program-keahlian.kp .kp-row>*{position:relative;z-index:1}
+#program-keahlian.kp .kp-row::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(90deg,var(--kp-card) 30%,rgba(255,255,255,0) 78%);opacity:.9;transition:.28s}
+html.dark #program-keahlian.kp .kp-row::after{background:linear-gradient(90deg,var(--kp-card) 30%,rgba(21,31,50,0) 78%)}
+#program-keahlian.kp .kp-row:hover::after,#program-keahlian.kp .kp-row.is-active::after{opacity:.55}
+/* ikon besar samar di sudut kanan */
+#program-keahlian.kp .kp-row .kp-row-txt::after{content:"";position:absolute;right:-6px;top:50%;width:0;height:0}
+#program-keahlian.kp .kp-row .kp-row-arrow{position:relative;z-index:1}
+#program-keahlian.kp .kp-row::before{z-index:2}
+#program-keahlian.kp .kp-row-ghost{position:absolute!important;right:-8px;top:50%;transform:translateY(-50%) rotate(-10deg);z-index:0!important;font-size:6.2rem;line-height:1;color:rgba(var(--a),.13);pointer-events:none;transition:.4s}
+#program-keahlian.kp .kp-row:hover .kp-row-ghost,#program-keahlian.kp .kp-row.is-active .kp-row-ghost{transform:translateY(-50%) rotate(0) scale(1.1);color:rgba(var(--a),.2)}
+#program-keahlian.kp .kp-row-icon{box-shadow:0 8px 16px rgba(var(--a),.22)}
+#program-keahlian.kp .kp-row.is-active{background-image:linear-gradient(105deg,rgba(var(--a),.22) 0%,rgba(var(--a),.07) 60%,transparent 85%),var(--kp-pat)}
 /* ---------- Program Unggulan: kartu bergaya USU ---------- */
 #program-keahlian.kp .kp-prog{display:grid;grid-template-columns:1fr;gap:22px}
 @media(min-width:768px){#program-keahlian.kp .kp-prog{grid-template-columns:1fr 1fr}}
@@ -1845,19 +1866,19 @@ html.dark #program-keahlian.kp .kp-more{color:#93c5fd}
       <span class="kp-row-num">01</span>
       <span class="kp-row-icon"><i class="fas fa-pills"></i></span>
       <span class="kp-row-txt"><h4 id="komp-farmasi-title">Farmasi</h4><p id="komp-farmasi-desc">Mempelajari ilmu meracik obat, farmakologi, dan layanan kefarmasian klinis yang profesional dan handal.</p></span>
-      <i class="fas fa-chevron-right kp-row-arrow"></i>
+      <i class="fas fa-chevron-right kp-row-arrow"></i><i class="fas fa-pills kp-row-ghost"></i>
     </div>
     <div class="kp-row" role="tab" tabindex="0" aria-selected="false" data-i="1" data-icon="fa-user-nurse">
       <span class="kp-row-num">02</span>
       <span class="kp-row-icon"><i class="fas fa-user-nurse"></i></span>
       <span class="kp-row-txt"><h4 id="komp-keperawatan-title">Asisten Keperawatan</h4><p id="komp-keperawatan-desc">Mencetak tenaga kesehatan kompeten dengan keterampilan dasar keperawatan untuk melayani masyarakat.</p></span>
-      <i class="fas fa-chevron-right kp-row-arrow"></i>
+      <i class="fas fa-chevron-right kp-row-arrow"></i><i class="fas fa-user-nurse kp-row-ghost"></i>
     </div>
     <div class="kp-row" role="tab" tabindex="0" aria-selected="false" data-i="2" data-icon="fa-bezier-curve">
       <span class="kp-row-num">03</span>
       <span class="kp-row-icon"><i class="fas fa-bezier-curve"></i></span>
       <span class="kp-row-txt"><h4 id="komp-dkv-title">Desain Komunikasi Visual</h4><p id="komp-dkv-desc">Mengembangkan kreativitas di bidang desain grafis, multimedia, dan komunikasi visual berbasis teknologi modern.</p></span>
-      <i class="fas fa-chevron-right kp-row-arrow"></i>
+      <i class="fas fa-chevron-right kp-row-arrow"></i><i class="fas fa-bezier-curve kp-row-ghost"></i>
     </div>
   </div>
 </div>

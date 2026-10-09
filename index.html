@@ -2203,7 +2203,22 @@ html.dark #sambutan-section.sm .sm-photo-in img{filter:drop-shadow(0 14px 24px r
                     <div class="usu-band b2"><div class="usu-mock"><div class="usu-dots"><i style="background:#ef4444"></i><i style="background:#eab308"></i><i style="background:#22c55e"></i></div><h5>Pendaftaran &amp; Kompetensi</h5><button type="button" onclick="var q=document.getElementById('quick-menu-ppdb');if(q)q.click()"><i class="far fa-circle-check"></i>Pendaftaran SPMB Online</button><button type="button" onclick="scrollToSection('program-keahlian')"><i class="far fa-circle-check"></i>Kompetensi Keahlian</button><button type="button" onclick="scrollToSection('move-promo')"><i class="far fa-circle-check"></i>Program Unggulan MOVE</button><button type="button" onclick="scrollToSection('guru')"><i class="far fa-circle-check"></i>Guru &amp; Tenaga Pendidik</button><button type="button" onclick="scrollToSection('kontak')"><i class="far fa-circle-check"></i>Kontak &amp; Lokasi</button></div><div><div class="usu-badge"><i class="fas fa-user-graduate"></i></div><h4>Daftar dan kenali kompetensi keahlianmu sekarang.</h4><p>Dari pendaftaran SPMB hingga memilih jurusan impian, semuanya tersedia dalam satu platform. Hilangkan kerumitan, mulai langkah pertamamu bersama kami.</p><button type="button" class="usu-cta" onclick="var q=document.getElementById('quick-menu-ppdb');if(q)q.click()">Daftar SPMB <i class="fas fa-arrow-right"></i></button></div></div>
                 </div>
 
-                <!-- BERITA UI (gaya referensi: intro + unggulan horizontal + kartu rapi) -->
+                <!-- LAYANAN DIGITAL: daftar isi nyata di jendela -->
+<style id="ld-list-ui">
+.ld-win.ld-list{height:auto!important;padding:14px 20px 16px;border-radius:14px 14px 0 0}
+.ld-jdl{font-size:13px;font-weight:900;color:#17408f;margin:0 0 10px;padding-bottom:8px;border-bottom:1px dashed #cbd9ee;letter-spacing:.01em}
+.ld-it{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;line-height:1.35;font-weight:600;color:#1e293b}
+.ld-it+.ld-it{border-top:1px solid #eef2f9}
+.ld-ck{flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:#e3ecfb;color:#17408f;display:flex;align-items:center;justify-content:center;font-size:10px}
+.ld-tx{flex:1;min-width:0}
+.ld-qty{flex:none;font-style:normal;font-size:11px;font-weight:800;color:#92400e;background:#fff3cd;padding:3px 9px;border-radius:999px;white-space:nowrap}
+@media(min-width:768px){.ld-win.ld-list{flex:0 0 42%;height:auto!important;border-radius:14px;padding-bottom:16px}}
+html.dark .ld-it{color:#e2e8f0}html.dark .ld-it+.ld-it{border-top-color:#24324d}
+html.dark .ld-jdl{color:#93c5fd;border-bottom-color:#2c3d5c}
+html.dark .ld-ck{background:#1e2f52;color:#93c5fd}
+html.dark .ld-qty{background:#3a2e0b;color:#fde68a}
+</style>
+<!-- BERITA UI (gaya referensi: intro + unggulan horizontal + kartu rapi) -->
 <style id="berita-ui">
 #berita{background:#f3f6fc!important;background-image:none!important;border-radius:0!important;width:100%!important;max-width:none!important;margin:0!important;padding-top:64px!important;padding-bottom:72px!important;overflow:visible!important}
 #berita::after{display:none!important}
@@ -5376,8 +5391,26 @@ html.dark #berita .bn-pill{background:#3a2e0b;color:#fde68a}
             if (!sec || !root) return;
             const U = (k) => { const v = String((config && config[k]) || '').trim(); return /^https?:\/\//i.test(v) ? v : ''; };
             const feat = [
-                { k: 'link_ppdb', ic: 'fa-user-plus', name: 'SPMB ONLINE', lead: 'Daftar sebagai calon peserta didik baru langsung dari HP atau komputer.', p: 'Proses pendaftaran dibuat sederhana dan bisa dilakukan kapan saja, tanpa harus antre di sekolah.', btn: 'Daftar Sekarang' },
-                { k: 'link_lms', ic: 'fa-laptop-code', name: 'LMS SEKOLAH', lead: 'Ruang belajar digital untuk siswa dan guru.', p: 'Akses kegiatan pembelajaran daring sekolah dengan mudah dalam satu tempat.', btn: 'Buka LMS' }
+                { k: 'link_ppdb', ic: 'fa-user-plus', name: 'SPMB ONLINE', lead: 'Daftar sebagai calon peserta didik baru langsung dari HP atau komputer.', p: 'Proses pendaftaran dibuat sederhana dan bisa dilakukan kapan saja, tanpa harus antre di sekolah.', btn: 'Daftar Sekarang',
+                  jdl: 'Berkas Persyaratan SPMB',
+                  items: [
+                    { t: 'Fotokopi Kartu Keluarga (KK)', q: '4 lembar' },
+                    { t: 'Fotokopi Akta Kelahiran', q: '4 lembar' },
+                    { t: 'Fotokopi KTP Orang Tua', q: '4 lembar' },
+                    { t: 'Fotokopi Ijazah' },
+                    { t: 'Pas Foto Berseragam SMP 4x6', q: '2 lembar' },
+                    { t: 'Materai Rp10.000', q: '1 lembar' }
+                  ] },
+                { k: 'link_lms', ic: 'fa-laptop-code', name: 'LMS SEKOLAH', lead: 'Ruang belajar digital untuk siswa dan guru.', p: 'Akses kegiatan pembelajaran daring sekolah dengan mudah dalam satu tempat.', btn: 'Buka LMS',
+                  jdl: 'Fitur Ruang Belajar',
+                  items: [
+                    { t: 'Materi Pembelajaran', ic: 'fa-book-open' },
+                    { t: 'Penugasan dari Guru', ic: 'fa-pen-to-square' },
+                    { t: 'Pengumpulan Tugas', ic: 'fa-cloud-arrow-up' },
+                    { t: 'Kuis & Ujian Online', ic: 'fa-list-check' },
+                    { t: 'Nilai & Hasil Belajar', ic: 'fa-chart-line' },
+                    { t: 'Pengumuman Kelas', ic: 'fa-bullhorn' }
+                  ] }
             ].filter(f => U(f.k));
             const chips = [
                 { k: 'link_e_supervisi', ic: 'fa-clipboard-check', t: 'E-Supervisi' },
@@ -5392,7 +5425,12 @@ html.dark #berita .bn-pill{background:#3a2e0b;color:#fde68a}
                 + '<div class="ld-txt"><span class="ld-badge"><i class="fas ' + f.ic + '"></i> ' + f.name + '</span>'
                 + '<p class="ld-lead">' + f.lead + '</p><p class="ld-p">' + f.p + '</p>'
                 + '<a class="ld-btn" href="' + kgEsc(U(f.k)) + '" target="_blank" rel="noopener">' + f.btn + ' <i class="fas fa-arrow-right"></i></a></div>'
-                + '<div class="ld-win"><div class="ld-dots"><i></i><i></i><i></i></div>' + rows + '<i class="fas ' + f.ic + ' ld-wico"></i></div>'
+                + (f.items
+                    ? '<div class="ld-win ld-list"><div class="ld-dots"><i></i><i></i><i></i></div>'
+                      + '<div class="ld-jdl">' + f.jdl + '</div>'
+                      + f.items.map(it => '<div class="ld-it"><span class="ld-ck"><i class="fas ' + (it.ic || 'fa-check') + '"></i></span><span class="ld-tx">' + it.t + '</span>' + (it.q ? '<em class="ld-qty">' + it.q + '</em>' : '') + '</div>').join('')
+                      + '</div>'
+                    : '<div class="ld-win"><div class="ld-dots"><i></i><i></i><i></i></div>' + rows + '<i class="fas ' + f.ic + ' ld-wico"></i></div>')
                 + '</div>').join('');
             if (chips.length) h += '<div class="ld-chips">' + chips.map(c => '<a class="ld-chip" href="' + kgEsc(U(c.k)) + '" target="_blank" rel="noopener"><i class="fas ' + c.ic + '"></i><span>' + c.t + '</span></a>').join('') + '</div>';
             root.innerHTML = h;

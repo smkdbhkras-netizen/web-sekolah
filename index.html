@@ -925,6 +925,45 @@ html.dark .mv-label{color:#94a3b8}
     #berita{width:calc(100% - 32px)!important;max-width:1280px;margin:48px auto!important;border-radius:30px;overflow:hidden;background:linear-gradient(110deg,#055a2a 0%,#0b8a43 60%,#3fae3a 100%)!important}
     #kontak{margin-top:40px}
     @media(max-width:767px){header[class*="h-[85vh]"]{height:62vh!important;border-radius:20px}#berita{border-radius:22px;padding-left:16px!important;padding-right:16px!important}}
+        /* ===== TAHAP 2: aksen, ikon, pola batik, pita layanan ===== */
+    body{background-image:radial-gradient(circle at 0 0,rgba(63,174,58,.12),transparent 38%),radial-gradient(circle at 100% 35%,rgba(245,158,11,.09),transparent 34%);background-attachment:fixed}
+    header[class*="h-[85vh]"]::after,#berita::after,.usu-band::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.13' stroke-width='2'%3E%3Cpath d='M32 4l28 28-28 28L4 32z'/%3E%3Cpath d='M32 19l13 13-13 13-13-13z'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none;z-index:0;-webkit-mask-image:linear-gradient(90deg,transparent 35%,#000);mask-image:linear-gradient(90deg,transparent 35%,#000)}
+    #berita>.relative{z-index:2}
+    section .text-center>span.block::before{content:"\f06c";font-family:"Font Awesome 6 Free";font-weight:900;margin-right:7px}
+    section .text-center>h2.font-black::after,section .text-center>h3.font-black::after{content:"";display:block;width:64px;height:5px;border-radius:5px;background:linear-gradient(90deg,#f59e0b,#3fae3a);margin:14px auto 0}
+    #program-keahlian .group{background:linear-gradient(180deg,#fff 0%,#f1f8f1 100%)!important;border:1px solid #dcebdc!important;border-top:5px solid #0b8a43!important;position:relative;overflow:hidden}
+    #program-keahlian .group::after{content:"";position:absolute;right:-26px;top:-26px;width:90px;height:90px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cg fill='none' stroke='%230b8a43' stroke-opacity='.18' stroke-width='2'%3E%3Cpath d='M32 4l28 28-28 28L4 32z'/%3E%3Cpath d='M32 19l13 13-13 13-13-13z'/%3E%3C/g%3E%3C/svg%3E");opacity:.9}
+    #program-keahlian .group h4{color:#0a6b34!important}
+    #program-keahlian .group>div:first-child{border-radius:18px!important;box-shadow:0 8px 18px rgba(0,0,0,.10)}
+    #kontak{border-top:6px solid #f59e0b!important}
+    /* Strip ikon warna-warni */
+    .usu-pilar{display:flex;align-items:center;gap:26px;background:linear-gradient(120deg,#f4fbf3,#fffdf3);border:1px solid #dcebdc;border-radius:26px;padding:26px 30px;box-shadow:0 10px 28px rgba(10,107,52,.08)}
+    .usu-pilar h3{font-size:1.45rem;line-height:1.25;font-weight:800;color:#0a6b34;min-width:210px}
+    .usu-vl{width:3px;align-self:stretch;background:linear-gradient(#f59e0b,#3fae3a);border-radius:3px}
+    .usu-tiles{display:flex;gap:14px;flex-wrap:wrap;flex:1}
+    .usu-tile{width:68px;height:68px;border-radius:12px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;box-shadow:0 8px 16px rgba(0,0,0,.14);transition:.25s}
+    .usu-tile i{font-size:22px}.usu-tile span{font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;text-align:center;line-height:1.1;padding:0 3px}
+    .usu-tile:hover{transform:translateY(-6px) rotate(-3deg)}
+    /* Pita layanan gaya SILA/ASA */
+    .usu-bands{max-width:1280px;margin:0 auto 20px;padding:0 16px}
+    .usu-band{position:relative;overflow:hidden;border-radius:28px;padding:44px 48px;display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;color:#fff;margin-bottom:14px;background:linear-gradient(110deg,#055a2a,#0b8a43 60%,#3fae3a);box-shadow:0 16px 36px rgba(10,107,52,.22)}
+    .usu-band.b2{background:linear-gradient(110deg,#3fae3a,#0b8a43 45%,#055a2a)}
+    .usu-band>*{position:relative;z-index:1}
+    .usu-badge{width:54px;height:54px;border-radius:12px;background:#fff;color:#0a6b34;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;box-shadow:0 6px 14px rgba(0,0,0,.18)}
+    .usu-band h4{font-size:1.15rem;font-weight:800;margin-bottom:10px}
+    .usu-band p{font-size:13px;line-height:1.7;opacity:.92;margin-bottom:20px}
+    .usu-cta{background:#fff;color:#0a6b34;font-weight:800;font-size:12px;padding:10px 18px;border-radius:9px;border:0;display:inline-flex;gap:8px;align-items:center;box-shadow:0 6px 14px rgba(0,0,0,.16);transition:.2s}
+    .usu-cta:hover{transform:translateX(4px);background:#fef3c7}
+    .usu-mock{background:#fff;color:#1e293b;border-radius:18px;padding:18px 22px;box-shadow:0 18px 36px rgba(0,0,0,.22);position:relative}
+    .usu-dots{display:flex;gap:6px;margin-bottom:12px}.usu-dots i{width:9px;height:9px;border-radius:50%;display:block}
+    .usu-mock h5{font-size:14px;font-weight:800;color:#0a6b34;margin-bottom:10px}
+    .usu-mock button{display:flex;gap:9px;align-items:center;width:100%;text-align:left;font-size:12px;font-weight:600;padding:7px 0;color:#1e293b;background:none;border:0}
+    .usu-mock button i{color:#16a34a}
+    .usu-mock button:nth-of-type(n+4){opacity:.35}
+    .usu-mock button:hover{color:#0a6b34;padding-left:4px}
+    html.dark .usu-mock{background:#151f32;color:#e2e8f0}html.dark .usu-mock button{color:#e2e8f0}
+    html.dark .usu-pilar{background:#12202a;border-color:#24405a}
+    @media(max-width:767px){.usu-pilar{flex-direction:column;align-items:flex-start;padding:20px}.usu-vl{display:none}.usu-band{grid-template-columns:1fr;padding:28px 22px}.usu-band.b2 .usu-mock{order:2}}
     </style>
 </head>
 <body class="text-slate-800">
@@ -1443,6 +1482,8 @@ html.dark .mv-label{color:#94a3b8}
                 <!-- ========================================== -->
                 <!-- BANNER PROMO MOVE (menuju Informasi > Kegiatan) -->
                 <!-- ========================================== -->
+                <section id="usu-pilar" class="max-w-7xl mx-auto px-4 md:px-6 mb-16"><div class="usu-pilar"><h3>Peran Kami dalam<br>Pendidikan Berkarakter</h3><span class="usu-vl"></span><div class="usu-tiles"><button type="button" class="usu-tile" style="background:#0f766e" onclick="scrollToSection('sambutan-section')"><i class="fas fa-mosque"></i><span>Iman Takwa</span></button><button type="button" class="usu-tile" style="background:#f97316" onclick="scrollToSection('program-keahlian')"><i class="fas fa-graduation-cap"></i><span>Kompetensi</span></button><button type="button" class="usu-tile" style="background:#2563eb" onclick="showSection('informasi','kegiatan')"><i class="fas fa-laptop-code"></i><span>Teknologi</span></button><button type="button" class="usu-tile" style="background:#e11d74" onclick="scrollToSection('move-promo')"><i class="fas fa-hand-holding-heart"></i><span>Karakter</span></button><button type="button" class="usu-tile" style="background:#d97706" onclick="showSection('informasi','kegiatan')"><i class="fas fa-store"></i><span>Wirausaha</span></button><button type="button" class="usu-tile" style="background:#7c3aed" onclick="scrollToSection('berita')"><i class="fas fa-trophy"></i><span>Prestasi</span></button><button type="button" class="usu-tile" style="background:#16a34a" onclick="showSection('profil')"><i class="fas fa-leaf"></i><span>Lingkungan</span></button></div></div></section>
+
                 <section id="move-promo" class="max-w-7xl mx-auto px-6 mb-20 relative z-10">
                     <div class="mp-banner">
                                                 <i class="fas fa-hand-holding-heart mp-ico"></i>
@@ -1668,6 +1709,11 @@ html.dark .mv-label{color:#94a3b8}
                         <div id="ld-root" class="ld-wrap"></div>
                     </div>
                 </section>
+
+                <div class="usu-bands">
+                    <div class="usu-band"><div><div class="usu-badge"><i class="fas fa-circle-info"></i></div><h4>Kini, semua informasi sekolah bisa diakses dengan lebih mudah.</h4><p>Pengumuman, agenda kegiatan, profil, hingga berita terbaru SMK IT Al Mubarok terintegrasi dalam satu pintu digital, sehingga siswa, orang tua, dan masyarakat cepat menemukan yang dibutuhkan.</p><button type="button" class="usu-cta" onclick="showSection('informasi','Pengumuman')">Kunjungi Informasi <i class="fas fa-arrow-right"></i></button></div><div class="usu-mock"><div class="usu-dots"><i style="background:#ef4444"></i><i style="background:#eab308"></i><i style="background:#22c55e"></i></div><h5>Layanan Informasi Sekolah</h5><button type="button" onclick="showSection('informasi','Pengumuman')"><i class="far fa-circle-check"></i>Pengumuman Sekolah</button><button type="button" onclick="showSection('informasi','kegiatan')"><i class="far fa-circle-check"></i>Agenda &amp; Kegiatan</button><button type="button" onclick="scrollToSection('sambutan-section')"><i class="far fa-circle-check"></i>Profil &amp; Sambutan Kepala Sekolah</button><button type="button" onclick="scrollToSection('berita')"><i class="far fa-circle-check"></i>Berita &amp; Artikel Terbaru</button><button type="button" onclick="showSection('informasi','alumni')"><i class="far fa-circle-check"></i>Data Alumni</button></div></div>
+                    <div class="usu-band b2"><div class="usu-mock"><div class="usu-dots"><i style="background:#ef4444"></i><i style="background:#eab308"></i><i style="background:#22c55e"></i></div><h5>Pendaftaran &amp; Kompetensi</h5><button type="button" onclick="var q=document.getElementById('quick-menu-ppdb');if(q)q.click()"><i class="far fa-circle-check"></i>Pendaftaran SPMB Online</button><button type="button" onclick="scrollToSection('program-keahlian')"><i class="far fa-circle-check"></i>Kompetensi Keahlian</button><button type="button" onclick="scrollToSection('move-promo')"><i class="far fa-circle-check"></i>Program Unggulan MOVE</button><button type="button" onclick="scrollToSection('guru')"><i class="far fa-circle-check"></i>Guru &amp; Tenaga Pendidik</button><button type="button" onclick="scrollToSection('kontak')"><i class="far fa-circle-check"></i>Kontak &amp; Lokasi</button></div><div><div class="usu-badge"><i class="fas fa-user-graduate"></i></div><h4>Daftar dan kenali kompetensi keahlianmu sekarang.</h4><p>Dari pendaftaran SPMB hingga memilih jurusan impian, semuanya tersedia dalam satu platform. Hilangkan kerumitan, mulai langkah pertamamu bersama kami.</p><button type="button" class="usu-cta" onclick="var q=document.getElementById('quick-menu-ppdb');if(q)q.click()">Daftar SPMB <i class="fas fa-arrow-right"></i></button></div></div>
+                </div>
 
                 <!-- ARTIKEL / KABAR BERITA (BACKGROUND BIRU GELAP + PATTERN IKON) -->
                 <section id="berita" class="py-20 px-6 w-full bg-[#0b162a] relative" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27 viewBox=%270 0 160 160%27%3E%3Cg fill=%27%23ffffff%27 fill-opacity=%270.05%27%3E%3Cpath transform=%27translate(20, 20) scale(0.08) rotate(-15 256 256)%27 d=%27M96 96c0-35.3 28.7-64 64-64H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H80c-44.2 0-80-35.8-80-80V128c0-17.7 14.3-32 32-32s32 14.3 32 32V400c0 8.8 7.2 16 16 16s16-7.2 16-16V96zM320 320c0-8.8-7.2-16-16-16H192c-8.8 0-16 7.2-16 16s7.2 16 16 16h112c8.8 0 16-7.2 16-16zm0-64c0-8.8-7.2-16-16-16H192c-8.8 0-16 7.2-16 16s7.2 16 16 16h112c8.8 0 16-7.2 16-16zm0-64c0-8.8-7.2-16-16-16H192c-8.8 0-16 7.2-16 16s7.2 16 16 16h112c8.8 0 16-7.2 16-16z%27/%3E%3Cpath transform=%27translate(100, 80) scale(0.08) rotate(15 256 256)%27 d=%27M512 80c8.8 0 16 7.2 16 16v320c0 8.8-7.2 16-16 16H480V80h32zM432 80V432H208.8C182 432 156.4 419.6 139.7 398.9L69.3 312.3c-2.3-2.8-5.7-4.3-9.3-4.3H16c-8.8 0-16-7.2-16-16V220c0-8.8 7.2-16 16-16H60c3.6 0 7-1.5 9.3-4.3l70.4-86.6C156.4 92.4 182 80 208.8 80H432z%27/%3E%3C/g%3E%3C/svg%3E'); background-repeat: repeat;">

@@ -1957,103 +1957,129 @@ html.dark #program-keahlian.kp .kp-more{color:#93c5fd}
 </section>
 
                 <!-- SAMBUTAN & VISI MISI SPOTLIGHT SECTION (DESAIN SAAS/MODERN ROUNDED) -->
-                <section id="sambutan-section" class="sb-sec py-20 px-6 w-full bg-[#f8fafc] scroll-mt-24 border-y border-slate-100">
-                    <div class="max-w-7xl mx-auto">
-                        <div class="sb-grid flex flex-col lg:flex-row gap-12 items-stretch">
+                <section id="sambutan-section" class="sm scroll-mt-24">
+<style id="sm-style">
+/* ===== SAMBUTAN, VISI & MISI v2 ===== */
+#sambutan-section.sm{--navy:#0f2f6b;--blue:#2563c9;--amber:#f59e0b;--ink:#0f2f6b;--txt:#334155;--card:#fff;--line:#e3ebf8;--tile:#f5f8ff;
+ position:relative;overflow:hidden;padding:84px 24px 88px;background:linear-gradient(180deg,#eef4ff 0%,#f8fbff 55%,#fff 100%);border-top:1px solid #e3ebf8;border-bottom:1px solid #e3ebf8}
+html.dark #sambutan-section.sm{--ink:#e2e8f0;--txt:#cbd5e1;--card:#151f32;--line:#26334d;--tile:#1a2740;background:linear-gradient(180deg,#0e1626,#111b2e)}
+#sambutan-section.sm *{box-sizing:border-box}
+#sambutan-section.sm::before{content:"";position:absolute;right:-80px;top:-60px;width:520px;height:520px;pointer-events:none;opacity:.7;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cg fill='none' stroke='%232563c9' stroke-opacity='.10' stroke-width='2'%3E%3Cpath d='M36 4l32 32-32 32L4 36z'/%3E%3Cpath d='M36 22l14 14-14 14-14-14z'/%3E%3C/g%3E%3C/svg%3E");-webkit-mask-image:radial-gradient(circle at 70% 30%,#000,transparent 70%);mask-image:radial-gradient(circle at 70% 30%,#000,transparent 70%)}
+#sambutan-section.sm .sm-wrap{position:relative;z-index:1;max-width:80rem;margin:0 auto}
+#sambutan-section.sm .sm-head{margin-bottom:38px}
+#sambutan-section.sm .sm-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:rgba(37,99,201,.10);padding:6px 12px;border-radius:999px}
+#sambutan-section.sm .sm-title{margin:12px 0 0;font-size:clamp(1.7rem,3.4vw,2.6rem);font-weight:900;letter-spacing:-.02em;line-height:1.15;color:var(--ink)}
+#sambutan-section.sm .sm-bar{display:block;width:64px;height:5px;border-radius:5px;margin-top:14px;background:linear-gradient(90deg,var(--amber),var(--blue))}
 
-                            <!-- FOTO KEPSEK (Otomatis Proporsional aspect-[3/5]) -->
-                            <div class="sb-photo w-full lg:w-4/12 bg-white rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 text-center relative overflow-hidden group">
-                                <div class="relative w-full aspect-[3/5] rounded-[1.5rem] overflow-hidden mb-5 bg-slate-100">
-                                    <img 
-                                        id="kepsek-photo" 
-                                        src="https://lh3.googleusercontent.com/u/0/d/1VAl2mQpdHLlmcOlts96FonsEWT1npOHZ"
-                                        class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                                        alt="Kepala Sekolah"
-                                    >
-                                    <div class="absolute inset-0 bg-gradient-to-t from-[#0b162a]/90 via-[#0b162a]/20 to-transparent opacity-90"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-6 text-white text-left transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
-                                        <h4 class="font-black text-xl tracking-wide mb-1" id="kepsek-name">Kepala Sekolah</h4>
-                                        <p class="text-[10px] font-bold text-[#eab308] uppercase tracking-widest">SMK IT Al Mubarok</p>
-                                    </div>
-                                </div>
+/* --- Baris 1: foto + sambutan --- */
+#sambutan-section.sm .sm-top{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:stretch;margin-bottom:44px}
+@media(min-width:992px){#sambutan-section.sm .sm-top{grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:40px}}
+#sambutan-section.sm .sm-photo{position:relative;width:100%;max-width:400px;margin:0 auto;min-height:440px}
+@media(min-width:992px){#sambutan-section.sm .sm-photo{max-width:none;margin:0}}
+#sambutan-section.sm .sm-photo::before{content:"";position:absolute;inset:14px -14px -14px 14px;border-radius:30px;background:linear-gradient(145deg,var(--amber),#fbbf24);opacity:.9}
+#sambutan-section.sm .sm-photo-in{position:absolute;inset:0;border-radius:30px;overflow:hidden;background:#dbe5f6;box-shadow:0 22px 46px rgba(15,47,107,.22)}
+#sambutan-section.sm .sm-photo-in img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .8s}
+#sambutan-section.sm .sm-photo:hover .sm-photo-in img{transform:scale(1.04)}
+#sambutan-section.sm .sm-photo-in::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,24,56,.92) 0%,rgba(7,24,56,.35) 32%,transparent 58%)}
+#sambutan-section.sm .sm-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:22px 24px 24px;color:#fff}
+#sambutan-section.sm .sm-cap h4{margin:0;font-size:1.35rem;font-weight:900;letter-spacing:.01em;color:#fff;line-height:1.2}
+#sambutan-section.sm .sm-cap small{display:block;margin-top:4px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fbbf24}
+#sambutan-section.sm .sm-name{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);font-size:11px;font-weight:800;letter-spacing:.06em;color:#fff}
+#sambutan-section.sm .sm-name i{color:#fbbf24}
 
-                                <div class="bg-blue-50/70 text-blue-700 rounded-xl py-3.5 px-4 text-xs font-bold tracking-wider flex items-center justify-center gap-2 border border-blue-100/50">
-                                    <i class="fas fa-user-tie text-blue-500"></i>
-                                    RIAN DWI IRAWAN, S.Pd
-                                </div>
-                            </div>
+#sambutan-section.sm .sm-quote{position:relative;display:flex;flex-direction:column;justify-content:center;background:var(--card);border-radius:30px;padding:46px 48px 42px;box-shadow:0 18px 44px rgba(15,47,107,.10);border:1px solid var(--line);overflow:hidden}
+#sambutan-section.sm .sm-quote::before{content:"\201C";position:absolute;left:30px;top:-6px;font-family:Georgia,"Times New Roman",serif;font-size:11rem;line-height:1;color:rgba(37,99,201,.10);pointer-events:none}
+#sambutan-section.sm .sm-quote::after{content:"\201D";position:absolute;right:30px;bottom:-70px;font-family:Georgia,"Times New Roman",serif;font-size:11rem;line-height:1;color:rgba(245,158,11,.16);pointer-events:none}
+#sambutan-section.sm .sm-label{position:relative;z-index:1;align-self:flex-start;display:inline-flex;align-items:stretch;margin:0;background:#17408f;color:#fff;font-size:14px;font-weight:700;border-radius:8px;overflow:hidden}
+#sambutan-section.sm .sm-label i{display:flex;align-items:center;justify-content:center;background:var(--amber);color:#0a1f44;padding:0 14px;font-size:16px}
+#sambutan-section.sm .sm-label span{padding:10px 18px}
+#sambutan-section.sm .sm-lead{position:relative;z-index:1;margin:22px 0 0;font-size:1.06rem;line-height:1.95;font-weight:500;color:var(--txt);white-space:pre-line;display:-webkit-box;-webkit-line-clamp:9;-webkit-box-orient:vertical;overflow:hidden}
+#sambutan-section.sm .sm-more{position:relative;z-index:1;align-self:flex-start;margin-top:26px;display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;background:var(--navy);color:#fff;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:13px 22px;border-radius:999px;box-shadow:0 10px 22px rgba(15,47,107,.25);transition:.25s}
+#sambutan-section.sm .sm-more:hover{background:var(--amber);color:#3b1d00;transform:translateX(4px)}
 
-                            <!-- KONTEN CARD ROUNDED -->
-                            <div class="sb-col w-full lg:w-8/12 flex flex-col gap-6">
+/* --- Baris 2: visi (pita lebar) --- */
+#sambutan-section.sm .sm-visi{position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;gap:28px;border-radius:30px;padding:38px 44px;margin-bottom:28px;color:#fff;background:linear-gradient(120deg,#0f2f6b 0%,#2563c9 100%);box-shadow:0 22px 46px rgba(15,47,107,.26)}
+#sambutan-section.sm .sm-visi::before{content:"";position:absolute;inset:0;z-index:-1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.15' stroke-width='2'%3E%3Cpath d='M32 4l28 28-28 28L4 32z'/%3E%3Cpath d='M32 19l13 13-13 13-13-13z'/%3E%3C/g%3E%3C/svg%3E");-webkit-mask-image:linear-gradient(100deg,transparent 30%,#000);mask-image:linear-gradient(100deg,transparent 30%,#000)}
+#sambutan-section.sm .sm-visi-ghost{position:absolute;right:-20px;bottom:-40px;z-index:-1;font-size:13rem;line-height:1;color:rgba(255,255,255,.09);pointer-events:none}
+#sambutan-section.sm .sm-visi-badge{flex:0 0 76px;width:76px;height:76px;border-radius:24px;background:rgba(255,255,255,.2);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 12px 24px rgba(0,0,0,.18)}
+#sambutan-section.sm .sm-visi-chip{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:6px 12px;border-radius:999px;background:var(--amber);color:#3b1d00;margin-bottom:12px}
+#sambutan-section.sm .sm-visi h3{margin:0}
+#sambutan-section.sm .sm-visi p{margin:0;max-width:880px;font-size:clamp(1.15rem,2vw,1.55rem);line-height:1.6;font-weight:800;letter-spacing:-.005em;color:#fff;white-space:pre-line;word-break:break-word}
 
-                                <!-- KOTAK SAMBUTAN -->
-                                <div class="sb-quote bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
-                                    <!-- Ikon Latar Belakang (Watermark) -->
-                                    <i class="fas fa-quote-right absolute -bottom-6 -right-6 text-[8rem] text-slate-50 opacity-60 group-hover:-rotate-12 transition-transform duration-500"></i>
-                                    
-                                    <div class="relative z-10">
-                                        <h3 class="sb-label"><i class="fas fa-landmark"></i><span>Sambutan Kepala Sekolah</span></h3>
+/* --- Baris 3: misi (kartu bernomor) --- */
+#sambutan-section.sm .sm-misi{background:var(--card);border-radius:30px;padding:38px 40px 42px;border:1px solid var(--line);box-shadow:0 18px 44px rgba(15,47,107,.08)}
+#sambutan-section.sm .sm-misi-head{display:flex;align-items:center;gap:16px;margin-bottom:26px}
+#sambutan-section.sm .sm-misi-head h3{margin:0;display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:linear-gradient(120deg,#0f2f6b,#2563c9);padding:10px 18px;border-radius:999px}
+#sambutan-section.sm .sm-misi-head h3 i{color:#fbbf24}
+#sambutan-section.sm .sm-misi-head::after{content:"";flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--line),transparent)}
+#sambutan-section.sm #misi-text-home{margin:0;font-size:14px;color:var(--txt);line-height:1.7}
+#sambutan-section.sm #misi-text-home ol{list-style:none!important;margin:0!important;padding:0!important;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;counter-reset:ms}
+@media(min-width:700px){#sambutan-section.sm #misi-text-home ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1100px){#sambutan-section.sm #misi-text-home ol{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#sambutan-section.sm #misi-text-home li{position:relative;counter-increment:ms;margin:0!important;padding:20px 20px 20px 74px;min-height:96px;border-radius:20px;background:var(--tile);border:1px solid var(--line);font-size:14px;line-height:1.7;font-weight:500;color:var(--txt);transition:.28s;overflow:hidden}
+#sambutan-section.sm #misi-text-home li::before{content:counter(ms);position:absolute;left:18px;top:18px;width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#0f2f6b,#2563c9);color:#fff;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 16px rgba(37,99,201,.28)}
+#sambutan-section.sm #misi-text-home li::after{content:"";position:absolute;right:-18px;bottom:-18px;width:70px;height:70px;border-radius:18px;transform:rotate(45deg);background:rgba(245,158,11,.14);transition:.28s}
+#sambutan-section.sm #misi-text-home li:hover{transform:translateY(-5px);background:var(--card);box-shadow:0 16px 32px rgba(15,47,107,.13);border-color:transparent}
+#sambutan-section.sm #misi-text-home li:hover::after{transform:rotate(45deg) scale(1.5);background:rgba(245,158,11,.22)}
+#sambutan-section.sm #misi-text-home li:hover::before{background:linear-gradient(135deg,#b45309,#f59e0b)}
 
-                                        <div>
-                                            <p id="sambutan-preview-home" class="sb-lead">
-                                                Memuat sambutan sekolah...
-                                            </p>
+@media(max-width:700px){
+ #sambutan-section.sm{padding:60px 16px 64px}
+ #sambutan-section.sm .sm-quote{padding:38px 24px 32px;border-radius:26px}
+ #sambutan-section.sm .sm-visi{flex-direction:column;align-items:flex-start;padding:30px 24px;gap:18px;border-radius:26px}
+ #sambutan-section.sm .sm-visi-ghost{font-size:9rem}
+ #sambutan-section.sm .sm-misi{padding:28px 18px 24px;border-radius:26px}
+ #sambutan-section.sm #misi-text-home li{padding:18px 16px 18px 68px}
+ #sambutan-section.sm .sm-photo{min-height:400px}
+}
+@media (prefers-reduced-motion:reduce){#sambutan-section.sm *{transition:none!important}}
+</style>
 
-                                            <button onclick="openSambutanPopup()" class="sb-more">
-                                                Baca Selengkapnya
-                                                <i class="fas fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+<div class="sm-wrap">
+  <div class="sm-head">
+    <span class="sm-eyebrow"><i class="fas fa-school"></i> Mengenal Kami</span>
+    <h2 class="sm-title">Sambutan, Visi &amp; Misi</h2>
+    <span class="sm-bar"></span>
+  </div>
 
-                                <!-- KOTAK VISI -->
-                                <div class="sb-card sb-visi bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
-                                    <!-- Ikon Latar Belakang (Watermark) -->
-                                    <i class="fas fa-eye absolute -bottom-6 -right-6 text-[8rem] text-slate-50 opacity-60 group-hover:scale-110 transition-transform duration-500"></i>
-                                    
-                                    <div class="relative z-10">
-                                        <div class="flex items-center gap-3 mb-5">
-                                            <!-- Garis Pil Kuning -->
-                                            <div class="w-1.5 h-6 bg-[#eab308] rounded-full"></div>
-                                            <h3 class="text-lg font-black text-slate-900 uppercase tracking-widest">
-                                                Visi
-                                            </h3>
-                                        </div>
+  <div class="sm-top">
+    <!-- FOTO KEPSEK -->
+    <div class="sm-photo">
+      <div class="sm-photo-in">
+        <img id="kepsek-photo" src="https://lh3.googleusercontent.com/u/0/d/1VAl2mQpdHLlmcOlts96FonsEWT1npOHZ" alt="Kepala Sekolah">
+        <div class="sm-cap">
+          <h4 id="kepsek-name">Kepala Sekolah</h4>
+          <small>SMK IT Al Mubarok</small>
+          <span class="sm-name"><i class="fas fa-user-tie"></i> RIAN DWI IRAWAN, S.Pd</span>
+        </div>
+      </div>
+    </div>
 
-                                        <p id="visi-text-home"
-                                           class="text-sm leading-8 text-slate-600 break-words whitespace-pre-line">
-                                            Memuat visi sekolah...
-                                        </p>
-                                    </div>
-                                </div>
+    <!-- SAMBUTAN -->
+    <div class="sm-quote">
+      <h3 class="sm-label"><i class="fas fa-landmark"></i><span>Sambutan Kepala Sekolah</span></h3>
+      <p id="sambutan-preview-home" class="sm-lead">Memuat sambutan sekolah...</p>
+      <button type="button" onclick="openSambutanPopup()" class="sm-more">Baca Selengkapnya <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
 
-                                <!-- KOTAK MISI -->
-                                <div class="sb-card sb-misi bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
-                                    <!-- Ikon Latar Belakang (Watermark) -->
-                                    <i class="fas fa-bullseye absolute -bottom-6 -right-6 text-[8rem] text-slate-50 opacity-60 group-hover:scale-110 transition-transform duration-500"></i>
-                                    
-                                    <div class="relative z-10">
-                                        <div class="flex items-center gap-3 mb-5">
-                                            <!-- Garis Pil Kuning -->
-                                            <div class="w-1.5 h-6 bg-[#eab308] rounded-full"></div>
-                                            <h3 class="text-lg font-black text-slate-900 uppercase tracking-widest">
-                                                Misi
-                                            </h3>
-                                        </div>
+  <!-- VISI -->
+  <div class="sm-visi">
+    <i class="fas fa-eye sm-visi-ghost"></i>
+    <div class="sm-visi-badge"><i class="fas fa-eye"></i></div>
+    <div>
+      <span class="sm-visi-chip">Visi</span>
+      <p id="visi-text-home">Memuat visi sekolah...</p>
+    </div>
+  </div>
 
-                                        <div id="misi-text-home"
-                                             class="text-sm text-slate-600 break-words leading-relaxed">
-                                            Memuat misi sekolah...
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
+  <!-- MISI -->
+  <div class="sm-misi">
+    <div class="sm-misi-head"><h3><i class="fas fa-bullseye"></i> Misi</h3></div>
+    <div id="misi-text-home">Memuat misi sekolah...</div>
+  </div>
+</div>
+</section>
 
                 <!-- STATISTIK (BACKGROUND ABU-ABU MUDA) -->
                 <section class="py-16 px-6 w-full bg-white border-b border-slate-100">

@@ -224,6 +224,40 @@
         html.dark .bb-mid.bb-alt .bb-body{background:#1d4ed8;color:#fff}
         html.dark .bb-sm .bb-date{color:#94a3b8}
         html.dark .bb-more span.t{color:#5eead4}
+
+        /* ================================================================ */
+        /* BANNER PROMO MOVE di beranda (ditambahkan)                        */
+        /* ================================================================ */
+        .mp-banner{position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(115deg,#0b162a 0%,#12365a 45%,#0f766e 100%);color:#fff;padding:36px 28px;box-shadow:0 20px 45px rgba(15,23,42,.18)}
+        .mp-rings{position:absolute;right:-60px;top:-60px;width:420px;height:420px;border-radius:50%;pointer-events:none;
+            background:radial-gradient(circle,transparent 0 38%,rgba(255,255,255,.07) 38% 40%,transparent 40% 54%,rgba(255,255,255,.07) 54% 56%,transparent 56% 70%,rgba(234,179,8,.18) 70% 72%,transparent 72%)}
+        .mp-ico{position:absolute;right:48px;bottom:-26px;font-size:190px;color:rgba(255,255,255,.07);pointer-events:none;line-height:1}
+        .mp-in{position:relative;z-index:1;max-width:640px}
+        .mp-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0b162a;font-weight:900;font-size:12px;letter-spacing:.08em;padding:8px 16px;border-radius:14px}
+        .mp-pill i{color:#0f766e}
+        .mp-sub{margin:18px 0 6px;color:#fde047;font-weight:700;font-size:14px}
+        .mp-title{font-size:1.65rem;line-height:1.25;font-weight:800;margin:0}
+        .mp-desc{margin:12px 0 0;color:rgba(255,255,255,.82);font-size:14px;line-height:1.7;font-weight:500}
+        .mp-btn{display:inline-flex;align-items:center;gap:8px;margin-top:22px;background:#fff;color:#0b162a;font-weight:800;font-size:13px;padding:11px 18px;border-radius:8px;border:0;cursor:pointer;transition:transform .2s,box-shadow .2s}
+        .mp-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.25)}
+        .mp-fase{display:flex;flex-direction:column;gap:18px;margin-top:34px;padding:0 4px}
+        .mp-fase h4{font-size:1.4rem;line-height:1.3;font-weight:700;color:#0f766e;margin:0}
+        .mp-fase h4 small{display:block;font-size:12px;font-weight:600;color:#64748b;margin-top:4px}
+        .mp-tiles{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 12px;scrollbar-width:none}
+        .mp-tiles::-webkit-scrollbar{display:none}
+        .mp-tile{flex:0 0 auto;scroll-snap-align:start;width:116px;height:116px;border-radius:14px;border:0;cursor:pointer;color:#fff;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:12px;text-align:left;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 16px rgba(0,0,0,.12)}
+        .mp-tile:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(0,0,0,.2)}
+        .mp-tile .n{font-size:11px;font-weight:900;opacity:.85}
+        .mp-tile i{font-size:30px;align-self:center}
+        .mp-tile b{font-size:12px;font-weight:800;line-height:1.2}
+        @media (min-width:768px){
+            .mp-banner{padding:48px 52px;min-height:260px;display:flex;align-items:center}
+            .mp-title{font-size:2.1rem}
+            .mp-fase{flex-direction:row;align-items:center;gap:28px}
+            .mp-fase h4{flex:0 0 250px;padding-right:24px;border-right:2px solid #eab308}
+        }
+        html.dark .mp-fase h4{color:#5eead4}
+        html.dark .mp-fase h4 small{color:#94a3b8}
         /* ================================================================ */
         /* DARK MODE (ditambahkan) — override palet warna Tailwind yang     */
         /* dipakai di seluruh halaman (publik & admin) saat <html> punya    */
@@ -1160,6 +1194,27 @@ html.dark .mv-label{color:#94a3b8}
                         <span class="text-rose-600 font-black text-[10px] tracking-widest uppercase">Baru Saja Ditambahkan</span>
                     </div>
                     <div id="home-terbaru-container" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- BANNER PROMO MOVE (menuju Informasi > Kegiatan) -->
+                <!-- ========================================== -->
+                <section id="move-promo" class="max-w-7xl mx-auto px-6 mb-20 relative z-10">
+                    <div class="mp-banner">
+                        <div class="mp-rings"></div>
+                        <i class="fas fa-hand-holding-heart mp-ico"></i>
+                        <div class="mp-in">
+                            <span class="mp-pill"><i class="fas fa-hands-helping"></i> MOVE</span>
+                            <p class="mp-sub">Program Unggulan Sekolah</p>
+                            <h3 class="mp-title">Melayani Komunitas Via Edukasi</h3>
+                            <p class="mp-desc">Siswa belajar langsung dengan melayani masyarakat melalui kegiatan nyata, mulai dari investigasi kebutuhan sampai demonstrasi hasil karya.</p>
+                            <button type="button" class="mp-btn" onclick="showSection('informasi', 'kegiatan')">Lihat Kegiatan MOVE <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="mp-fase">
+                        <h4>Empat Tahapan<br>Kegiatan MOVE<small>Ketuk untuk melihat kegiatan &amp; berkasnya</small></h4>
+                        <div class="mp-tiles"><button type="button" class="mp-tile" style="background:#2563eb" onclick="showSection('informasi', 'kegiatan')" title="Fase Investigasi"><span class="n">01</span><i class="fas fa-magnifying-glass"></i><b>Fase Investigasi</b></button><button type="button" class="mp-tile" style="background:#16a34a" onclick="showSection('informasi', 'kegiatan')" title="Fase Aksi"><span class="n">02</span><i class="fas fa-person-running"></i><b>Fase Aksi</b></button><button type="button" class="mp-tile" style="background:#d97706" onclick="showSection('informasi', 'kegiatan')" title="Fase Refleksi"><span class="n">03</span><i class="fas fa-lightbulb"></i><b>Fase Refleksi</b></button><button type="button" class="mp-tile" style="background:#9333ea" onclick="showSection('informasi', 'kegiatan')" title="Fase Demonstrasi"><span class="n">04</span><i class="fas fa-bullhorn"></i><b>Fase Demonstrasi</b></button></div>
+                    </div>
                 </section>
 
                 <!-- ========================================== -->

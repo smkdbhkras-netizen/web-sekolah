@@ -336,6 +336,31 @@
         html.dark .ld-win,html.dark .ld-chip{background:#151f32;color:#e2e8f0}
         html.dark .ld-row b{background:#2c3d5c}
         html.dark .ld-chip i{color:#5eead4}
+
+        /* ================================================================ */
+        /* POLES UI GLOBAL (ditambahkan): kartu kompetensi, judul seksi, animasi */
+        /* ================================================================ */
+        #program-keahlian .grid>div:has(>h4[id^="komp-"]){border-radius:18px!important;padding:26px!important;position:relative;overflow:hidden;border:0!important;border-top:4px solid #0f766e!important;box-shadow:0 10px 28px rgba(15,23,42,.07)!important;transition:transform .3s,background .3s,box-shadow .3s!important}
+        #program-keahlian .grid>div:has(>h4[id^="komp-"]):hover{background:linear-gradient(145deg,#0f766e,#0b3b4a)!important;transform:translateY(-6px)!important;box-shadow:0 18px 38px rgba(15,118,110,.28)!important}
+        #program-keahlian .grid>div:has(>h4[id^="komp-"])>div:first-child{width:46px!important;height:46px!important;font-size:20px!important;margin-bottom:16px!important;border-radius:12px!important;background:#ecfdf5!important;color:#0f766e!important}
+        #program-keahlian .grid>div:has(>h4[id^="komp-"]):hover>div:first-child{background:rgba(255,255,255,.18)!important;color:#fff!important}
+        #program-keahlian .grid>div:has(>h4[id^="komp-"]) h4{font-size:1.1rem!important;margin-bottom:8px!important}
+        #program-keahlian .grid>div:has(>h4[id^="komp-"]):hover h4,#program-keahlian .grid>div:has(>h4[id^="komp-"]):hover p{color:#fff!important}
+        section .text-center>h2.font-black::after,section .text-center>h3.font-black::after{content:"";display:block;width:56px;height:4px;border-radius:4px;background:#eab308;margin:14px auto 0}
+        @keyframes ldp{0%,22%,100%{background:#cbd5e1}6%,16%{background:#0f766e}}
+        .ld-row b{animation:ldp 4.8s infinite}
+        .ld-row:nth-child(2) b{animation-delay:0.0s}
+        .ld-row:nth-child(3) b{animation-delay:0.6s}
+        .ld-row:nth-child(4) b{animation-delay:1.2s}
+        .ld-row:nth-child(5) b{animation-delay:1.8s}
+        .ld-row:nth-child(6) b{animation-delay:2.4s}
+        .ld-row:nth-child(7) b{animation-delay:3.0s}
+        .ld-row:nth-child(8) b{animation-delay:3.6s}
+        .ld-row:nth-child(n+6){opacity:1}
+        .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+        .rv.rv-in{opacity:1;transform:none}
+        @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.ld-row b{animation:none}}
+        html.dark .ld-row b{animation:none}
         /* ================================================================ */
         /* DARK MODE (ditambahkan) — override palet warna Tailwind yang     */
         /* dipakai di seluruh halaman (publik & admin) saat <html> punya    */
@@ -9423,5 +9448,18 @@ html.dark .mv-label{color:#94a3b8}
             <i class="fab fa-whatsapp text-2xl"></i>
         </a>
     </div>
+<script>
+/* Animasi muncul saat scroll untuk seksi beranda (ditambahkan) */
+(function(){
+  try{
+    var ids=['move-promo','program-keahlian','sambutan-section','layanan-digital','berita','guru'];
+    var els=ids.map(function(i){return document.getElementById(i);}).filter(Boolean);
+    if(!('IntersectionObserver' in window)||!els.length) return;
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('rv-in');io.unobserve(e.target);}});},{threshold:0.08});
+    els.forEach(function(el){el.classList.add('rv');io.observe(el);});
+    setTimeout(function(){els.forEach(function(el){el.classList.add('rv-in');});},4000);
+  }catch(e){}
+})();
+</script>
 </body>
 </html>

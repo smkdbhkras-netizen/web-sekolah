@@ -1063,6 +1063,53 @@ html.dark .mv-label{color:#94a3b8}
       .hero-dot{width:44px!important}.hero-dot.w-8{width:80px!important}
     }
     </style>
+    <style id="usu-jadwal">
+    /* ===== Menu cepat & Jadwal Sholat: selaras tema biru-emas ===== */
+    #menu-container{background:#fff!important;border:0!important;border-radius:30px!important;padding:26px 8px!important;box-shadow:0 14px 40px rgba(23,64,143,.12)!important;position:relative}
+    #menu-container .group{width:82px!important;transition:.3s}
+    #menu-container .group:hover{transform:translateY(-6px)}
+    #menu-container .group>div:first-child{width:58px!important;height:58px!important;border-radius:20px!important;font-size:22px!important;box-shadow:0 8px 18px rgba(23,64,143,.10)!important}
+    #menu-container .group>span{font-size:10px!important;color:#0f2f6b!important;font-weight:800!important;letter-spacing:.05em}
+    html.dark #menu-container{background:#151f32!important}html.dark #menu-container .group>span{color:#e2e8f0!important}
+    #jadwal-sholat>div{border:0!important;border-radius:34px!important;background:linear-gradient(180deg,#fff 0%,#f3f7fd 100%)!important;box-shadow:0 24px 56px rgba(23,64,143,.16)!important}
+    #jadwal-sholat>div>div:first-child{background:linear-gradient(110deg,#0a1f44 0%,#17408f 60%,#2563c9 100%)!important;padding:30px 40px!important}
+    #jadwal-sholat>div>div:first-child>div.absolute{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.13' stroke-width='2'%3E%3Cpath d='M32 4l28 28-28 28L4 32z'/%3E%3Cpath d='M32 19l13 13-13 13-13-13z'/%3E%3C/g%3E%3C/svg%3E")!important;background-size:64px 64px!important;opacity:1!important;-webkit-mask-image:linear-gradient(90deg,transparent 30%,#000);mask-image:linear-gradient(90deg,transparent 30%,#000)}
+    #jadwal-sholat>div>div:first-child::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,#f59e0b,#fde68a,#f59e0b)}
+    #jadwal-sholat .w-14.h-14{background:linear-gradient(135deg,#fbbf24,#f59e0b)!important;color:#0a1f44!important;border-radius:20px!important;box-shadow:0 0 0 6px rgba(251,191,36,.22),0 10px 22px rgba(0,0,0,.25)!important}
+    #jadwal-sholat h2{font-size:1.35rem!important;letter-spacing:-.01em}
+    #jadwal-sholat .text-\[\#eab308\].uppercase{display:inline-block;background:rgba(251,191,36,.16);color:#fde68a!important;padding:4px 12px;border-radius:999px;margin-top:6px!important}
+    #jadwal-sholat .md\:text-right{background:rgba(255,255,255,.12);padding:12px 20px;border-radius:18px;backdrop-filter:blur(6px)}
+    #jadwal-sholat #js-tanggal-hijriah{color:#bfdbfe!important}
+    #jadwal-sholat .md\:col-span-3{position:relative;overflow:hidden;background:linear-gradient(120deg,#fbbf24 0%,#f59e0b 100%)!important;border-radius:26px!important;padding:28px 30px!important;box-shadow:0 14px 30px rgba(245,158,11,.30)!important}
+    #jadwal-sholat .md\:col-span-3::before{content:"\f186";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;right:-8px;bottom:-26px;font-size:120px;color:rgba(255,255,255,.22);transform:rotate(-14deg)}
+    #jadwal-sholat .md\:col-span-3>*{position:relative}
+    #jadwal-sholat .md\:col-span-3 p,#jadwal-sholat .md\:col-span-3 span{color:#0a1f44!important}
+    #jadwal-sholat #js-countdown{font-size:2.3rem!important;letter-spacing:.02em}
+    #jadwal-sholat #js-next-name{font-size:2rem!important}
+    #jadwal-sholat .md\:col-span-2{position:relative;overflow:hidden;background:linear-gradient(135deg,#0a1f44 0%,#17408f 100%)!important;border-radius:26px!important;box-shadow:0 14px 30px rgba(15,47,107,.30)!important}
+    #jadwal-sholat .md\:col-span-2::before{content:"\f017";font-family:"Font Awesome 6 Free";font-weight:400;position:absolute;left:-14px;bottom:-30px;font-size:130px;color:rgba(255,255,255,.07)}
+    #jadwal-sholat .md\:col-span-2>*{position:relative}
+    #jadwal-sholat .md\:col-span-2 p:first-child{color:#bfdbfe!important}
+    #jadwal-sholat #js-jam-sekarang{font-size:2.5rem!important}
+    #js-grid-waktu{gap:14px!important}
+    #js-grid-waktu>div{border-radius:22px!important;padding:18px 8px!important;transition:.3s}
+    #js-grid-waktu>div.bg-slate-50{background:#fff!important;border:0!important;box-shadow:0 8px 20px rgba(23,64,143,.09)!important}
+    #js-grid-waktu>div.bg-slate-50:hover{transform:translateY(-5px);box-shadow:0 16px 30px rgba(23,64,143,.16)!important}
+    #js-grid-waktu>div>div:first-child{width:42px!important;height:42px!important;border-radius:14px!important;font-size:16px!important}
+    #js-grid-waktu>div.bg-slate-50>div:first-child{background:#e3ecfb!important;color:#17408f!important;box-shadow:none!important}
+    #js-grid-waktu>div.bg-slate-900{background:linear-gradient(160deg,#0a1f44 0%,#2563c9 100%)!important;box-shadow:0 0 0 4px rgba(251,191,36,.35),0 18px 34px rgba(37,99,201,.38)!important}
+    #js-grid-waktu>div.bg-slate-900>div:first-child{background:linear-gradient(135deg,#fbbf24,#f59e0b)!important;color:#0a1f44!important}
+    #js-grid-waktu p:first-of-type{letter-spacing:.14em!important}
+    #js-grid-waktu>div.bg-slate-50 p:last-child{color:#0f2f6b!important}
+    #jadwal-sholat #js-content-state>div:last-child{border-top:1px dashed #cbd9ee!important}
+    #jadwal-sholat #js-content-state button[onclick^="muatJadwalSholat"]{background:#e3ecfb;color:#17408f!important;padding:9px 18px;border-radius:999px;font-weight:800}
+    #jadwal-sholat #js-content-state button[onclick^="muatJadwalSholat"]:hover{background:#17408f;color:#fff!important}
+    html.dark #jadwal-sholat>div{background:#151f32!important}
+    html.dark #js-grid-waktu>div.bg-slate-50{background:#1c2942!important}
+    html.dark #js-grid-waktu>div.bg-slate-50 p:last-child{color:#e2e8f0!important}
+    html.dark #js-grid-waktu>div.bg-slate-50>div:first-child{background:#23324f!important;color:#93c5fd!important}
+    @media(max-width:767px){#jadwal-sholat>div>div:first-child{padding:24px 22px!important}#js-grid-waktu>div{padding:14px 6px!important}#jadwal-sholat #js-countdown{font-size:1.8rem!important}#jadwal-sholat #js-jam-sekarang{font-size:2rem!important}}
+    </style>
 </head>
 <body class="text-slate-800">
 

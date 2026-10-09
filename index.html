@@ -884,6 +884,48 @@ html.dark .mv-chip{background:#151f32;border-color:#23324f;color:#e2e8f0 !import
 html.dark .mv-chip:hover{background:#1c2942;border-color:#60a5fa;color:#93c5fd !important}
 html.dark .mv-label{color:#94a3b8}
 </style>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style id="usu-redesign">
+    /* ===== REDESAIN GAYA USU (lapisan tampilan saja; logika/JS tidak diubah) ===== */
+    body,button,input,select,textarea{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif}
+    .wv{display:none!important}
+    /* Top utility bar */
+    #usu-topbar{background:#0a6b34;color:#fff;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+    #usu-topbar .tb-in{max-width:80rem;margin:0 auto;padding:0 16px;height:34px;display:flex;align-items:center;gap:22px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+    #usu-topbar .tb-in::-webkit-scrollbar{display:none}
+    #usu-topbar button{color:#fff;opacity:.92;text-transform:uppercase;letter-spacing:.04em;font-weight:600;font-size:10px;background:none;border:0;padding:0}
+    #usu-topbar button:hover{opacity:1;color:#fcd34d}
+    #usu-topbar .tb-sp{flex:1}
+    /* Navbar putih */
+    nav.sticky{background:#fff!important;border-bottom:1px solid #e5eadf!important;box-shadow:0 2px 14px rgba(10,107,52,.08)!important}
+    nav.sticky .group>div:first-child{background:transparent!important;box-shadow:none!important}
+    nav.sticky #header-nama-sekolah{color:#0a6b34!important;letter-spacing:-.01em}
+    nav.sticky .group span.uppercase{color:#64748b!important}
+    nav.sticky #nav-container>a,nav.sticky #nav-container button{color:#1e293b!important;font-weight:700;font-size:11px}
+    nav.sticky #nav-container>a:hover,nav.sticky #nav-container button:hover{color:#0a6b34!important}
+    nav.sticky button.md\:block{background:#0a6b34!important;color:#fff!important;border-radius:999px!important;box-shadow:none!important;padding:12px 26px!important}
+    nav.sticky button.md\:block:hover{background:#08562a!important}
+    nav.sticky button.md\:hidden{color:#0a6b34!important}
+    html.dark nav.sticky{background:#0f1a14!important;border-bottom-color:#1f3a2a!important}
+    html.dark nav.sticky #header-nama-sekolah{color:#86efac!important}
+    html.dark nav.sticky #nav-container>a,html.dark nav.sticky #nav-container button{color:#e2e8f0!important}
+    /* Hero kartu bulat */
+    header[class*="h-[85vh]"]{width:calc(100% - 32px)!important;max-width:1240px;margin:20px auto 0!important;height:min(72vh,560px)!important;border-radius:26px;box-shadow:0 18px 40px rgba(10,107,52,.18)}
+    header[class*="h-[85vh]"] #hero-dots-container{bottom:18px!important}
+    section.relative.z-20.max-w-7xl{margin-top:26px!important}
+    #menu-container{border-radius:22px!important;border:1px solid #e5eadf!important;box-shadow:0 8px 24px rgba(10,107,52,.07)!important}
+    /* Judul seksi */
+    section .text-center>span.block{display:inline-block;background:#e3f3e7;color:#0a6b34!important;padding:5px 12px;border-radius:8px;font-size:10px}
+    section .text-center>h2.font-black,section .text-center>h3.font-black{letter-spacing:-.02em}
+    /* Kartu */
+    #container-statistik>*{border-radius:20px!important;box-shadow:0 8px 24px rgba(10,107,52,.07)}
+    #program-keahlian .group,#home-terbaru .group{border-radius:20px}
+    #program-keahlian .group:hover{box-shadow:0 14px 34px rgba(10,107,52,.15)}
+    /* Berita: pita hijau membulat (gaya SILA/ASA) */
+    #berita{width:calc(100% - 32px)!important;max-width:1280px;margin:48px auto!important;border-radius:30px;overflow:hidden;background:linear-gradient(110deg,#055a2a 0%,#0b8a43 60%,#3fae3a 100%)!important}
+    #kontak{margin-top:40px}
+    @media(max-width:767px){header[class*="h-[85vh]"]{height:62vh!important;border-radius:20px}#berita{border-radius:22px;padding-left:16px!important;padding-right:16px!important}}
+    </style>
 </head>
 <body class="text-slate-800">
 
@@ -926,6 +968,19 @@ html.dark .mv-label{color:#94a3b8}
                     </div>
                 </div>
             </div>
+
+            <!-- Top utility bar (gaya USU) -->
+            <div id="usu-topbar"><div class="tb-in">
+                <button onclick="showSection('profil')">Profil Sekolah</button>
+                <button onclick="scrollToSection('program-keahlian')">Kompetensi Keahlian</button>
+                <button onclick="showSection('informasi','Pengumuman')">Informasi</button>
+                <button onclick="showSection('informasi','kegiatan')">Kegiatan</button>
+                <button onclick="scrollToSection('berita')">Berita</button>
+                <button onclick="scrollToSection('guru')">Guru &amp; Staf</button>
+                <button onclick="var q=document.getElementById('quick-menu-ppdb');if(q)q.click()">SPMB</button>
+                <span class="tb-sp"></span>
+                <button onclick="scrollToSection('kontak')"><i class="fas fa-phone"></i> Kontak</button>
+            </div></div>
 
             <!-- Navbar -->
             <nav class="sticky top-0 z-50 bg-[#1e293b] border-b-4 border-[#eab308] shadow-[0_4px_20px_rgba(0,0,0,0.08)] transition-all h-[80px] md:h-[90px] flex items-center">

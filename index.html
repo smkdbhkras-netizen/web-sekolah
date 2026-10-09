@@ -177,6 +177,53 @@
         .wv .wv-back{opacity:.35}
         html.dark .wv-page{color:#0b1220}
         html.dark .wv-white{color:#151f32}
+
+        /* ================================================================ */
+        /* BERITA GAYA BENTO (ditambahkan) — 1 utama + 2 sorotan + baris kecil */
+        /* ================================================================ */
+        .bb-wrap{width:100%}
+        .bb-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px}
+        .bb-card{position:relative;display:flex;flex-direction:column;background:#fff;border-radius:16px;overflow:hidden;cursor:pointer;text-align:left;box-shadow:0 8px 30px rgba(0,0,0,.18);transition:transform .25s,box-shadow .25s;outline:none}
+        .bb-card:hover,.bb-card:focus-visible{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.28)}
+        .bb-card:focus-visible{box-shadow:0 0 0 3px #eab308}
+        .bb-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+        .bb-card:hover .bb-img{transform:scale(1.05)}
+        .bb-noimg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e3a8a,#0f766e);color:rgba(255,255,255,.5);font-size:34px}
+        .bb-feat{grid-column:span 12;min-height:300px;color:#fff;background:#0f172a}
+        .bb-feat .bb-media{position:absolute;inset:0}
+        .bb-feat .bb-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,22,42,.92) 0%,rgba(11,22,42,.55) 45%,rgba(11,22,42,.05) 100%)}
+        .bb-feat .bb-cont{position:relative;z-index:1;margin-top:auto;padding:24px}
+        .bb-feat h4{font-size:1.5rem;line-height:1.25;font-weight:800;margin:12px 0 10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+        .bb-feat .bb-date{font-size:12px;font-weight:600;color:rgba(255,255,255,.8)}
+        .bb-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.95);color:#0f172a;font-size:11px;font-weight:700;padding:5px 12px;border-radius:999px}
+        .bb-pill i{width:8px;height:8px;border-radius:50%;background:#eab308;display:inline-block}
+        .bb-mid{grid-column:span 12}
+        .bb-mid .bb-media{height:200px;overflow:hidden;flex-shrink:0}
+        .bb-body{display:flex;flex-direction:column;gap:8px;padding:16px 18px;flex:1;background:#fff;color:#0f172a}
+        .bb-mid.bb-alt .bb-body{background:#2563eb;color:#fff}
+        .bb-date{font-size:11px;font-weight:700;color:#2563eb}
+        .bb-mid.bb-alt .bb-date{color:#fde68a}
+        .bb-title{font-size:15px;line-height:1.4;font-weight:800;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+        .bb-meta{margin-top:auto;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;opacity:.7}
+        .bb-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:20px}
+        .bb-sm .bb-media{height:110px;overflow:hidden;flex-shrink:0}
+        .bb-sm .bb-body{padding:12px 14px;gap:6px}
+        .bb-sm .bb-title{font-size:13px;-webkit-line-clamp:2}
+        .bb-sm .bb-date{color:#64748b}
+        .bb-more{align-items:flex-start;justify-content:center;padding:20px;gap:14px;background:#fff;border:0}
+        .bb-more span.t{font-size:1.25rem;line-height:1.25;font-weight:700;color:#0f766e}
+        .bb-more .go{width:40px;height:40px;border-radius:50%;background:#1e3a8a;color:#fff;display:flex;align-items:center;justify-content:center;align-self:flex-end;margin-top:auto}
+        @media (min-width:640px){.bb-mid{grid-column:span 6}}
+        @media (min-width:1024px){
+            .bb-feat{grid-column:span 6;min-height:340px}
+            .bb-feat h4{font-size:1.9rem}
+            .bb-mid{grid-column:span 3}
+            .bb-mid .bb-media{height:190px}
+        }
+        html.dark .bb-card,html.dark .bb-body,html.dark .bb-more{background:#151f32;color:#e2e8f0}
+        html.dark .bb-mid.bb-alt .bb-body{background:#1d4ed8;color:#fff}
+        html.dark .bb-sm .bb-date{color:#94a3b8}
+        html.dark .bb-more span.t{color:#5eead4}
         /* ================================================================ */
         /* DARK MODE (ditambahkan) — override palet warna Tailwind yang     */
         /* dipakai di seluruh halaman (publik & admin) saat <html> punya    */
@@ -1332,7 +1379,7 @@ html.dark .mv-label{color:#94a3b8}
                             </div>
                             <a href="javascript:void(0)" onclick="scrollToSection('berita')" class="text-xs font-bold text-slate-300 hover:text-[#ffc107] transition-colors">Tampilkan selengkapnya <i class="fas fa-chevron-right text-[9px] ml-1"></i></a>
                         </div>
-                        <div id="grid-berita" class="flex flex-wrap justify-center gap-6"></div>
+                        <div id="grid-berita" class="w-full"></div>
                     </div>
                 </section>
 
@@ -4265,6 +4312,7 @@ html.dark .mv-label{color:#94a3b8}
                 `}).join('');
             }
 
+            renderBeritaBento();
             renderHomeTerbaru();
 
             const gridVideo = document.getElementById('grid-video');
@@ -4411,6 +4459,69 @@ html.dark .mv-label{color:#94a3b8}
             // Kalau tanggalnya sama persis, item yang barisnya lebih akhir (idx lebih besar) dianggap lebih baru.
             withIdx.sort((a, b) => (b.time - a.time) || (b.idx - a.idx));
             return withIdx.slice(0, n);
+        }
+
+        /** Berita beranda gaya "bento": 1 utama (overlay) + 2 sorotan + baris kartu kecil + tombol "Lihat Berita Lainnya". */
+        function renderBeritaBento() {
+            const grid = document.getElementById('grid-berita');
+            if (!grid) return;
+            const list = ambilNTerbaruByTanggal(DATA.berita || [], (DATA.berita || []).length);
+            if (!list.length) {
+                grid.innerHTML = '<p class="w-full text-center text-sm font-semibold text-slate-300">Belum ada berita.</p>';
+                return;
+            }
+            const gbr = (b) => (b.gambar_url || b.gambar || '').split(',')[0].trim();
+            const media = (b) => gbr(b)
+                ? '<img class="bb-img" loading="lazy" alt="" src="' + kgEsc(gbr(b)) + '">'
+                : '<div class="bb-noimg"><i class="fas fa-newspaper"></i></div>';
+            const attr = (idx) => ' role="button" tabindex="0" onclick="readFullNews(' + idx + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();readFullNews(' + idx + ');}"';
+            const views = (b, idx) => '<span id="view-card-' + idx + '" title="Dilihat"><i class="fas fa-eye"></i> ' + (b.views || 0) + '</span>';
+
+            const feat = ({ item: b, idx }) =>
+                '<article class="bb-card bb-feat"' + attr(idx) + '>'
+                + '<div class="bb-media">' + media(b) + '</div><div class="bb-shade"></div>'
+                + '<div class="bb-cont"><span class="bb-pill"><i></i> Berita Utama</span>'
+                + '<h4>' + kgEsc(b.judul || 'Tanpa Judul') + '</h4>'
+                + '<div class="bb-date">' + kgEsc(b.tanggal || '') + ' &nbsp;·&nbsp; <i class="fas fa-eye"></i> ' + (b.views || 0) + '</div></div></article>';
+            const mid = ({ item: b, idx }, alt) =>
+                '<article class="bb-card bb-mid' + (alt ? ' bb-alt' : '') + '"' + attr(idx) + '>'
+                + '<div class="bb-media">' + media(b) + '</div>'
+                + '<div class="bb-body"><span class="bb-date">' + kgEsc(b.tanggal || '') + '</span>'
+                + '<h4 class="bb-title">' + kgEsc(b.judul || 'Tanpa Judul') + '</h4>'
+                + '<div class="bb-meta">' + views(b, idx) + '</div></div></article>';
+            const sm = ({ item: b, idx }) =>
+                '<article class="bb-card bb-sm"' + attr(idx) + '>'
+                + '<div class="bb-media">' + media(b) + '</div>'
+                + '<div class="bb-body"><h4 class="bb-title">' + kgEsc(b.judul || 'Tanpa Judul') + '</h4>'
+                + '<span class="bb-date">' + kgEsc(b.tanggal || '') + '</span></div></article>';
+
+            const top = list.slice(0, 3), kecil = list.slice(3, 8), extra = list.slice(8);
+            let h = '<div class="bb-wrap"><div class="bb-grid">' + feat(top[0]);
+            if (top[1]) h += mid(top[1], false);
+            if (top[2]) h += mid(top[2], true);
+            h += '</div>';
+            if (kecil.length || extra.length) {
+                h += '<div class="bb-row">' + kecil.map(sm).join('');
+                if (extra.length) {
+                    h += '<button type="button" class="bb-card bb-more" onclick="bbToggleSemua()">'
+                       + '<span class="t" id="bb-more-label">Lihat Berita Lainnya</span>'
+                       + '<span class="go"><i class="fas fa-arrow-right" id="bb-more-ico"></i></span></button>';
+                }
+                h += '</div>';
+            }
+            if (extra.length) h += '<div class="bb-row" id="bb-extra" style="display:none">' + extra.map(sm).join('') + '</div>';
+            h += '</div>';
+            grid.innerHTML = h;
+        }
+
+        function bbToggleSemua() {
+            const ex = document.getElementById('bb-extra');
+            if (!ex) return;
+            const buka = ex.style.display === 'none';
+            ex.style.display = buka ? 'grid' : 'none';
+            const lb = document.getElementById('bb-more-label'), ic = document.getElementById('bb-more-ico');
+            if (lb) lb.textContent = buka ? 'Tutup Berita Lainnya' : 'Lihat Berita Lainnya';
+            if (ic) ic.className = 'fas ' + (buka ? 'fa-arrow-up' : 'fa-arrow-right');
         }
 
         function renderHomeTerbaru() {

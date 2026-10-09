@@ -1147,6 +1147,35 @@ html.dark .mv-label{color:#94a3b8}
     html.dark #home-terbaru-container>div>div:first-child{border-bottom-color:#24324d}
     @media(max-width:640px){#home-terbaru-container .space-y-3{grid-template-columns:1fr}#home-terbaru-container .space-y-3>button:first-child{grid-column:auto;min-height:320px}#home-terbaru-container .space-y-3>button{min-height:230px}}
     </style>
+    <style id="usu-move">
+    /* ===== MOVE: banner gaya USU + deret tahapan gaya ikon SDG ===== */
+    .mp-banner{border-radius:30px!important;padding:44px 34px!important;min-height:300px;box-shadow:0 22px 50px rgba(15,47,107,.28)!important}
+    @media(min-width:768px){.mp-banner{padding:58px 64px!important;min-height:340px}.mp-title{font-size:2.5rem!important}}
+    .mp-banner::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M30 10h12v20h20v12H42v20H30V42H10V30h20z' fill='%23fff' fill-opacity='.09'/%3E%3C/svg%3E");-webkit-mask-image:linear-gradient(0deg,#000 0%,transparent 65%);mask-image:linear-gradient(0deg,#000 0%,transparent 65%);pointer-events:none}
+    .mp-banner::after{content:"";position:absolute;right:-70px;top:50%;width:470px;height:470px;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28) 0 32%,rgba(255,255,255,.13) 32% 54%,rgba(255,255,255,.06) 54% 76%,transparent 77%);pointer-events:none}
+    .mp-ico{right:120px!important;top:50%!important;bottom:auto!important;transform:translateY(-50%);font-size:170px!important;color:#fde68a!important;filter:drop-shadow(0 14px 24px rgba(0,0,0,.30));z-index:1}
+    .mp-orbit span{position:absolute;z-index:2;width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.95);color:#17408f;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 12px 24px rgba(0,0,0,.22);animation:mpFloat 5s ease-in-out infinite}
+    .mp-orbit .o1{right:370px;top:13%}.mp-orbit .o2{right:52px;top:17%;color:#0891b2;animation-delay:-1.2s}.mp-orbit .o3{right:70px;bottom:13%;color:#d97706;animation-delay:-2.4s}.mp-orbit .o4{right:360px;bottom:11%;color:#db2777;animation-delay:-3.6s}
+    @keyframes mpFloat{50%{transform:translateY(-10px)}}
+    @media(max-width:1023px){.mp-orbit{display:none}.mp-banner::after{opacity:.5;right:-160px}.mp-ico{right:20px!important;font-size:120px!important;opacity:.5}}
+    .mp-pill{color:#0a1f44!important;box-shadow:0 8px 18px rgba(0,0,0,.18)}.mp-pill i{color:#17408f!important}
+    .mp-sub{color:#fde68a!important;font-size:15px!important;letter-spacing:.02em}
+    .mp-btn{color:#0f2f6b!important;border-radius:10px!important;padding:13px 22px!important;box-shadow:0 8px 18px rgba(0,0,0,.18)}
+    .mp-btn:hover{background:#fef3c7!important}
+    .mp-fase{margin-top:44px!important}
+    .mp-fase h4{color:#17408f!important;font-weight:800!important}
+    .mp-fase h4::before{content:"";display:block;width:44px;height:5px;border-radius:5px;background:linear-gradient(90deg,#f59e0b,#2563c9);margin-bottom:12px}
+    .mp-tiles{flex:1;gap:16px!important;justify-content:space-between;padding:8px 2px 18px!important}
+    .mp-tile{position:relative;overflow:hidden;flex:1 1 0!important;min-width:132px;width:auto!important;height:150px!important;border-radius:20px!important;padding:16px!important;box-shadow:0 14px 28px rgba(15,47,107,.18)!important}
+    .mp-tile::before{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.26),transparent 55%)}
+    .mp-tile::after{content:"";position:absolute;right:-24px;bottom:-24px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.14)}
+    .mp-tile>*{position:relative;z-index:1}
+    .mp-tile .n{font-size:20px!important;font-weight:800!important;opacity:.95!important}
+    .mp-tile i{font-size:36px!important;filter:drop-shadow(0 4px 6px rgba(0,0,0,.2))}
+    .mp-tile b{font-size:13px!important}
+    .mp-tile:hover{transform:translateY(-8px) rotate(-1.5deg)!important;box-shadow:0 22px 38px rgba(15,47,107,.30)!important}
+    @media(min-width:768px){.mp-fase h4{flex:0 0 260px!important}}
+    </style>
 </head>
 <body class="text-slate-800">
 
@@ -1647,11 +1676,11 @@ html.dark .mv-label{color:#94a3b8}
                 <!-- ========================================== -->
                 <!-- BANNER PROMO MOVE (menuju Informasi > Kegiatan) -->
                 <!-- ========================================== -->
-                <section id="usu-pilar" class="max-w-7xl mx-auto px-4 md:px-6 mb-16"><div class="usu-pilar"><h3>Peran Kami dalam<br>Pendidikan Berkarakter</h3><span class="usu-vl"></span><div class="usu-tiles"><button type="button" class="usu-tile" style="background:#0891b2" onclick="scrollToSection('sambutan-section')"><i class="fas fa-mosque"></i><span>Iman Takwa</span></button><button type="button" class="usu-tile" style="background:#f97316" onclick="scrollToSection('program-keahlian')"><i class="fas fa-graduation-cap"></i><span>Kompetensi</span></button><button type="button" class="usu-tile" style="background:#2563eb" onclick="showSection('informasi','kegiatan')"><i class="fas fa-laptop-code"></i><span>Teknologi</span></button><button type="button" class="usu-tile" style="background:#e11d74" onclick="scrollToSection('move-promo')"><i class="fas fa-hand-holding-heart"></i><span>Karakter</span></button><button type="button" class="usu-tile" style="background:#d97706" onclick="showSection('informasi','kegiatan')"><i class="fas fa-store"></i><span>Wirausaha</span></button><button type="button" class="usu-tile" style="background:#7c3aed" onclick="scrollToSection('berita')"><i class="fas fa-trophy"></i><span>Prestasi</span></button><button type="button" class="usu-tile" style="background:#0ea5e9" onclick="showSection('profil')"><i class="fas fa-leaf"></i><span>Lingkungan</span></button></div></div></section>
+                
 
                 <section id="move-promo" class="max-w-7xl mx-auto px-6 mb-20 relative z-10">
                     <div class="mp-banner">
-                                                <i class="fas fa-hand-holding-heart mp-ico"></i>
+                                                <i class="fas fa-hand-holding-heart mp-ico"></i><div class="mp-orbit"><span class="o1"><i class="fas fa-magnifying-glass"></i></span><span class="o2"><i class="fas fa-person-running"></i></span><span class="o3"><i class="fas fa-lightbulb"></i></span><span class="o4"><i class="fas fa-bullhorn"></i></span></div>
                         <div class="mp-in">
                             <span class="mp-pill"><i class="fas fa-hands-helping"></i> MOVE</span>
                             <p class="mp-sub">Program Unggulan Sekolah</p>
@@ -1662,7 +1691,7 @@ html.dark .mv-label{color:#94a3b8}
                     </div>
                     <div class="mp-fase">
                         <h4>Empat Tahapan<br>Kegiatan MOVE<small>Ketuk untuk melihat kegiatan &amp; berkasnya</small></h4>
-                        <div class="mp-tiles"><button type="button" class="mp-tile" style="background:#2563eb" onclick="showSection('informasi', 'kegiatan')" title="Fase Investigasi"><span class="n">01</span><i class="fas fa-magnifying-glass"></i><b>Fase Investigasi</b></button><button type="button" class="mp-tile" style="background:#16a34a" onclick="showSection('informasi', 'kegiatan')" title="Fase Aksi"><span class="n">02</span><i class="fas fa-person-running"></i><b>Fase Aksi</b></button><button type="button" class="mp-tile" style="background:#d97706" onclick="showSection('informasi', 'kegiatan')" title="Fase Refleksi"><span class="n">03</span><i class="fas fa-lightbulb"></i><b>Fase Refleksi</b></button><button type="button" class="mp-tile" style="background:#9333ea" onclick="showSection('informasi', 'kegiatan')" title="Fase Demonstrasi"><span class="n">04</span><i class="fas fa-bullhorn"></i><b>Fase Demonstrasi</b></button></div>
+                        <div class="mp-tiles"><button type="button" class="mp-tile" style="background:#2563c9" onclick="showSection('informasi', 'kegiatan')" title="Fase Investigasi"><span class="n">01</span><i class="fas fa-magnifying-glass"></i><b>Fase Investigasi</b></button><button type="button" class="mp-tile" style="background:#0891b2" onclick="showSection('informasi', 'kegiatan')" title="Fase Aksi"><span class="n">02</span><i class="fas fa-person-running"></i><b>Fase Aksi</b></button><button type="button" class="mp-tile" style="background:#d97706" onclick="showSection('informasi', 'kegiatan')" title="Fase Refleksi"><span class="n">03</span><i class="fas fa-lightbulb"></i><b>Fase Refleksi</b></button><button type="button" class="mp-tile" style="background:#db2777" onclick="showSection('informasi', 'kegiatan')" title="Fase Demonstrasi"><span class="n">04</span><i class="fas fa-bullhorn"></i><b>Fase Demonstrasi</b></button></div>
                     </div>
                 </section>
 

@@ -258,6 +258,68 @@
         }
         html.dark .mp-fase h4{color:#5eead4}
         html.dark .mp-fase h4 small{color:#94a3b8}
+
+        /* ================================================================ */
+        /* SAMBUTAN GAYA KUTIPAN + VISI/MISI (ditambahkan)                   */
+        /* ================================================================ */
+        .sb-sec{position:relative;overflow:hidden}
+        .sb-sec::before{content:"";position:absolute;right:-120px;top:-120px;width:460px;height:460px;border-radius:50%;pointer-events:none;
+            background:radial-gradient(circle,transparent 0 40%,rgba(15,118,110,.07) 40% 43%,transparent 43% 58%,rgba(15,118,110,.07) 58% 61%,transparent 61% 76%,rgba(234,179,8,.14) 76% 78%,transparent 78%)}
+        .sb-sec>div{position:relative;z-index:1}
+        .sb-col{display:grid!important;grid-template-columns:minmax(0,1fr);gap:20px!important;align-content:start}
+        @media (min-width:768px){.sb-col{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        .sb-quote{grid-column:1/-1;position:relative;background:transparent!important;border:0!important;box-shadow:none!important;padding:0 8px 8px!important;border-radius:0!important}
+        .sb-quote>i.fas{display:none!important}
+        .sb-quote::before{content:"\201C";display:block;font-family:Georgia,"Times New Roman",serif;font-size:8.5rem;line-height:.75;height:64px;color:rgba(15,118,110,.16)}
+        .sb-quote::after{content:"\201D";position:absolute;right:6px;bottom:-34px;font-family:Georgia,"Times New Roman",serif;font-size:8.5rem;line-height:1;color:rgba(15,118,110,.16)}
+        .sb-label{display:inline-flex;align-items:stretch;margin:0 0 4px;background:#0f766e;color:#fff;font-size:15px;font-weight:700;border-radius:4px;overflow:hidden}
+        .sb-label i{display:flex;align-items:center;justify-content:center;background:#eab308;color:#0b162a;padding:0 13px;font-size:16px}
+        .sb-label span{padding:9px 18px}
+        .sb-lead{margin:18px 0 0;font-size:1.2rem;line-height:1.65;font-weight:700;color:#0f766e;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+        .sb-more{margin-top:22px;display:inline-flex;align-items:center;gap:10px;background:#0b162a;color:#fff;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:12px 20px;border-radius:999px;border:0;cursor:pointer;transition:transform .2s,background .2s}
+        .sb-more:hover{background:#0f766e;transform:translateX(4px)}
+        .sb-card{border-radius:20px!important;padding:26px!important;border:0!important;border-top:4px solid #eab308!important;box-shadow:0 10px 30px rgba(15,23,42,.07)!important}
+        .sb-misi{border-top-color:#0f766e!important}
+        html.dark .sb-lead{color:#5eead4}
+        html.dark .sb-more{background:#0f766e}
+        html.dark .sb-quote::before,html.dark .sb-quote::after{color:rgba(94,234,212,.15)}
+
+        /* ================================================================ */
+        /* LAYANAN DIGITAL: pita aplikasi + deretan tautan (ditambahkan)     */
+        /* ================================================================ */
+        .ld-wrap{border-radius:28px;overflow:hidden;box-shadow:0 20px 45px rgba(15,23,42,.16)}
+        .ld-band{position:relative;display:flex;flex-direction:column;gap:28px;padding:34px 24px 0;color:#fff;overflow:hidden}
+        .ld-b1{background:linear-gradient(110deg,#0b3b4a 0%,#0f766e 100%)}
+        .ld-b2{background:linear-gradient(110deg,#0b162a 0%,#1e3a8a 100%)}
+        .ld-band::before{content:"";position:absolute;left:-80px;bottom:-120px;width:380px;height:380px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,transparent 0 55%,rgba(255,255,255,.06) 55% 58%,transparent 58% 74%,rgba(255,255,255,.06) 74% 77%,transparent 77%)}
+        .ld-txt{position:relative;z-index:1;flex:1}
+        .ld-badge{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0b162a;font-weight:900;font-size:12px;letter-spacing:.06em;padding:7px 14px;border-radius:10px}
+        .ld-badge i{color:#0f766e}
+        .ld-lead{margin:18px 0 0;font-size:1.05rem;font-weight:800;line-height:1.5}
+        .ld-p{margin:12px 0 0;font-size:13px;line-height:1.75;color:rgba(255,255,255,.82);font-weight:500}
+        .ld-btn{display:inline-flex;align-items:center;gap:8px;margin-top:20px;background:#fff;color:#0b162a;font-weight:800;font-size:12px;padding:10px 16px;border-radius:6px;text-decoration:none;transition:transform .2s,box-shadow .2s}
+        .ld-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.25)}
+        .ld-win{position:relative;z-index:1;background:#fff;border-radius:14px 14px 0 0;padding:14px 20px 0;height:190px;overflow:hidden;box-shadow:0 -6px 30px rgba(0,0,0,.18)}
+        .ld-dots{display:flex;gap:6px;margin-bottom:14px}
+        .ld-dots i{width:10px;height:10px;border-radius:50%;background:#ef4444}.ld-dots i:nth-child(2){background:#eab308}.ld-dots i:nth-child(3){background:#22c55e}
+        .ld-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+        .ld-row i{width:14px;height:14px;border-radius:50%;border:2px solid #0f766e;flex-shrink:0}
+        .ld-row b{height:9px;border-radius:6px;background:#cbd5e1;display:block}
+        .ld-row:nth-child(n+6){opacity:.45}
+        .ld-wico{position:absolute;right:16px;bottom:16px;font-size:64px;color:rgba(15,118,110,.18)}
+        .ld-chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;padding:26px 24px;background:#0a1a2f}
+        .ld-chip{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#0b162a;border-radius:8px;padding:14px 12px;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.03em;text-decoration:none;transition:transform .2s,box-shadow .2s}
+        .ld-chip i{color:#0f766e;font-size:18px}
+        .ld-chip:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(0,0,0,.3)}
+        @media (min-width:900px){
+            .ld-band{flex-direction:row;align-items:center;gap:48px;padding:44px 56px;min-height:290px}
+            .ld-band.ld-rev{flex-direction:row-reverse}
+            .ld-win{flex:0 0 40%;height:210px;border-radius:14px;padding-bottom:0}
+            .ld-lead{font-size:1.2rem}
+        }
+        html.dark .ld-win,html.dark .ld-chip{background:#151f32;color:#e2e8f0}
+        html.dark .ld-row b{background:#2c3d5c}
+        html.dark .ld-chip i{color:#5eead4}
         /* ================================================================ */
         /* DARK MODE (ditambahkan) — override palet warna Tailwind yang     */
         /* dipakai di seluruh halaman (publik & admin) saat <html> punya    */
@@ -1306,7 +1368,7 @@ html.dark .mv-label{color:#94a3b8}
                 </section>
 
                 <!-- SAMBUTAN & VISI MISI SPOTLIGHT SECTION (DESAIN SAAS/MODERN ROUNDED) -->
-                <section id="sambutan-section" class="py-20 px-6 w-full bg-[#f8fafc] scroll-mt-24 border-y border-slate-100">
+                <section id="sambutan-section" class="sb-sec py-20 px-6 w-full bg-[#f8fafc] scroll-mt-24 border-y border-slate-100">
                     <div class="max-w-7xl mx-auto">
                         <div class="flex flex-col lg:flex-row gap-12 items-stretch">
 
@@ -1333,31 +1395,22 @@ html.dark .mv-label{color:#94a3b8}
                             </div>
 
                             <!-- KONTEN CARD ROUNDED -->
-                            <div class="w-full lg:w-8/12 flex flex-col gap-6">
+                            <div class="sb-col w-full lg:w-8/12 flex flex-col gap-6">
 
                                 <!-- KOTAK SAMBUTAN -->
-                                <div class="bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
+                                <div class="sb-quote bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
                                     <!-- Ikon Latar Belakang (Watermark) -->
                                     <i class="fas fa-quote-right absolute -bottom-6 -right-6 text-[8rem] text-slate-50 opacity-60 group-hover:-rotate-12 transition-transform duration-500"></i>
                                     
                                     <div class="relative z-10">
-                                        <div class="flex items-center gap-3 mb-6">
-                                            <!-- Garis Pil Biru -->
-                                            <div class="w-1.5 h-6 bg-blue-600 rounded-full"></div>
-                                            <h3 class="text-xl font-black text-slate-900 uppercase tracking-widest">
-                                                Sambutan
-                                            </h3>
-                                        </div>
+                                        <h3 class="sb-label"><i class="fas fa-landmark"></i><span>Sambutan Kepala Sekolah</span></h3>
 
                                         <div>
-                                            <p id="sambutan-preview-home"
-                                               class="text-sm leading-relaxed text-slate-600 text-justify line-clamp-2">
+                                            <p id="sambutan-preview-home" class="sb-lead">
                                                 Memuat sambutan sekolah...
                                             </p>
 
-                                            <button
-                                                onclick="openSambutanPopup()"
-                                                class="mt-6 inline-flex items-center gap-2 text-xs font-black text-blue-600 hover:text-blue-800 transition uppercase tracking-widest group-hover:translate-x-1">
+                                            <button onclick="openSambutanPopup()" class="sb-more">
                                                 Baca Selengkapnya
                                                 <i class="fas fa-arrow-right"></i>
                                             </button>
@@ -1366,7 +1419,7 @@ html.dark .mv-label{color:#94a3b8}
                                 </div>
 
                                 <!-- KOTAK VISI -->
-                                <div class="bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
+                                <div class="sb-card sb-visi bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
                                     <!-- Ikon Latar Belakang (Watermark) -->
                                     <i class="fas fa-eye absolute -bottom-6 -right-6 text-[8rem] text-slate-50 opacity-60 group-hover:scale-110 transition-transform duration-500"></i>
                                     
@@ -1387,7 +1440,7 @@ html.dark .mv-label{color:#94a3b8}
                                 </div>
 
                                 <!-- KOTAK MISI -->
-                                <div class="bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
+                                <div class="sb-card sb-misi bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
                                     <!-- Ikon Latar Belakang (Watermark) -->
                                     <i class="fas fa-bullseye absolute -bottom-6 -right-6 text-[8rem] text-slate-50 opacity-60 group-hover:scale-110 transition-transform duration-500"></i>
                                     
@@ -1419,6 +1472,19 @@ html.dark .mv-label{color:#94a3b8}
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" id="container-statistik">
                             <!-- Konten dirender via JavaScript -->
                         </div>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- LAYANAN DIGITAL (pita aplikasi + tautan; diisi lewat JS dari Pengaturan CMS) -->
+                <!-- ========================================== -->
+                <section id="layanan-digital" class="py-16 px-6 w-full bg-white hidden">
+                    <div class="max-w-7xl mx-auto">
+                        <div class="text-center mb-10">
+                            <span class="text-teal-700 font-black text-[10px] tracking-widest uppercase mb-3 block">Mudah Diakses</span>
+                            <h3 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Layanan Digital Sekolah</h3>
+                        </div>
+                        <div id="ld-root" class="ld-wrap"></div>
                     </div>
                 </section>
 
@@ -4257,6 +4323,7 @@ html.dark .mv-label{color:#94a3b8}
             const linkRPM = config.link_rpm || "#";
             const quickMenuRpm = document.getElementById('quick-menu-rpm');
             if(quickMenuRpm) quickMenuRpm.href = linkRPM;
+            renderLayananDigital(config);
 
             const stats = [
                 { val: config.statistik_siswa || '105', label: 'Siswa Aktif', icon: 'fas fa-users', bgIcon: 'bg-blue-600 text-white' },
@@ -4514,6 +4581,35 @@ html.dark .mv-label{color:#94a3b8}
             // Kalau tanggalnya sama persis, item yang barisnya lebih akhir (idx lebih besar) dianggap lebih baru.
             withIdx.sort((a, b) => (b.time - a.time) || (b.idx - a.idx));
             return withIdx.slice(0, n);
+        }
+
+        /** Pita "Layanan Digital": aplikasi unggulan (SPMB, LMS) + deretan tautan lain. Hanya menampilkan link yang sudah diisi di Pengaturan. */
+        function renderLayananDigital(config) {
+            const sec = document.getElementById('layanan-digital'), root = document.getElementById('ld-root');
+            if (!sec || !root) return;
+            const U = (k) => { const v = String((config && config[k]) || '').trim(); return /^https?:\/\//i.test(v) ? v : ''; };
+            const feat = [
+                { k: 'link_ppdb', ic: 'fa-user-plus', name: 'SPMB ONLINE', lead: 'Daftar sebagai calon peserta didik baru langsung dari HP atau komputer.', p: 'Proses pendaftaran dibuat sederhana dan bisa dilakukan kapan saja, tanpa harus antre di sekolah.', btn: 'Daftar Sekarang' },
+                { k: 'link_lms', ic: 'fa-laptop-code', name: 'LMS SEKOLAH', lead: 'Ruang belajar digital untuk siswa dan guru.', p: 'Akses kegiatan pembelajaran daring sekolah dengan mudah dalam satu tempat.', btn: 'Buka LMS' }
+            ].filter(f => U(f.k));
+            const chips = [
+                { k: 'link_e_supervisi', ic: 'fa-clipboard-check', t: 'E-Supervisi' },
+                { k: 'link_e_voting_osis', ic: 'fa-check-to-slot', t: 'E-Voting OSIS' },
+                { k: 'link_rpm', ic: 'fa-file-lines', t: 'Generator RPM' },
+                { k: 'link_kktp', ic: 'fa-bullseye', t: 'KKTP' }
+            ].filter(c => U(c.k));
+            if (!feat.length && !chips.length) { sec.classList.add('hidden'); root.innerHTML = ''; return; }
+            const rows = [88, 72, 80, 64, 76, 60, 70].map(w => '<div class="ld-row"><i></i><b style="width:' + w + '%"></b></div>').join('');
+            let h = feat.map((f, i) =>
+                '<div class="ld-band ' + (i % 2 ? 'ld-b2 ld-rev' : 'ld-b1') + '">'
+                + '<div class="ld-txt"><span class="ld-badge"><i class="fas ' + f.ic + '"></i> ' + f.name + '</span>'
+                + '<p class="ld-lead">' + f.lead + '</p><p class="ld-p">' + f.p + '</p>'
+                + '<a class="ld-btn" href="' + kgEsc(U(f.k)) + '" target="_blank" rel="noopener">' + f.btn + ' <i class="fas fa-arrow-right"></i></a></div>'
+                + '<div class="ld-win"><div class="ld-dots"><i></i><i></i><i></i></div>' + rows + '<i class="fas ' + f.ic + ' ld-wico"></i></div>'
+                + '</div>').join('');
+            if (chips.length) h += '<div class="ld-chips">' + chips.map(c => '<a class="ld-chip" href="' + kgEsc(U(c.k)) + '" target="_blank" rel="noopener"><i class="fas ' + c.ic + '"></i><span>' + c.t + '</span></a>').join('') + '</div>';
+            root.innerHTML = h;
+            sec.classList.remove('hidden');
         }
 
         /** Berita beranda gaya "bento": 1 utama (overlay) + 2 sorotan + baris kartu kecil + tombol "Lihat Berita Lainnya". */

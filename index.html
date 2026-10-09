@@ -164,6 +164,19 @@
         @keyframes pulse-right { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
         .animate-pulse-right { animation: pulse-right 1.5s infinite; }
 
+
+        /* ================================================================ */
+        /* PEMBATAS GELOMBANG ANTAR-SEKSI (ditambahkan, hanya tambahan)      */
+        /* ================================================================ */
+        .wv{position:absolute;left:0;width:100%;line-height:0;pointer-events:none;overflow:hidden;z-index:1}
+        .wv svg{display:block;width:100%;height:clamp(36px,5.5vw,70px)}
+        .wv-b{bottom:-1px}
+        .wv-t{top:-1px;transform:rotate(180deg)}
+        .wv-page{color:#f8fafc}
+        .wv-white{color:#ffffff}
+        .wv .wv-back{opacity:.35}
+        html.dark .wv-page{color:#0b1220}
+        html.dark .wv-white{color:#151f32}
         /* ================================================================ */
         /* DARK MODE (ditambahkan) — override palet warna Tailwind yang     */
         /* dipakai di seluruh halaman (publik & admin) saat <html> punya    */
@@ -684,6 +697,7 @@ html.dark .mv-label{color:#94a3b8}
                         <!-- Konten Slider dimuat secara dinamis via JavaScript -->
                     </div>
 
+                    <div class="wv wv-b wv-page"><svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="wv-back" fill="currentColor" d="M0,48 C200,8 420,96 700,64 C980,32 1200,10 1440,56 L1440,120 L0,120 Z"/><path fill="currentColor" d="M0,72 C240,118 480,24 720,64 C960,104 1200,112 1440,58 L1440,120 L0,120 Z"/></svg></div>
                     <div class="absolute bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30" id="hero-dots-container">
                         <!-- Bulatan navigasi diisi dinamis via JavaScript -->
                     </div>
@@ -1308,6 +1322,8 @@ html.dark .mv-label{color:#94a3b8}
 
                 <!-- ARTIKEL / KABAR BERITA (BACKGROUND BIRU GELAP + PATTERN IKON) -->
                 <section id="berita" class="py-20 px-6 w-full bg-[#0b162a] relative" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27 viewBox=%270 0 160 160%27%3E%3Cg fill=%27%23ffffff%27 fill-opacity=%270.05%27%3E%3Cpath transform=%27translate(20, 20) scale(0.08) rotate(-15 256 256)%27 d=%27M96 96c0-35.3 28.7-64 64-64H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H80c-44.2 0-80-35.8-80-80V128c0-17.7 14.3-32 32-32s32 14.3 32 32V400c0 8.8 7.2 16 16 16s16-7.2 16-16V96zM320 320c0-8.8-7.2-16-16-16H192c-8.8 0-16 7.2-16 16s7.2 16 16 16h112c8.8 0 16-7.2 16-16zm0-64c0-8.8-7.2-16-16-16H192c-8.8 0-16 7.2-16 16s7.2 16 16 16h112c8.8 0 16-7.2 16-16zm0-64c0-8.8-7.2-16-16-16H192c-8.8 0-16 7.2-16 16s7.2 16 16 16h112c8.8 0 16-7.2 16-16z%27/%3E%3Cpath transform=%27translate(100, 80) scale(0.08) rotate(15 256 256)%27 d=%27M512 80c8.8 0 16 7.2 16 16v320c0 8.8-7.2 16-16 16H480V80h32zM432 80V432H208.8C182 432 156.4 419.6 139.7 398.9L69.3 312.3c-2.3-2.8-5.7-4.3-9.3-4.3H16c-8.8 0-16-7.2-16-16V220c0-8.8 7.2-16 16-16H60c3.6 0 7-1.5 9.3-4.3l70.4-86.6C156.4 92.4 182 80 208.8 80H432z%27/%3E%3C/g%3E%3C/svg%3E'); background-repeat: repeat;">
+                    <div class="wv wv-t wv-white"><svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="wv-back" fill="currentColor" d="M0,48 C200,8 420,96 700,64 C980,32 1200,10 1440,56 L1440,120 L0,120 Z"/><path fill="currentColor" d="M0,72 C240,118 480,24 720,64 C960,104 1200,112 1440,58 L1440,120 L0,120 Z"/></svg></div>
+                    <div class="wv wv-b wv-white"><svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="wv-back" fill="currentColor" d="M0,48 C200,8 420,96 700,64 C980,32 1200,10 1440,56 L1440,120 L0,120 Z"/><path fill="currentColor" d="M0,72 C240,118 480,24 720,64 C960,104 1200,112 1440,58 L1440,120 L0,120 Z"/></svg></div>
                     <div class="max-w-7xl mx-auto relative z-10">
                         <div class="flex justify-between items-end border-b border-white/20 pb-4 mb-10">
                             <div>
@@ -1353,7 +1369,8 @@ html.dark .mv-label{color:#94a3b8}
                 
                 <!-- Footer Sekolah Profesional Modern -->
                 <!-- ID "kontak" DITAMBAHKAN DI SINI AGAR BISA DI-SCROLL -->
-                <footer id="kontak" class="bg-[#0b162a] text-slate-300 border-t border-slate-800">
+                <footer id="kontak" class="relative bg-[#0b162a] text-slate-300 border-t border-slate-800">
+                    <div class="wv wv-t wv-white"><svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="wv-back" fill="currentColor" d="M0,48 C200,8 420,96 700,64 C980,32 1200,10 1440,56 L1440,120 L0,120 Z"/><path fill="currentColor" d="M0,72 C240,118 480,24 720,64 C960,104 1200,112 1440,58 L1440,120 L0,120 Z"/></svg></div>
                     <div class="max-w-7xl mx-auto px-8 py-16 grid grid-cols-1 md:grid-cols-12 gap-12 text-left">
                         <div class="md:col-span-4 space-y-6">
                             <div class="flex items-center gap-3 text-white">

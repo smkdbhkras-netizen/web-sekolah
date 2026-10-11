@@ -2314,14 +2314,76 @@ html.dark #berita .bn-pill{background:#3a2e0b;color:#fde68a}
                     </div>
                 </section>
 
-                <!-- GURU / TENAGA PENDIDIK (BACKGROUND PUTIH) -->
-                <section id="guru" class="bg-white border-t border-slate-200 py-20 px-6 w-full">
-                    <div class="max-w-7xl mx-auto">
-                        <div class="text-center mb-16">
-                            <span class="text-[#2563eb] font-black text-[10px] tracking-widest uppercase mb-3 block">Sinergi & Dedikasi</span>
-                            <h3 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Tenaga Pendidik</h3>
+                <!-- GURU / TENAGA PENDIDIK (KEPALA SEKOLAH SOROT + KARTU GURU RAPI) -->
+                <section id="guru" class="gr">
+<style id="gr-style">
+#guru.gr{position:relative;width:100%;scroll-margin-top:96px;padding:84px 24px 92px;background:linear-gradient(180deg,#f5f8ff 0%,#ffffff 60%);border-top:1px solid #e3ebf8;--gr-n:2}
+#guru.gr .gr-wrap{max-width:1240px;margin:0 auto}
+#guru.gr .gr-head{text-align:center;margin:0 auto 44px;max-width:640px}
+#guru.gr .gr-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#2563c9;background:rgba(37,99,201,.10);padding:7px 14px;border-radius:999px}
+#guru.gr .gr-title{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.02em;color:#0f2f6b;margin:16px 0 0;line-height:1.15}
+#guru.gr .gr-bar{width:60px;height:4px;border-radius:99px;background:linear-gradient(90deg,#f59e0b,#2563c9);margin:16px auto 0}
+#guru.gr .gr-sub{margin:18px auto 0;color:#64748b;font-size:15px;line-height:1.7;font-weight:500}
+#guru.gr .gr-count{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:12px;font-weight:800;color:#0f2f6b;background:#fff;border:1px solid #e3ebf8;border-radius:999px;padding:8px 16px;box-shadow:0 2px 10px rgba(15,47,107,.06)}
+#guru.gr .gr-count i{color:#f59e0b}
+/* Kepala sekolah */
+#guru.gr .gr-feat{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr;gap:22px;align-items:center;justify-items:center;text-align:center;max-width:880px;margin:0 auto 46px;padding:30px 24px;border-radius:30px;color:#fff;background:linear-gradient(135deg,#0f2f6b 0%,#1d4ed8 100%);box-shadow:0 22px 50px rgba(15,47,107,.28)}
+#guru.gr .gr-feat::before{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.07)}
+#guru.gr .gr-feat::after{content:"";position:absolute;left:-50px;bottom:-90px;width:220px;height:220px;border-radius:50%;background:rgba(245,158,11,.16)}
+@media(min-width:720px){#guru.gr .gr-feat{grid-template-columns:230px 1fr;gap:38px;text-align:left;justify-items:stretch;padding:34px 40px}}
+#guru.gr .gr-feat .gr-photo{width:min(210px,100%);justify-self:center;border:4px solid rgba(255,255,255,.35);border-radius:22px;box-shadow:0 14px 30px rgba(0,0,0,.3);z-index:1}
+#guru.gr .gr-feat-txt{position:relative;z-index:1}
+#guru.gr .gr-feat-badge{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#3a2400;background:#f59e0b;border-radius:999px;padding:7px 14px}
+#guru.gr .gr-feat-name{font-size:clamp(22px,3.2vw,32px);font-weight:900;line-height:1.2;margin:14px 0 0;color:#fff}
+#guru.gr .gr-feat-desc{margin:10px 0 0;font-size:14px;line-height:1.7;color:rgba(255,255,255,.78);font-weight:500}
+#guru.gr .gr-feat .gr-soc-row{justify-content:center;margin-top:18px}
+@media(min-width:720px){#guru.gr .gr-feat .gr-soc-row{justify-content:flex-start}}
+#guru.gr .gr-feat .gr-soc{background:rgba(255,255,255,.16);color:#fff}
+/* Grid guru */
+#guru.gr .gr-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:22px}
+@media(min-width:700px){#guru.gr{--gr-n:3}}
+@media(min-width:1000px){#guru.gr{--gr-n:4}}
+@media(min-width:1220px){#guru.gr{--gr-n:5}}
+@media(max-width:520px){#guru.gr{padding:64px 14px 72px}#guru.gr .gr-grid{gap:14px}}
+#guru.gr .gr-card{flex:0 0 calc((100% - 22px*(var(--gr-n) - 1))/var(--gr-n));min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;background:#fff;border:1px solid #e3ebf8;border-radius:24px;padding:12px 12px 16px;box-shadow:0 4px 18px rgba(15,47,107,.05);transition:transform .3s,box-shadow .3s,border-color .3s}
+@media(max-width:520px){#guru.gr .gr-card{flex-basis:calc((100% - 14px)/2)}}
+#guru.gr .gr-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(15,47,107,.14);border-color:#bcd0f5}
+#guru.gr .gr-photo{position:relative;width:100%;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#e6eefc,#f3f7ff)}
+#guru.gr .gr-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform .5s}
+#guru.gr .gr-card:hover .gr-photo img{transform:scale(1.05)}
+#guru.gr .gr-ini{display:none;position:absolute;left:0;top:0;right:0;bottom:0;align-items:center;justify-content:center;font-size:40px;font-weight:900;color:#2563c9;letter-spacing:.04em}
+#guru.gr .gr-noimg .gr-ini{display:flex}
+#guru.gr .gr-name{font-size:14px;font-weight:800;line-height:1.35;color:#0f2f6b;margin:14px 4px 0;min-height:2.7em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#guru.gr .gr-role{display:inline-block;margin-top:8px;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#2563c9;background:#eef4ff;border-radius:999px;padding:5px 12px;max-width:100%}
+#guru.gr .gr-role.lead{color:#b45309;background:#fff4dc}
+#guru.gr .gr-role.waka{color:#047857;background:#e6f7ef}
+#guru.gr .gr-soc-row{display:flex;align-items:center;justify-content:center;gap:8px;min-height:34px;margin-top:auto;padding-top:14px}
+#guru.gr .gr-soc{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#f1f5f9;color:#64748b;font-size:15px;text-decoration:none;transition:.25s}
+#guru.gr .gr-soc:hover{transform:translateY(-2px) scale(1.08);color:#fff}
+#guru.gr .gr-soc.ig:hover{background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)}
+#guru.gr .gr-soc.tt:hover{background:#000}
+/* Mode gelap */
+html.dark #guru.gr{background:linear-gradient(180deg,#0e1729,#0b1220);border-color:#23324f}
+html.dark #guru.gr .gr-title,html.dark #guru.gr .gr-name{color:#f1f5f9}
+html.dark #guru.gr .gr-sub{color:#94a3b8}
+html.dark #guru.gr .gr-count,html.dark #guru.gr .gr-card{background:#151f32;border-color:#23324f;color:#e2e8f0}
+html.dark #guru.gr .gr-eyebrow,html.dark #guru.gr .gr-role{background:#132038;color:#60a5fa}
+html.dark #guru.gr .gr-role.lead{background:#3a2a0a;color:#fbbf24}
+html.dark #guru.gr .gr-role.waka{background:#0f2e24;color:#34d399}
+html.dark #guru.gr .gr-soc{background:#1e2a42;color:#94a3b8}
+html.dark #guru.gr .gr-ini{color:#60a5fa}
+html.dark #guru.gr .gr-photo{background:linear-gradient(135deg,#1a2740,#142036)}
+</style>
+                    <div class="gr-wrap">
+                        <div class="gr-head">
+                            <span class="gr-eyebrow"><i class="fas fa-users"></i> Sinergi &amp; Dedikasi</span>
+                            <h3 class="gr-title">Tenaga Pendidik</h3>
+                            <div class="gr-bar"></div>
+                            <p class="gr-sub">Kenali para guru dan tenaga kependidikan yang mendampingi siswa-siswi SMK IT Al Mubarok.</p>
+                            <span class="gr-count" id="gr-count" style="display:none"><i class="fas fa-user-graduate"></i> <b id="gr-count-n">0</b> Pendidik &amp; Tenaga Kependidikan</span>
                         </div>
-                        <div id="grid-guru" class="grid grid-cols-2 md:grid-cols-5 gap-8"></div>
+                        <div id="gr-featured"></div>
+                        <div id="grid-guru" class="gr-grid"></div>
                     </div>
                 </section>
                 
@@ -5287,28 +5349,43 @@ html.dark #berita .bn-pill{background:#3a2e0b;color:#fde68a}
 
             const gridGuru = document.getElementById('grid-guru');
             if(gridGuru) {
-                gridGuru.innerHTML = (DATA.guru || []).map(g => `
-                    <div class="text-center group bg-white p-4 rounded-2xl border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.01)] flex flex-col h-full">
-                        <div class="relative w-full aspect-square rounded-xl overflow-hidden mb-4 shadow-sm border-[4px] border-slate-50 group-hover:shadow-md group-hover:-translate-y-1 transition-all duration-350">
-                            <img src="${g.foto_url || g.foto || ''}" class="w-full h-full object-cover object-top">
-                        </div>
-                        <h5 class="font-bold text-slate-900 text-sm leading-tight">${g.nama}</h5>
-                        <p class="text-slate-400 text-[9px] font-black uppercase mt-1.5 tracking-widest">${g.jabatan}</p>
-                        
-                        <div class="flex justify-center items-center gap-3 mt-auto pt-4">
-                            ${g.instagram_url ? `
-                                <a href="${g.instagram_url}" target="_blank" class="text-slate-400 hover:text-pink-600 transition-colors duration-300 transform hover:scale-110">
-                                    <i class="fab fa-instagram text-[1.1rem]"></i>
-                                </a>
-                            ` : ''}
-                            ${g.tiktok_url ? `
-                                <a href="${g.tiktok_url}" target="_blank" class="text-slate-400 hover:text-black transition-colors duration-300 transform hover:scale-110">
-                                    <i class="fab fa-tiktok text-[1.1rem]"></i>
-                                </a>
-                            ` : ''}
-                        </div>
-                    </div>
-                `).join('');
+                const esc = v => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                const semua = (DATA.guru || []).filter(g => g && g.nama);
+                const isKepsek = g => /kepala\s*sekolah/i.test(g.jabatan || '') && !/wakil|waka/i.test(g.jabatan || '');
+                const kepsek = semua.find(isKepsek);
+                const lainnya = semua.filter(g => g !== kepsek);
+                const inisial = n => String(n || '').replace(/[,.].*$/, '').trim().split(/\s+/).slice(0, 2).map(w => w.charAt(0).toUpperCase()).join('');
+                const fotoHtml = g => {
+                    const u = g.foto_url || g.foto || '';
+                    return '<div class="gr-photo' + (u ? '' : ' gr-noimg') + '">'
+                        + (u ? '<img src="' + esc(u) + '" alt="' + esc(g.nama) + '" loading="lazy" onerror="this.parentNode.classList.add(\'gr-noimg\');this.remove()">' : '')
+                        + '<span class="gr-ini">' + esc(inisial(g.nama)) + '</span></div>';
+                };
+                const sosmed = g => {
+                    let h = '';
+                    if (g.instagram_url) h += '<a class="gr-soc ig" href="' + esc(g.instagram_url) + '" target="_blank" rel="noopener" aria-label="Instagram ' + esc(g.nama) + '"><i class="fab fa-instagram"></i></a>';
+                    if (g.tiktok_url) h += '<a class="gr-soc tt" href="' + esc(g.tiktok_url) + '" target="_blank" rel="noopener" aria-label="TikTok ' + esc(g.nama) + '"><i class="fab fa-tiktok"></i></a>';
+                    return '<div class="gr-soc-row">' + h + '</div>';
+                };
+                const chip = j => /wakil|waka/i.test(j || '') ? 'waka' : (/kepala|ketua|kaprodi|kajur/i.test(j || '') ? 'lead' : '');
+                const kartu = g => '<article class="gr-card">' + fotoHtml(g)
+                    + '<h5 class="gr-name">' + esc(g.nama) + '</h5>'
+                    + (g.jabatan ? '<span class="gr-role ' + chip(g.jabatan) + '">' + esc(g.jabatan) + '</span>' : '')
+                    + sosmed(g) + '</article>';
+
+                const feat = document.getElementById('gr-featured');
+                if (feat) {
+                    feat.innerHTML = kepsek
+                        ? '<div class="gr-feat">' + fotoHtml(kepsek)
+                          + '<div class="gr-feat-txt"><span class="gr-feat-badge"><i class="fas fa-award"></i> ' + esc(kepsek.jabatan) + '</span>'
+                          + '<h4 class="gr-feat-name">' + esc(kepsek.nama) + '</h4>'
+                          + '<p class="gr-feat-desc">Pimpinan SMK IT Al Mubarok Kras Kediri.</p>'
+                          + sosmed(kepsek) + '</div></div>'
+                        : '';
+                }
+                gridGuru.innerHTML = lainnya.map(kartu).join('');
+                const cnt = document.getElementById('gr-count'), cn = document.getElementById('gr-count-n');
+                if (cnt && cn) { cn.textContent = semua.length; cnt.style.display = semua.length ? 'inline-flex' : 'none'; }
             }
         }
 

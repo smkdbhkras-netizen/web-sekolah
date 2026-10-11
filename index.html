@@ -2522,11 +2522,101 @@ html.dark #guru.gr .gr-photo{background:linear-gradient(135deg,#1a2740,#142036)}
 
             <!-- Karya Siswa & Guru Content -->
             <div id="content-karya" class="hidden py-32 px-6 max-w-6xl mx-auto min-h-screen">
-                <div class="mb-12 border-b border-slate-200 pb-6 flex items-center gap-4">
-                    <div class="w-14 h-14 bg-fuchsia-50 text-fuchsia-600 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-palette"></i></div>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight uppercase" data-i18n="karya_judul">Karya Siswa &amp; Guru</h2>
+<style id="kr-style">
+#content-karya .kr-pagehead{text-align:center;margin:0 auto 34px;max-width:680px}
+#content-karya .kr-pill{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#a21caf;background:#fae8ff;padding:7px 15px;border-radius:999px}
+#content-karya .kr-h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.02em;line-height:1.15;color:#2e1065;margin:16px 0 0}
+#content-karya .kr-bar{width:60px;height:4px;border-radius:99px;background:linear-gradient(90deg,#f59e0b,#a21caf);margin:16px auto 0}
+#content-karya .kr-sub{margin:16px auto 0;font-size:15px;line-height:1.7;color:#64748b;font-weight:500}
+#content-karya .kr-hero{position:relative;overflow:hidden;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:22px;margin-bottom:22px;padding:32px 34px;border-radius:30px;color:#fff;background:linear-gradient(120deg,#a21caf 0%,#7e22ce 60%,#6d28d9 100%);box-shadow:0 20px 44px rgba(126,34,206,.28)}
+#content-karya .kr-hero::before{content:"";position:absolute;right:-60px;top:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.09)}
+#content-karya .kr-hero::after{content:"";position:absolute;left:38%;bottom:-110px;width:240px;height:240px;border-radius:50%;background:rgba(245,158,11,.18)}
+#content-karya .kr-hero-t{position:relative;z-index:1;flex:1 1 340px;min-width:0}
+#content-karya .kr-hero-k{font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#f5d0fe}
+#content-karya .kr-hero h4{font-size:clamp(21px,2.8vw,30px);font-weight:900;line-height:1.2;color:#fff;margin:8px 0 0}
+#content-karya .kr-hero p{margin:8px 0 0;font-size:14px;line-height:1.6;color:#f3e8ff}
+#content-karya .kr-stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+#content-karya .kr-stat{display:inline-flex;align-items:center;gap:11px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:10px 16px}
+#content-karya .kr-stat b{font-size:22px;font-weight:900;line-height:1;color:#fff}
+#content-karya .kr-stat span{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#f5d0fe}
+#content-karya .kr-up{position:relative;z-index:1;display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;font-family:inherit;background:#fff;color:#86198f;font-weight:900;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:17px 30px;border-radius:16px;box-shadow:0 12px 26px rgba(0,0,0,.22);transition:.25s}
+#content-karya .kr-up:hover{transform:translateY(-2px);background:#fdf4ff}
+#content-karya .kr-tools{display:grid;gap:16px;background:#fff;border:1px solid #f0e4f7;border-radius:26px;padding:20px 22px;margin-bottom:28px;box-shadow:0 6px 22px rgba(46,16,101,.06)}
+#content-karya .kr-row{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
+#content-karya .kr-row2{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px}
+#content-karya .kr-label{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#94a3b8;margin-right:4px;white-space:nowrap}
+#content-karya .kr-label i{color:#d946ef;margin-right:5px}
+#content-karya .kr-chip{display:inline-flex;align-items:center;gap:6px;font-family:inherit;border:1px solid #e2e8f0;background:#fff;color:#64748b;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:9px 16px;border-radius:999px;cursor:pointer;transition:.2s;white-space:nowrap}
+#content-karya .kr-chip:hover{border-color:#e879f9;color:#a21caf}
+#content-karya .kr-chip.on{background:#a21caf;border-color:#a21caf;color:#fff;box-shadow:0 6px 14px rgba(162,28,175,.28)}
+#content-karya .kr-seg{display:inline-flex;gap:2px;background:#f1f5f9;border-radius:999px;padding:4px}
+#content-karya .kr-seg .kr-chip{border:0;background:transparent;box-shadow:none;padding:8px 15px}
+#content-karya .kr-seg .kr-chip:hover{color:#a21caf}
+#content-karya .kr-seg .kr-chip.on{background:#2e1065;color:#fff}
+@media(max-width:640px){#content-karya .kr-scroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}#content-karya .kr-scroll::-webkit-scrollbar{display:none}#content-karya .kr-hero{padding:26px 22px}#content-karya .kr-up{width:100%;justify-content:center}}
+#content-karya .kr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:24px}
+#content-karya .kr-card{display:flex;flex-direction:column;background:#fff;border:1px solid #eef0f6;border-radius:26px;overflow:hidden;box-shadow:0 4px 18px rgba(46,16,101,.07);transition:transform .3s,box-shadow .3s}
+#content-karya .kr-card:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(46,16,101,.16)}
+#content-karya .kr-card.ring-4{box-shadow:0 0 0 4px #f0abfc,0 22px 44px rgba(46,16,101,.16)}
+#content-karya .kr-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:#e2e8f0}
+#content-karya .kr-media .kr-img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+#content-karya .kr-card:hover .kr-media .kr-img{transform:scale(1.04)}
+#content-karya .kr-media [data-gallery]{position:absolute!important;left:0;top:0;right:0;bottom:0;width:100%!important;height:100%!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+#content-karya .kr-media:hover [data-gallery] button[onclick^="prevGallerySlide"],#content-karya .kr-media:hover [data-gallery] button[onclick^="nextGallerySlide"]{opacity:1!important}
+#content-karya .kr-badge{position:absolute;left:14px;top:14px;z-index:30;display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.95);box-shadow:0 4px 12px rgba(0,0,0,.14)}
+#content-karya .kr-t-puisi{color:#7e22ce}#content-karya .kr-t-cerpen{color:#1d4ed8}#content-karya .kr-t-komik{color:#c2410c}#content-karya .kr-t-lukisan{color:#be123c}#content-karya .kr-t-gambar{color:#0e7490}#content-karya .kr-t-lainnya{color:#475569}
+#content-karya .kr-cover{position:relative;height:140px;display:flex;align-items:center;justify-content:center;font-size:46px;color:rgba(255,255,255,.92)}
+#content-karya .kr-cv-puisi{background:linear-gradient(135deg,#a855f7,#6d28d9)}
+#content-karya .kr-cv-cerpen{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
+#content-karya .kr-cv-komik{background:linear-gradient(135deg,#fb923c,#ea580c)}
+#content-karya .kr-cv-lukisan{background:linear-gradient(135deg,#fb7185,#e11d48)}
+#content-karya .kr-cv-gambar{background:linear-gradient(135deg,#22d3ee,#0891b2)}
+#content-karya .kr-cv-lainnya{background:linear-gradient(135deg,#94a3b8,#475569)}
+#content-karya .kr-body{display:flex;flex-direction:column;flex:1;padding:20px 22px 18px}
+#content-karya .kr-date{font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:8px}
+#content-karya .kr-date i{margin-right:5px}
+#content-karya .kr-title{margin:0;font-size:18px;font-weight:900;line-height:1.3;color:#2e1065;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#content-karya .kr-by{display:flex;align-items:center;gap:10px;margin-top:14px}
+#content-karya .kr-av{flex:0 0 36px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;background:linear-gradient(135deg,#d946ef,#7c3aed)}
+#content-karya .kr-by b{display:block;font-size:13px;font-weight:800;line-height:1.2;color:#0f172a}
+#content-karya .kr-by small{display:block;margin-top:2px;font-size:11px;font-weight:700;color:#94a3b8}
+#content-karya .kr-desc{margin:14px 0 0;font-size:13.5px;line-height:1.7;color:#64748b;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+#content-karya .kr-quote{margin:14px 0 0;padding:14px 16px;background:#faf5ff;border-left:4px solid #d946ef;border-radius:0 14px 14px 0;font-size:13.5px;line-height:1.75;font-style:italic;color:#475569;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+#content-karya .kr-read{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;margin-top:12px;border:0;cursor:pointer;font-family:inherit;background:#a21caf;color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border-radius:999px;transition:.2s}
+#content-karya .kr-read:hover{background:#86198f}
+#content-karya .kr-spacer{flex:1;min-height:16px}
+#content-karya .kr-act{display:flex;align-items:center;gap:8px;padding-top:14px;border-top:1px solid #f1f5f9}
+#content-karya .kr-btn{display:inline-flex;align-items:center;gap:7px;border:0;cursor:pointer;font-family:inherit;font-size:12px;font-weight:800;padding:9px 14px;border-radius:999px;background:#f8fafc;color:#64748b;transition:.2s}
+#content-karya .kr-btn:hover{background:#fdf2f8;color:#be185d}
+#content-karya .kr-like.on{background:#fff1f2;color:#e11d48}
+#content-karya .kr-views{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#94a3b8}
+#content-karya .kr-more{display:flex;justify-content:center;margin-top:36px}
+#content-karya .kr-morebtn{display:inline-flex;align-items:center;gap:10px;font-family:inherit;cursor:pointer;background:#fff;color:#7e22ce;border:1px solid #e9d5ff;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:15px 30px;border-radius:999px;box-shadow:0 6px 18px rgba(126,34,206,.1);transition:.25s}
+#content-karya .kr-morebtn:hover{background:#a21caf;border-color:#a21caf;color:#fff;transform:translateY(-2px)}
+#content-karya .kr-empty{grid-column:1/-1;background:#fff;border:2px dashed #e9d5ff;border-radius:26px;padding:56px 20px;text-align:center;font-size:14px;font-weight:700;color:#94a3b8}
+html.dark #content-karya .kr-h2,html.dark #content-karya .kr-title{color:#f5f3ff}
+html.dark #content-karya .kr-sub,html.dark #content-karya .kr-desc{color:#94a3b8}
+html.dark #content-karya .kr-pill{background:#3b0764;color:#f0abfc}
+html.dark #content-karya .kr-tools,html.dark #content-karya .kr-card,html.dark #content-karya .kr-empty{background:#151f32;border-color:#23324f}
+html.dark #content-karya .kr-chip{background:#1a2740;border-color:#2c3d5c;color:#cbd5e1}
+html.dark #content-karya .kr-seg{background:#0f1a2e}
+html.dark #content-karya .kr-seg .kr-chip{background:transparent}
+html.dark #content-karya .kr-chip.on{background:#a21caf;color:#fff}
+html.dark #content-karya .kr-seg .kr-chip.on{background:#7e22ce}
+html.dark #content-karya .kr-by b{color:#f1f5f9}
+html.dark #content-karya .kr-quote{background:#1a1633;color:#cbd5e1}
+html.dark #content-karya .kr-btn{background:#1a2740;color:#cbd5e1}
+html.dark #content-karya .kr-like.on{background:#3b0a1c;color:#fb7185}
+html.dark #content-karya .kr-act{border-color:#23324f}
+html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;color:#e9d5ff}
+</style>
+                <div class="kr-pagehead">
+                    <span class="kr-pill"><i class="fas fa-palette"></i> Galeri Kreativitas</span>
+                    <h2 class="kr-h2" data-i18n="karya_judul">Karya Siswa &amp; Guru</h2>
+                    <div class="kr-bar"></div>
+                    <p class="kr-sub">Kumpulan puisi, cerpen, komik, lukisan, dan gambar hasil kreativitas siswa serta guru SMK IT Al Mubarok.</p>
                 </div>
-                <div id="karya-detail" class="space-y-8 w-full"></div>
+                <div id="karya-detail" class="w-full"></div>
             </div>
         </div>
 
@@ -8258,7 +8348,7 @@ html.dark #guru.gr .gr-photo{background:linear-gradient(135deg,#1a2740,#142036)}
         // ================== END PENJAMINAN MUTU: JURNAL PROGRAM UNGGULAN ==================
 
         // ================== KARYA SISWA & GURU ==================
-        let KARYA_STATE = { items: [], jenis: 'semua', peran: 'semua', sort: 'terbaru', pageSize: 8, visibleCount: 8 };
+        let KARYA_STATE = { items: [], jenis: 'semua', peran: 'semua', sort: 'terbaru', pageSize: 9, visibleCount: 9 };
 
         const JENIS_KARYA_LIST = ['Puisi', 'Cerpen', 'Komik', 'Lukisan', 'Gambar', 'Lainnya'];
 
@@ -8283,61 +8373,64 @@ html.dark #guru.gr .gr-photo{background:linear-gradient(135deg,#1a2740,#142036)}
             KARYA_STATE.sort = 'terbaru';
             KARYA_STATE.visibleCount = KARYA_STATE.pageSize;
 
-            let ctaHtml = '<div class="bg-gradient-to-r from-fuchsia-700 to-purple-700 rounded-[2rem] p-6 md:p-8 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative overflow-hidden">'
-                + '<div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-bl-full"></div>'
-                + '<div class="relative z-10"><span class="text-fuchsia-200 font-black text-[10px] uppercase tracking-widest block mb-1">Galeri Kreativitas</span><h4 class="text-xl md:text-2xl font-black text-white tracking-tight">Punya karya untuk dipamerkan?</h4><p class="text-fuchsia-100 text-xs md:text-sm mt-1">Puisi, cerpen, komik, lukisan, gambar — bebas berkarya!</p></div>'
-                + '<button onclick="openKaryaModal()" class="relative z-10 flex-shrink-0 bg-white text-fuchsia-700 hover:bg-fuchsia-50 px-8 py-4 rounded-[1rem] font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 flex items-center gap-2"><i class="fas fa-upload"></i> Unggah Karya</button>'
-                + '</div>';
-
-            if (items.length === 0) {
-                container.innerHTML = ctaHtml + '<div class="bg-white p-10 rounded-[2rem] shadow-sm border border-slate-100 text-center text-slate-400 text-sm font-semibold">Belum ada karya yang diunggah. Jadilah yang pertama!</div>';
-                return;
-            }
-
             const totalKarya = items.length;
             const totalPembuat = Array.from(new Set(items.map(it => (it.nama_pembuat || '').toString().trim().toLowerCase()).filter(v => v !== ''))).length;
             const totalJenis = Array.from(new Set(items.map(it => (it.jenis_karya || '').toString().trim()).filter(v => v !== ''))).length;
+            const stat = (ikon, angka, label) => '<div class="kr-stat"><i class="fas ' + ikon + '"></i><b>' + angka.toLocaleString('id-ID') + '</b><span>' + label + '</span></div>';
+            const statsHtml = totalKarya > 0
+                ? '<div class="kr-stats">' + stat('fa-shapes', totalKarya, 'Total Karya') + stat('fa-users', totalPembuat, 'Pembuat') + stat('fa-layer-group', totalJenis, 'Jenis') + '</div>'
+                : '';
 
-            let html = ctaHtml;
+            const heroHtml = '<div class="kr-hero"><div class="kr-hero-t">'
+                + '<span class="kr-hero-k">Ayo Berkarya</span>'
+                + '<h4>Punya karya untuk dipamerkan?</h4>'
+                + '<p>Puisi, cerpen, komik, lukisan, gambar — bebas berkarya!</p>'
+                + statsHtml + '</div>'
+                + '<button type="button" onclick="openKaryaModal()" class="kr-up"><i class="fas fa-upload"></i> Unggah Karya</button>'
+                + '</div>';
 
-            html += '<div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-6 md:p-8 mb-8">';
-            html += '<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">';
-            html += '<div class="text-center"><div class="w-11 h-11 mx-auto mb-3 rounded-2xl bg-fuchsia-50 text-fuchsia-600 flex items-center justify-center"><i class="fas fa-shapes"></i></div><p class="text-xl md:text-2xl font-black text-slate-800 tracking-tight">' + totalKarya.toLocaleString('id-ID') + '</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Total Karya</p></div>';
-            html += '<div class="text-center"><div class="w-11 h-11 mx-auto mb-3 rounded-2xl bg-fuchsia-50 text-fuchsia-600 flex items-center justify-center"><i class="fas fa-users"></i></div><p class="text-xl md:text-2xl font-black text-slate-800 tracking-tight">' + totalPembuat.toLocaleString('id-ID') + '</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Pembuat Karya</p></div>';
-            html += '<div class="text-center"><div class="w-11 h-11 mx-auto mb-3 rounded-2xl bg-fuchsia-50 text-fuchsia-600 flex items-center justify-center"><i class="fas fa-layer-group"></i></div><p class="text-xl md:text-2xl font-black text-slate-800 tracking-tight">' + totalJenis.toLocaleString('id-ID') + '</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Jenis Karya</p></div>';
-            html += '</div>';
+            if (items.length === 0) {
+                container.innerHTML = heroHtml + '<div class="kr-empty">Belum ada karya yang diunggah. Jadilah yang pertama!</div>';
+                return;
+            }
 
-            html += '<div class="pt-6 border-t border-slate-100">';
-            html += '<p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fas fa-shapes text-fuchsia-400"></i> Jenis Karya</p>';
-            html += '<div class="flex flex-wrap gap-2">';
-            html += '<button onclick="filterKaryaBy(\'jenis\', \'semua\')" data-jenis-tab="semua" class="karya-jenis-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors bg-fuchsia-600 text-white shadow-md"><i class="fas fa-border-all mr-1.5"></i>Semua</button>';
-            html += JENIS_KARYA_LIST.map(j => '<button onclick="filterKaryaBy(\'jenis\', \'' + j + '\')" data-jenis-tab="' + j + '" class="karya-jenis-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors bg-white text-slate-500 border border-slate-200 hover:border-fuchsia-300 hover:text-fuchsia-600"><i class="fas ' + jenisKaryaStyle(j).icon + ' mr-1.5"></i>' + j + '</button>').join('');
-            html += '</div>';
-            html += '</div>';
+            const jenisBtns = JENIS_KARYA_LIST.map(j =>
+                `<button type="button" onclick="filterKaryaBy('jenis', '${j}')" data-jenis-tab="${j}" class="karya-jenis-tab kr-chip"><i class="fas ${jenisKaryaStyle(j).icon}"></i>${j}</button>`
+            ).join('');
 
-            html += '<div class="mt-5 pt-5 border-t border-slate-100">';
-            html += '<p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fas fa-user-group text-fuchsia-400"></i> Dibuat Oleh</p>';
-            html += '<div class="flex flex-wrap gap-2">';
-            html += '<button onclick="filterKaryaBy(\'peran\', \'semua\')" data-peran-tab="semua" class="karya-peran-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors bg-slate-800 text-white"><i class="fas fa-users mr-1.5"></i>Semua Pembuat</button>';
-            html += '<button onclick="filterKaryaBy(\'peran\', \'Siswa\')" data-peran-tab="Siswa" class="karya-peran-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors bg-white text-slate-500 border border-slate-200 hover:border-slate-400"><i class="fas fa-user-graduate mr-1.5"></i>Karya Siswa</button>';
-            html += '<button onclick="filterKaryaBy(\'peran\', \'Guru\')" data-peran-tab="Guru" class="karya-peran-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors bg-white text-slate-500 border border-slate-200 hover:border-slate-400"><i class="fas fa-chalkboard-user mr-1.5"></i>Karya Guru</button>';
-            html += '</div>';
-            html += '</div>';
-
-            html += '<div class="mt-5 pt-5 border-t border-slate-100">';
-            html += '<p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fas fa-arrow-down-wide-short text-fuchsia-400"></i> Urutkan</p>';
-            html += '<div class="flex flex-wrap gap-2">';
-            html += '<button onclick="filterKaryaBy(\'sort\', \'terbaru\')" data-sort-tab="terbaru" class="karya-sort-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors bg-fuchsia-600 text-white shadow-md"><i class="fas fa-clock mr-1.5"></i>Terbaru</button>';
-            html += '<button onclick="filterKaryaBy(\'sort\', \'terpopuler\')" data-sort-tab="terpopuler" class="karya-sort-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors bg-white text-slate-500 border border-slate-200 hover:border-fuchsia-300 hover:text-fuchsia-600"><i class="fas fa-fire mr-1.5"></i>Terpopuler</button>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-
-            html += '<div id="karya-items-container" class="space-y-6"></div>';
-            html += '<div class="flex justify-center mt-10" id="karya-loadmore-container"></div>';
+            const html = heroHtml
+                + '<div class="kr-tools">'
+                + '<div class="kr-row kr-scroll"><span class="kr-label"><i class="fas fa-shapes"></i>Jenis</span>'
+                + `<button type="button" onclick="filterKaryaBy('jenis', 'semua')" data-jenis-tab="semua" class="karya-jenis-tab kr-chip on"><i class="fas fa-border-all"></i>Semua</button>`
+                + jenisBtns + '</div>'
+                + '<div class="kr-row2">'
+                + '<div class="kr-row"><span class="kr-label"><i class="fas fa-user-group"></i>Dibuat oleh</span><div class="kr-seg">'
+                + `<button type="button" onclick="filterKaryaBy('peran', 'semua')" data-peran-tab="semua" class="karya-peran-tab kr-chip on">Semua</button>`
+                + `<button type="button" onclick="filterKaryaBy('peran', 'Siswa')" data-peran-tab="Siswa" class="karya-peran-tab kr-chip"><i class="fas fa-user-graduate"></i>Siswa</button>`
+                + `<button type="button" onclick="filterKaryaBy('peran', 'Guru')" data-peran-tab="Guru" class="karya-peran-tab kr-chip"><i class="fas fa-chalkboard-user"></i>Guru</button>`
+                + '</div></div>'
+                + '<div class="kr-row"><span class="kr-label"><i class="fas fa-arrow-down-wide-short"></i>Urutkan</span><div class="kr-seg">'
+                + `<button type="button" onclick="filterKaryaBy('sort', 'terbaru')" data-sort-tab="terbaru" class="karya-sort-tab kr-chip on"><i class="fas fa-clock"></i>Terbaru</button>`
+                + `<button type="button" onclick="filterKaryaBy('sort', 'terpopuler')" data-sort-tab="terpopuler" class="karya-sort-tab kr-chip"><i class="fas fa-fire"></i>Terpopuler</button>`
+                + '</div></div>'
+                + '</div></div>'
+                + '<div id="karya-items-container" class="kr-grid"></div>'
+                + '<div class="kr-more" id="karya-loadmore-container"></div>';
 
             container.innerHTML = html;
             renderKaryaItemsUI();
+        }
+
+        function krEsc(v) {
+            return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        /** Daftar foto sebuah karya: sampul (kalau ada) di depan, lalu foto-foto karya. */
+        function karyaMediaUrls(item) {
+            const pecah = v => (v ? v.toString().split(',').map(u => u.trim()).filter(u => u !== '') : []);
+            const sampul = (item.gambar_sampul || item.sampul_karya || '').toString().trim();
+            const galeri = pecah(item.gambar_karya || item.gambar || '');
+            return sampul ? [sampul].concat(galeri.filter(u => u !== sampul)) : galeri;
         }
 
         function buildKaryaCardHtml(item) {
@@ -8350,56 +8443,54 @@ html.dark #guru.gr .gr-photo{background:linear-gradient(135deg,#1a2740,#142036)}
             const isiKarya = item.isi_karya || '';
             const tanggal = item.tanggal || '';
             const js = jenisKaryaStyle(jenis);
-
-            let gambar = item.gambar_karya || item.gambar || '';
-            let gambarUrls = gambar ? gambar.toString().split(',').map(u => u.trim()).filter(u => u !== '') : [];
+            const kunci = JENIS_KARYA_LIST.map(x => x.toLowerCase()).indexOf(String(jenis).toLowerCase()) !== -1 ? String(jenis).toLowerCase() : 'lainnya';
             const rowId = item._rowId || 0;
-            const galleryId = 'karya-gal-' + (item._rowId || Math.random().toString(36).slice(2));
-            let gambarHtml = gambarUrls.length > 0 ? buildAutoGalleryHtml(gambarUrls, galleryId) : '';
 
-            let sampul = (item.gambar_sampul || item.sampul_karya || '').toString().trim();
-            let sampulHtml = sampul ? '<div class="w-full aspect-video rounded-2xl overflow-hidden mb-5 shadow-sm bg-slate-100"><img src="' + sampul + '" class="w-full h-full object-cover object-center" alt="Sampul ' + judul + '" loading="lazy"></div>' : '';
+            const urls = karyaMediaUrls(item);
+            const badge = '<span class="kr-badge kr-t-' + kunci + '"><i class="fas ' + js.icon + '"></i>' + krEsc(jenis) + '</span>';
+            let mediaHtml;
+            if (urls.length > 1) {
+                mediaHtml = '<div class="kr-media">' + buildAutoGalleryHtml(urls, 'karya-gal-' + rowId) + badge + '</div>';
+            } else if (urls.length === 1) {
+                mediaHtml = '<div class="kr-media"><img class="kr-img" src="' + krEsc(urls[0]) + '" alt="' + krEsc(judul) + '" loading="lazy">' + badge + '</div>';
+            } else {
+                mediaHtml = '<div class="kr-cover kr-cv-' + kunci + '"><i class="fas ' + js.icon + '"></i>' + badge + '</div>';
+            }
 
             const sukaCount = parseInt(item.suka) || 0;
             const isLiked = LIKE_KARYA_IDS.indexOf(rowId) !== -1;
             const komentarCount = (DATA.komentar_karya || []).filter(k => parseInt(k.karya_id) === rowId).length;
             const dilihatCount = parseInt(item.dilihat) || 0;
-            let aksiHtml = '<div class="flex items-center gap-3 mt-5 pt-4 border-t border-slate-100">'
-                + '<button type="button" id="like-btn-' + rowId + '" onclick="toggleLikeKarya(' + rowId + ')" class="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black transition-colors ' + (isLiked ? 'bg-rose-50 text-rose-600' : 'bg-slate-50 text-slate-500 hover:bg-rose-50 hover:text-rose-500') + '">'
-                + '<i id="like-icon-' + rowId + '" class="' + (isLiked ? 'fas' : 'far') + ' fa-heart"></i><span id="like-count-' + rowId + '">' + sukaCount + '</span>'
-                + '</button>'
-                + '<button type="button" onclick="openKomentarKarya(' + rowId + ')" class="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 text-slate-500 hover:bg-fuchsia-50 hover:text-fuchsia-600 text-xs font-black transition-colors">'
-                + '<i class="far fa-comment"></i><span id="komentar-count-' + rowId + '">' + komentarCount + '</span> Komentar'
-                + '</button>'
-                + '<span class="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 text-slate-400 text-xs font-black ml-auto"><i class="fas fa-eye"></i><span id="view-count-' + rowId + '">' + dilihatCount + '</span> Dilihat</span>'
+            const aksiHtml = '<div class="kr-act">'
+                + '<button type="button" id="like-btn-' + rowId + '" onclick="toggleLikeKarya(' + rowId + ')" class="kr-btn kr-like' + (isLiked ? ' on' : '') + '">'
+                + '<i id="like-icon-' + rowId + '" class="' + (isLiked ? 'fas' : 'far') + ' fa-heart"></i><span id="like-count-' + rowId + '">' + sukaCount + '</span></button>'
+                + '<button type="button" onclick="openKomentarKarya(' + rowId + ')" class="kr-btn"><i class="far fa-comment"></i><span id="komentar-count-' + rowId + '">' + komentarCount + '</span></button>'
+                + '<span class="kr-views"><i class="fas fa-eye"></i><span id="view-count-' + rowId + '">' + dilihatCount + '</span></span>'
                 + '</div>';
 
-            let isiKarya_clean = isiKarya ? String(isiKarya).replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n{3,}/g, '\n\n').trim() : '';
-
+            const isiBersih = isiKarya ? String(isiKarya).replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n{3,}/g, '\n\n').trim() : '';
             let isiHtml = '';
-            if (isiKarya_clean) {
-                let preview = isiKarya_clean.replace(/\n+/g, ' ').trim();
-                if (preview.length > 380) preview = preview.slice(0, 380).trim() + '…';
-                isiHtml = '<div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 text-sm text-slate-600 leading-relaxed font-medium relative mb-5">'
-                    + '<i class="fas fa-quote-left absolute top-4 left-4 text-slate-200 text-3xl opacity-50"></i>'
-                    + '<div class="relative z-10 pl-6 border-l-[3px] border-fuchsia-400 italic">' + preview + '</div>'
-                    + '<button type="button" onclick="openBookReader(' + rowId + ')" class="relative z-10 mt-4 ml-6 inline-flex items-center gap-2 px-4 py-2 bg-fuchsia-600 hover:bg-fuchsia-700 text-white rounded-full text-[10px] font-black uppercase tracking-widest transition-colors"><i class="fas fa-book-open"></i> Baca Sebagai Buku</button>'
-                    + '</div>';
+            if (isiBersih) {
+                let preview = isiBersih.replace(/\n+/g, ' ').trim();
+                if (preview.length > 260) preview = preview.slice(0, 260).trim() + '…';
+                isiHtml = '<div class="kr-quote">' + krEsc(preview) + '</div>'
+                    + '<button type="button" onclick="openBookReader(' + rowId + ')" class="kr-read"><i class="fas fa-book-open"></i> Baca Sebagai Buku</button>';
             }
 
-            return '<div id="karya-card-' + rowId + '" class="w-full bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 transition-all hover:shadow-lg flex flex-col">'
-                + '<div class="flex items-start justify-between gap-3 mb-4">'
-                + '<div><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ' + js.bg + ' ' + js.text + '"><i class="fas ' + js.icon + '"></i>' + jenis + '</span></div>'
-                + (tanggal ? '<span class="text-[10px] font-bold text-slate-400">' + tanggal + '</span>' : '')
-                + '</div>'
-                + sampulHtml
-                + gambarHtml
-                + '<h4 class="font-black text-slate-800 tracking-tight text-base mb-1">' + judul + '</h4>'
-                + '<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">' + namaPembuat + (peran ? ' &bull; ' + peran : '') + (kelas ? ' &bull; ' + kelas : '') + '</p>'
-                + (deskripsi ? '<p class="text-xs text-slate-500 leading-relaxed mb-4">' + String(deskripsi).replace(/\n/g, '<br>') + '</p>' : '')
+            const inisial = String(namaPembuat).trim().charAt(0).toUpperCase() || '?';
+            const subInfo = [peran, kelas].filter(Boolean).map(krEsc).join(' &bull; ');
+
+            return '<article id="karya-card-' + rowId + '" class="kr-card">'
+                + mediaHtml
+                + '<div class="kr-body">'
+                + (tanggal ? '<div class="kr-date"><i class="far fa-calendar"></i>' + krEsc(tanggal) + '</div>' : '')
+                + '<h4 class="kr-title">' + krEsc(judul) + '</h4>'
+                + '<div class="kr-by"><span class="kr-av">' + krEsc(inisial) + '</span><span><b>' + krEsc(namaPembuat) + '</b>' + (subInfo ? '<small>' + subInfo + '</small>' : '') + '</span></div>'
+                + (deskripsi ? '<p class="kr-desc">' + krEsc(String(deskripsi).replace(/\s*\n\s*/g, ' ')) + '</p>' : '')
                 + isiHtml
+                + '<div class="kr-spacer"></div>'
                 + aksiHtml
-                + '</div>';
+                + '</div></article>';
         }
 
         function renderKaryaItemsUI() {
@@ -8424,36 +8515,25 @@ html.dark #guru.gr .gr-photo{background:linear-gradient(135deg,#1a2740,#142036)}
             let visible = filtered.slice(0, KARYA_STATE.visibleCount);
 
             if (visible.length === 0) {
-                itemsContainer.innerHTML = '<div class="bg-white p-10 rounded-[2rem] shadow-sm border border-slate-100 text-center text-slate-400 text-sm font-semibold">Tidak ada karya yang cocok dengan filter ini.</div>';
+                itemsContainer.innerHTML = '<div class="kr-empty">Tidak ada karya yang cocok dengan filter ini.</div>';
             } else {
                 itemsContainer.innerHTML = visible.map(item => buildKaryaCardHtml(item)).join('');
                 visible.forEach(item => {
-                    let gambar = item.gambar_karya || item.gambar || '';
-                    let gambarUrls = gambar ? gambar.toString().split(',').map(u => u.trim()).filter(u => u !== '') : [];
-                    if (gambarUrls.length > 1) initAutoGallery('karya-gal-' + item._rowId, gambarUrls.length, 4500);
+                    const total = karyaMediaUrls(item).length;
+                    if (total > 1) initAutoGallery('karya-gal-' + (item._rowId || 0), total, 4500);
                 });
             }
 
             if (loadMoreContainer) {
-                if (filtered.length > visible.length) {
-                    loadMoreContainer.innerHTML = '<button onclick="loadMoreKarya()" class="px-8 py-4 bg-white border border-slate-200 hover:border-fuchsia-500 hover:text-fuchsia-600 text-slate-600 rounded-full font-black text-xs uppercase tracking-widest shadow-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-down"></i> Muat Lebih Banyak (' + (filtered.length - visible.length) + ' lagi)</button>';
-                } else {
-                    loadMoreContainer.innerHTML = '';
-                }
+                loadMoreContainer.innerHTML = filtered.length > visible.length
+                    ? '<button type="button" onclick="loadMoreKarya()" class="kr-morebtn"><i class="fas fa-chevron-down"></i> Muat Lebih Banyak (' + (filtered.length - visible.length) + ' lagi)</button>'
+                    : '';
             }
 
-            document.querySelectorAll('.karya-jenis-tab').forEach(btn => {
-                const isActive = btn.getAttribute('data-jenis-tab') === KARYA_STATE.jenis;
-                btn.className = 'karya-jenis-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors ' + (isActive ? 'bg-fuchsia-600 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:border-fuchsia-300 hover:text-fuchsia-600');
-            });
-            document.querySelectorAll('.karya-peran-tab').forEach(btn => {
-                const isActive = btn.getAttribute('data-peran-tab') === KARYA_STATE.peran;
-                btn.className = 'karya-peran-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors ' + (isActive ? 'bg-slate-800 text-white' : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-400');
-            });
-            document.querySelectorAll('.karya-sort-tab').forEach(btn => {
-                const isActive = btn.getAttribute('data-sort-tab') === KARYA_STATE.sort;
-                btn.className = 'karya-sort-tab px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors ' + (isActive ? 'bg-fuchsia-600 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:border-fuchsia-300 hover:text-fuchsia-600');
-            });
+            const tandai = (selector, atribut, nilai) => document.querySelectorAll(selector).forEach(btn => btn.classList.toggle('on', btn.getAttribute(atribut) === nilai));
+            tandai('.karya-jenis-tab', 'data-jenis-tab', KARYA_STATE.jenis);
+            tandai('.karya-peran-tab', 'data-peran-tab', KARYA_STATE.peran);
+            tandai('.karya-sort-tab', 'data-sort-tab', KARYA_STATE.sort);
         }
 
         function filterKaryaBy(type, value) {
@@ -8596,7 +8676,7 @@ html.dark #guru.gr .gr-photo{background:linear-gradient(135deg,#1a2740,#142036)}
                     localStorage.setItem('edudigital_karya_liked', JSON.stringify(LIKE_KARYA_IDS));
 
                     const nowLiked = !isLiked;
-                    if (btn) btn.className = 'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black transition-colors ' + (nowLiked ? 'bg-rose-50 text-rose-600' : 'bg-slate-50 text-slate-500 hover:bg-rose-50 hover:text-rose-500');
+                    if (btn) btn.className = 'kr-btn kr-like' + (nowLiked ? ' on' : '');
                     if (icon) icon.className = (nowLiked ? 'fas' : 'far') + ' fa-heart';
                     if (countEl) countEl.innerText = newSuka;
 

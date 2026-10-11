@@ -2389,70 +2389,98 @@ html.dark #guru.gr .gr-photo{background:linear-gradient(135deg,#1a2740,#142036)}
                 
                 <!-- Footer Sekolah Profesional Modern -->
                 <!-- ID "kontak" DITAMBAHKAN DI SINI AGAR BISA DI-SCROLL -->
-                <footer id="kontak" class="relative bg-[#0b162a] text-slate-300 border-t border-slate-800">
-                    <div class="wv wv-t wv-white"><svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="wv-back" fill="currentColor" d="M0,48 C200,8 420,96 700,64 C980,32 1200,10 1440,56 L1440,120 L0,120 Z"/><path fill="currentColor" d="M0,72 C240,118 480,24 720,64 C960,104 1200,112 1440,58 L1440,120 L0,120 Z"/></svg></div>
-                    <div class="max-w-7xl mx-auto px-8 py-16 grid grid-cols-1 md:grid-cols-12 gap-12 text-left">
-                        <div class="md:col-span-4 space-y-6">
-                            <div class="flex items-center gap-3 text-white">
-                                <div class="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30">
-                                    <img src="https://lh3.googleusercontent.com/d/1Js3Aqf_ynng18AWKd9OdBUapPJy3leo5" class="w-10 h-10 md:w-12 md:h-12 object-contain" alt="Logo Sekolah">
+                <footer id="kontak" class="ft">
+<style id="ft-style">
+#kontak.ft{position:relative;overflow:hidden;color:#cbd5e1}
+#kontak.ft::before{content:"";position:absolute;right:-140px;top:-140px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.38),transparent 70%);pointer-events:none}
+#kontak.ft::after{content:"";position:absolute;left:-120px;bottom:-160px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.16),transparent 70%);pointer-events:none}
+#kontak .ft-wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:70px 28px 44px;display:grid;grid-template-columns:1fr;gap:40px;text-align:left}
+@media(min-width:640px){#kontak .ft-wrap{grid-template-columns:1fr 1fr;gap:44px 36px}}
+@media(min-width:1024px){#kontak .ft-wrap{grid-template-columns:1.5fr .9fr 1.5fr 1.4fr;gap:44px}}
+#kontak .ft-brand-row{display:flex;align-items:center;gap:14px}
+#kontak .ft-logo{flex:0 0 58px;width:58px;height:58px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+#kontak .ft-logo img{width:44px;height:44px;object-fit:contain}
+#kontak .ft-name{margin:0;font-size:20px;font-weight:900;line-height:1.15;letter-spacing:.01em;text-transform:uppercase;color:#fff}
+#kontak .ft-desc{margin:18px 0 0;font-size:14px;line-height:1.75;color:#a9b8d4;font-weight:500;max-width:340px}
+#kontak .ft-social{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+#kontak .ft-social a{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#e2e8f0;display:inline-flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:.25s}
+#kontak .ft-social a:hover{transform:translateY(-3px);color:#fff;border-color:transparent;box-shadow:0 10px 20px rgba(0,0,0,.3)}
+#kontak #footer-tt-icon:hover{background:#000}
+#kontak #footer-ig-icon:hover{background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)}
+#kontak #footer-yt-icon:hover{background:#ef4444}
+#kontak #footer-wa-icon:hover{background:#25d366}
+#kontak .ft-h{position:relative;margin:0 0 22px;padding-bottom:13px;font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#fff}
+#kontak .ft-h::after{content:"";position:absolute;left:0;bottom:0;width:36px;height:3px;border-radius:9px;background:#f59e0b}
+#kontak .ft-links{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+#kontak .ft-links a{display:inline-flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;font-weight:600;color:#c5d2ea;text-decoration:none;transition:.2s}
+#kontak .ft-links a i{font-size:10px;color:#f59e0b}
+#kontak .ft-links a:hover{color:#fff;transform:translateX(5px)}
+#kontak .ft-info{display:grid;gap:16px}
+#kontak .ft-row{display:flex;align-items:flex-start;gap:12px;font-size:13.5px;line-height:1.65;color:#b6c4de;font-weight:500}
+#kontak .ft-row>span{padding-top:5px;min-width:0;word-break:break-word}
+#kontak .ft-ico{flex:0 0 36px;width:36px;height:36px;border-radius:12px;background:rgba(245,158,11,.15);color:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:13px}
+#kontak .ft-wa{display:inline-flex;align-items:center;gap:10px;margin-top:22px;background:#25d366;color:#fff;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:14px 24px;border-radius:14px;text-decoration:none;box-shadow:0 10px 24px rgba(37,211,102,.28);transition:.25s}
+#kontak .ft-wa:hover{background:#1ebe5b;transform:translateY(-2px)}
+#kontak .ft-wa i{font-size:16px}
+#kontak .ft-map{border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.32);background:#0a1f44}
+#kontak .ft-map iframe{display:block;width:100%!important;height:200px!important;border:0!important}
+#kontak .ft-bottom{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.1);background:rgba(4,12,30,.28)}
+#kontak .ft-bottom-in{max-width:1240px;margin:0 auto;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+#kontak .ft-copy{margin:0;font-size:12.5px;font-weight:600;color:#8fa2c4}
+#kontak .ft-up{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:14px;transition:.25s}
+#kontak .ft-up:hover{background:#f59e0b;border-color:#f59e0b;color:#3a2400;transform:translateY(-3px)}
+@media(max-width:520px){#kontak .ft-wrap{padding:54px 20px 34px}#kontak .ft-bottom-in{padding:20px;justify-content:center;text-align:center}}
+</style>
+                    <div class="ft-wrap">
+                        <div class="ft-col">
+                            <div class="ft-brand-row">
+                                <div class="ft-logo">
+                                    <img src="https://lh3.googleusercontent.com/d/1Js3Aqf_ynng18AWKd9OdBUapPJy3leo5" alt="Logo Sekolah">
                                 </div>
-                                <h2 class="font-black text-xl tracking-tight uppercase" id="footer-nama-sekolah">SMK IT AL MUBAROK</h2>
+                                <h2 class="ft-name" id="footer-nama-sekolah">SMK IT AL MUBAROK</h2>
                             </div>
-                            <p id="footer-deskripsi" class="text-sm leading-relaxed text-slate-400 font-medium">
-                                Unggul, Smart, Profesional, Melesat
-                            </p>
-                            <div class="flex items-center gap-3 pt-2">
-                                <a id="footer-tt-icon" href="https://www.tiktok.com/@smkmubarok.official?is_from_webapp=1&sender_device=pc" target="_blank" class="w-10 h-10 bg-slate-800/80 hover:bg-black hover:text-white rounded-xl flex items-center justify-center transition-all"><i class="fab fa-tiktok text-sm"></i></a>
-                                <a id="footer-ig-icon" href="https://www.instagram.com/smkmubarok.official?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="w-10 h-10 bg-slate-800/80 hover:bg-pink-600 hover:text-white rounded-xl flex items-center justify-center transition-all"><i class="fab fa-instagram text-sm"></i></a>
-                                <a id="footer-yt-icon" href="http://www.youtube.com/@smkmubarok.official" target="_blank" class="w-10 h-10 bg-slate-800/80 hover:bg-red-600 hover:text-white rounded-xl flex items-center justify-center transition-all"><i class="fab fa-youtube text-sm"></i></a>
-                                <a id="footer-wa-icon" href="https://wa.me/6285821506800" target="_blank" class="w-10 h-10 bg-slate-800/80 hover:bg-[#25d366] hover:text-white rounded-xl flex items-center justify-center transition-all"><i class="fab fa-whatsapp text-sm"></i></a>
+                            <p id="footer-deskripsi" class="ft-desc">Unggul, Smart, Profesional, Melesat</p>
+                            <div class="ft-social">
+                                <a id="footer-tt-icon" href="https://www.tiktok.com/@smkmubarok.official?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                                <a id="footer-ig-icon" href="https://www.instagram.com/smkmubarok.official?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                                <a id="footer-yt-icon" href="http://www.youtube.com/@smkmubarok.official" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                                <a id="footer-wa-icon" href="https://wa.me/6285821506800" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                             </div>
                         </div>
-                        
-                        <div class="md:col-span-2 space-y-4">
-                            <h4 class="text-white font-black text-xs uppercase tracking-widest border-b border-slate-700/60 pb-2" data-i18n="footer_navigasi">Navigasi</h4>
-                            <ul class="space-y-3 text-xs font-semibold">
-                                <li><a href="javascript:void(0)" onclick="showSection('home')" class="hover:text-white hover:underline transition-all" data-i18n="footer_beranda_utama">Beranda Utama</a></li>
-                                <li><a href="javascript:void(0)" onclick="showSection('profil')" class="hover:text-white hover:underline transition-all" data-i18n="footer_profil_sekolah">Profil Sekolah</a></li>
-                                <li><a href="javascript:void(0)" onclick="scrollToSection('berita')" class="hover:text-white hover:underline transition-all" data-i18n="footer_kabar_berita">Kabar & Berita</a></li>
-                                <li><a href="javascript:void(0)" onclick="scrollToSection('guru')" class="hover:text-white hover:underline transition-all" data-i18n="footer_tenaga_pengajar">Tenaga Pengajar</a></li>
+
+                        <div class="ft-col">
+                            <h4 class="ft-h" data-i18n="footer_navigasi">Navigasi</h4>
+                            <ul class="ft-links">
+                                <li><a href="javascript:void(0)" onclick="showSection('home')"><i class="fas fa-chevron-right"></i><span data-i18n="footer_beranda_utama">Beranda Utama</span></a></li>
+                                <li><a href="javascript:void(0)" onclick="showSection('profil')"><i class="fas fa-chevron-right"></i><span data-i18n="footer_profil_sekolah">Profil Sekolah</span></a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToSection('berita')"><i class="fas fa-chevron-right"></i><span data-i18n="footer_kabar_berita">Kabar & Berita</span></a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToSection('guru')"><i class="fas fa-chevron-right"></i><span data-i18n="footer_tenaga_pengajar">Tenaga Pengajar</span></a></li>
                             </ul>
                         </div>
 
-                        <div class="md:col-span-3 space-y-4">
-                            <h4 class="text-white font-black text-xs uppercase tracking-widest border-b border-slate-700/60 pb-2" data-i18n="footer_hubungi_kami">Hubungi Kami</h4>
-                            <div class="space-y-3.5 text-xs leading-relaxed text-slate-400">
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-map-marker-alt text-yellow-500 mt-1 flex-shrink-0"></i>
-                                    <span id="footer-alamat" class="font-medium">Memuat alamat...</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <i class="fas fa-envelope text-yellow-500 flex-shrink-0"></i>
-                                    <span id="footer-email" class="font-medium">Memuat email...</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <i class="fas fa-clock text-yellow-500 flex-shrink-0"></i>
-                                    <span id="footer-jam-kerja" class="font-medium">Memuat jam kerja...</span>
-                                </div>
+                        <div class="ft-col">
+                            <h4 class="ft-h" data-i18n="footer_hubungi_kami">Hubungi Kami</h4>
+                            <div class="ft-info">
+                                <div class="ft-row"><span class="ft-ico"><i class="fas fa-map-marker-alt"></i></span><span id="footer-alamat">Memuat alamat...</span></div>
+                                <div class="ft-row"><span class="ft-ico"><i class="fas fa-envelope"></i></span><span id="footer-email">Memuat email...</span></div>
+                                <div class="ft-row"><span class="ft-ico"><i class="fas fa-clock"></i></span><span id="footer-jam-kerja">Memuat jam kerja...</span></div>
                             </div>
-                            <div class="pt-2">
-                                <a id="footer-wa-btn" href="#" target="_blank" class="inline-flex items-center gap-2 bg-[#25d366] hover:bg-emerald-600 text-white px-5 py-3 rounded-xl font-bold text-xs tracking-wider uppercase transition-all shadow-md">
-                                    <i class="fab fa-whatsapp text-sm"></i> <span data-i18n="footer_hubungi_wa">Hubungi WhatsApp</span>
-                                </a>
-                            </div>
+                            <a id="footer-wa-btn" href="#" target="_blank" rel="noopener" class="ft-wa"><i class="fab fa-whatsapp"></i> <span data-i18n="footer_hubungi_wa">Hubungi WhatsApp</span></a>
                         </div>
 
-                        <div class="md:col-span-3 space-y-4">
-                            <h4 class="text-white font-black text-xs uppercase tracking-widest border-b border-slate-700/60 pb-2" data-i18n="footer_lokasi_sekolah">Lokasi Sekolah</h4>
-                            <div class="w-full rounded-2xl overflow-hidden shadow-md border border-slate-800" id="footer-maps-container">
+                        <div class="ft-col">
+                            <h4 class="ft-h" data-i18n="footer_lokasi_sekolah">Lokasi Sekolah</h4>
+                            <div class="ft-map" id="footer-maps-container">
                                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.5113940176865!2d111.5471465!3d-7.6280459!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e79bf39ecf79bf9%3A0xbcc0ff2a7e71f844!2sSMK%20IT%20AL%20MUBARok!5e0!3m2!1sid!2sid!4v1715960000000!5m2!1sid!2sid" class="w-full h-36 border-0" allowfullscreen="" loading="lazy"></iframe>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="border-t border-slate-800/80 py-8 text-center text-xs font-semibold text-slate-500">
-                        <p>© 2026 SMK IT AL MUBAROK. Seluruh Hak Cipta Dilindungi.</p>
+
+                    <div class="ft-bottom">
+                        <div class="ft-bottom-in">
+                            <p class="ft-copy">© 2026 SMK IT AL MUBAROK. Seluruh Hak Cipta Dilindungi.</p>
+                            <button type="button" class="ft-up" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Kembali ke atas"><i class="fas fa-arrow-up"></i></button>
+                        </div>
                     </div>
                 </footer>
             </div>

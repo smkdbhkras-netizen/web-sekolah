@@ -10578,9 +10578,10 @@ window.addEventListener('scroll',f,{passive:true});document.addEventListener('cl
 </script>
 <!--
 =====================================================================
-KARYA: PEMBACA CERITA 2.0 (nyaman dibaca + animasi otomatis sesuai isi cerita)
+KARYA: BUKU KERTAS 3D (dua halaman terbuka, halaman dilipat saat dibalik)
++ animasi suasana otomatis sesuai isi cerita + bacakan otomatis.
 PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
-        yaitu setelah </script> yang paling akhir. Tidak ada kode lain yang diubah.
+        setelah </script> yang paling akhir. Tidak ada kode lain yang diubah.
 =====================================================================
 -->
 <style id="kr2-style">
@@ -10588,112 +10589,122 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
 @property --kr-bg2{syntax:'<color>';inherits:true;initial-value:#f1e6cc}
 @property --kr-tx{syntax:'<color>';inherits:true;initial-value:#3a3128}
 @property --kr-ac{syntax:'<color>';inherits:true;initial-value:#b4532a}
-#modal-book-reader{background:radial-gradient(ellipse at 50% 0%,rgba(30,41,80,.88),rgba(4,7,15,.95))!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:0!important}
-#modal-book-reader .kr2-shell{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:clamp(0px,2vw,22px)}
-#modal-book-reader .kr2-card{
-  --kr-bg1:#fbf6ea;--kr-bg2:#f1e6cc;--kr-tx:#3a3128;--kr-ac:#b4532a;--fs:18px;--lh:1.95;--ff:Georgia,'Iowan Old Style','Palatino Linotype',serif;
-  position:relative;width:100%;max-width:860px;height:100%;max-height:920px;display:flex;flex-direction:column;overflow:hidden;
-  border-radius:28px;background:linear-gradient(160deg,var(--kr-bg1),var(--kr-bg2));color:var(--kr-tx);
-  box-shadow:0 40px 90px rgba(0,0,0,.55);
-  transition:--kr-bg1 .9s ease,--kr-bg2 .9s ease,--kr-tx .6s ease,--kr-ac .6s ease;
-  animation:kr2-in .5s cubic-bezier(.2,.8,.2,1);
-}
-#modal-book-reader .kr2-card[data-theme="paper"]{--kr-bg1:#fbf6ea;--kr-bg2:#f1e6cc;--kr-tx:#3a3128;--kr-ac:#b4532a}
-#modal-book-reader .kr2-card[data-theme="white"]{--kr-bg1:#ffffff;--kr-bg2:#f4f6fb;--kr-tx:#1f2430;--kr-ac:#2563c9}
-#modal-book-reader .kr2-card[data-theme="dark"]{--kr-bg1:#121a30;--kr-bg2:#0a0f1d;--kr-tx:#dfe4f1;--kr-ac:#f2b45a}
-@keyframes kr2-in{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
-#modal-book-reader canvas#kr2-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-#modal-book-reader .kr2-flash{position:absolute;inset:0;z-index:3;pointer-events:none;background:#fff;opacity:0;transition:opacity .35s ease-out}
-#modal-book-reader .kr2-head,#modal-book-reader .kr2-stage,#modal-book-reader .kr2-foot,#modal-book-reader .kr2-panel{position:relative;z-index:2}
-
-/* header */
-.kr2-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 18px 6px 26px}
-.kr2-ttl{min-width:0;padding-top:4px}
-.kr2-ttl h3{margin:0;font-size:clamp(1.05rem,2.4vw,1.35rem);font-weight:800;letter-spacing:-.01em;line-height:1.25;color:var(--kr-tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.kr2-ttl p{margin:4px 0 0;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--kr-ac)}
+#modal-book-reader{background:radial-gradient(ellipse at 50% 20%,#2b3150 0%,#10142a 55%,#06080f 100%)!important;padding:0!important}
+#modal-book-reader *{box-sizing:border-box}
+#modal-book-reader .kr2-shell{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px clamp(8px,2vw,24px) 12px}
+.kr2-top{width:100%;max-width:1160px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#f1f5f9;flex-shrink:0}
+.kr2-ttl{min-width:0}
+.kr2-ttl h3{margin:0;font-size:clamp(1rem,2.2vw,1.3rem);font-weight:800;letter-spacing:-.01em;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kr2-ttl p{margin:3px 0 0;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fbbf24}
 .kr2-tools{display:flex;gap:8px;flex-shrink:0}
-.kr2-btn{width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:15px;color:var(--kr-tx);background:color-mix(in srgb,var(--kr-tx) 9%,transparent);transition:background .2s,transform .2s,color .2s}
-.kr2-btn:hover{background:color-mix(in srgb,var(--kr-tx) 17%,transparent)}
+.kr2-btn{width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:15px;color:#f1f5f9;background:rgba(255,255,255,.12);transition:background .2s,transform .2s}
+.kr2-btn:hover{background:rgba(255,255,255,.22)}
 .kr2-btn:active{transform:scale(.92)}
-.kr2-btn.on{background:var(--kr-ac);color:#fff}
-.kr2-btn.kr2-aa{font-weight:800;font-family:Georgia,serif;font-size:15px}
-.kr2-btn.kr2-x{font-size:18px}
+.kr2-btn.on{background:#f59e0b;color:#1c1204}
+.kr2-btn.kr2-aa{font-family:Georgia,serif;font-weight:800}
 
 /* panel pengaturan */
-.kr2-panel{position:absolute!important;right:16px;top:64px;width:min(320px,calc(100% - 32px));padding:16px;border-radius:18px;background:color-mix(in srgb,var(--kr-bg1) 94%,var(--kr-tx));color:var(--kr-tx);box-shadow:0 18px 44px rgba(0,0,0,.28),0 0 0 1px color-mix(in srgb,var(--kr-tx) 12%,transparent);z-index:6!important;opacity:0;transform:translateY(-8px) scale(.98);pointer-events:none;transition:.22s}
+.kr2-panel{position:absolute;right:max(14px,2vw);top:62px;width:min(320px,calc(100% - 28px));padding:16px;border-radius:18px;background:#fff;color:#1f2430;box-shadow:0 18px 44px rgba(0,0,0,.4);z-index:30;opacity:0;transform:translateY(-8px) scale(.98);pointer-events:none;transition:.22s}
 .kr2-panel.open{opacity:1;transform:none;pointer-events:auto}
-.kr2-row{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
-.kr2-row:last-child{margin-bottom:0}
-.kr2-lbl{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--kr-tx) 60%,transparent)}
+.kr2-row{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}.kr2-row:last-child{margin-bottom:0}
+.kr2-lbl{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
 .kr2-seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
-.kr2-seg button{border:0;cursor:pointer;padding:9px 6px;border-radius:11px;font-size:12px;font-weight:700;color:var(--kr-tx);background:color-mix(in srgb,var(--kr-tx) 8%,transparent);transition:.2s}
-.kr2-seg button.on{background:var(--kr-ac);color:#fff}
+.kr2-seg button{border:0;cursor:pointer;padding:9px 6px;border-radius:11px;font-size:12px;font-weight:700;color:#1f2430;background:#eef1f6;transition:.2s}
+.kr2-seg button.on{background:#17408f;color:#fff}
 .kr2-size{display:flex;align-items:center;gap:10px}
-.kr2-size button{width:38px;height:38px;border-radius:11px;border:0;cursor:pointer;font-weight:800;color:var(--kr-tx);background:color-mix(in srgb,var(--kr-tx) 8%,transparent)}
-.kr2-size button:active{transform:scale(.92)}
-.kr2-size input{flex:1;accent-color:var(--kr-ac)}
+.kr2-size button{width:38px;height:38px;border-radius:11px;border:0;cursor:pointer;font-weight:800;color:#1f2430;background:#eef1f6}
+.kr2-size input{flex:1;accent-color:#17408f}
 
-/* halaman teks */
-.kr2-stage{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:20px clamp(24px,7vw,76px) 22px;scrollbar-width:thin;perspective:1200px;-webkit-overflow-scrolling:touch}
-.kr2-page{max-width:34em;margin:0 auto;font-family:var(--ff);font-size:var(--fs);line-height:var(--lh);color:var(--kr-tx);transform-origin:50% 50%}
-.kr2-page p{margin:0 0 .9em;text-indent:1.6em;overflow-wrap:break-word;hyphens:auto;animation:kr2-rise .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d,0)*95ms);border-radius:10px;transition:background .3s,box-shadow .3s}
-.kr2-page p:first-child{text-indent:0}
-.kr2-page.kr2-first p:first-child::first-letter{float:left;font-size:3.5em;line-height:.82;padding:.07em .12em 0 0;font-weight:800;color:var(--kr-ac)}
-.kr2-page p.kr2-speak{background:color-mix(in srgb,var(--kr-ac) 15%,transparent);box-shadow:0 0 0 7px color-mix(in srgb,var(--kr-ac) 15%,transparent)}
-@keyframes kr2-rise{from{opacity:0;transform:translateY(14px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
-.kr2-sans{--ff:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
-.kr2-sans .kr2-page p{text-indent:0}
+/* meja + buku */
+.kr2-desk{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+.kr2-book{
+  --kr-bg1:#fbf6ea;--kr-bg2:#f1e6cc;--kr-tx:#3a3128;--kr-ac:#9a3412;--fs:18px;--lh:1.85;--ff:Georgia,'Iowan Old Style','Palatino Linotype',serif;
+  position:relative;width:100%;max-width:1160px;height:100%;max-height:800px;padding:14px 16px 18px;border-radius:16px;
+  background:linear-gradient(145deg,#74492f 0%,#4a2b1b 55%,#3a2014 100%);
+  box-shadow:0 44px 90px rgba(0,0,0,.65),0 0 0 1px rgba(255,214,150,.18),inset 0 0 0 2px rgba(255,214,150,.12),inset 0 0 44px rgba(0,0,0,.4);
+  color:var(--kr-tx);transition:--kr-bg1 .9s ease,--kr-bg2 .9s ease,--kr-tx .6s ease,--kr-ac .6s ease;
+  animation:kr2-open .7s cubic-bezier(.2,.8,.2,1);
+}
+.kr2-book[data-theme="paper"]{--kr-bg1:#fbf6ea;--kr-bg2:#f1e6cc;--kr-tx:#3a3128;--kr-ac:#9a3412}
+.kr2-book[data-theme="white"]{--kr-bg1:#ffffff;--kr-bg2:#f3f5fa;--kr-tx:#1f2430;--kr-ac:#1d4ed8}
+.kr2-book[data-theme="dark"]{--kr-bg1:#1a2238;--kr-bg2:#0f1526;--kr-tx:#e1e6f3;--kr-ac:#f2b45a}
+@keyframes kr2-open{from{opacity:0;transform:perspective(1600px) rotateX(14deg) scale(.94) translateY(30px)}to{opacity:1;transform:none}}
+.kr2-spread{position:relative;width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr;border-radius:4px;overflow:hidden;
+  background:linear-gradient(160deg,var(--kr-bg1),var(--kr-bg2));
+  box-shadow:5px 6px 0 -1px #efe4cb,9px 11px 0 -2px #d8ccae,13px 16px 0 -3px #c3b693,0 0 0 1px rgba(0,0,0,.25)}
+.kr2-spread canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.kr2-flash{position:absolute;inset:0;z-index:12;pointer-events:none;background:#fff;opacity:0;transition:opacity .35s ease-out}
+.kr2-pg{position:relative;z-index:2;display:flex;flex-direction:column;min-width:0;min-height:0;padding:clamp(22px,4.2vw,46px) clamp(20px,4vw,50px) 12px}
+.kr2-pg::after{content:"";position:absolute;inset:0;pointer-events:none}
+.kr2-pgL::after{background:linear-gradient(90deg,rgba(0,0,0,0) 62%,rgba(60,35,10,.16) 100%)}
+.kr2-pgR::after{background:linear-gradient(270deg,rgba(0,0,0,0) 62%,rgba(60,35,10,.16) 100%)}
+.kr2-pgin{flex:1;min-height:0;overflow:hidden;font-family:var(--ff);font-size:var(--fs);line-height:var(--lh);color:var(--kr-tx);position:relative}
+.kr2-sans .kr2-pgin{--ff:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+.kr2-pgin p{margin:0 0 .85em;text-indent:1.5em;overflow-wrap:break-word;hyphens:auto;border-radius:8px;animation:kr2-rise .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d,0)*90ms);transition:background .3s,box-shadow .3s}
+.kr2-sans .kr2-pgin p{text-indent:0}
+.kr2-pgin p:first-child{text-indent:0}
+.kr2-pgin.kr2-first p:first-child::first-letter{float:left;font-size:3.3em;line-height:.82;padding:.07em .12em 0 0;font-weight:800;color:var(--kr-ac)}
+.kr2-pgin p.kr2-speak{background:color-mix(in srgb,var(--kr-ac) 16%,transparent);box-shadow:0 0 0 6px color-mix(in srgb,var(--kr-ac) 16%,transparent)}
+@keyframes kr2-rise{from{opacity:0;transform:translateY(12px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+.kr2-num{height:22px;flex-shrink:0;text-align:center;font:600 12px Georgia,serif;letter-spacing:.08em;color:color-mix(in srgb,var(--kr-tx) 55%,transparent);position:relative;z-index:1}
+.kr2-titlepg{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.kr2-titlepg .o{font-size:26px;color:var(--kr-ac)}
+.kr2-titlepg h2{margin:0;font-size:calc(var(--fs)*1.9);line-height:1.15;font-weight:800;letter-spacing:-.01em}
+.kr2-titlepg .r{width:64px;height:3px;border-radius:3px;background:var(--kr-ac)}
+.kr2-titlepg .a{font-size:calc(var(--fs)*.95);font-style:italic}
+.kr2-titlepg .j{font:800 10.5px system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--kr-ac)}
+.kr2-titlepg .s{margin-top:18px;font:700 10px system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;opacity:.5}
+.kr2-endpg{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;font-style:italic}
+.kr2-endpg .o{font-size:24px;color:var(--kr-ac)}
+.kr2-endpg b{font-size:calc(var(--fs)*1.4);font-style:normal}
+.kr2-gutter{position:absolute;left:50%;top:0;bottom:0;width:46px;transform:translateX(-50%);z-index:4;pointer-events:none;
+  background:linear-gradient(90deg,rgba(60,35,10,0),rgba(60,35,10,.16) 42%,rgba(40,20,5,.34) 50%,rgba(60,35,10,.16) 58%,rgba(60,35,10,0))}
+.kr2-single .kr2-pgL,.kr2-single .kr2-gutter,.kr2-single .kr2-curl.kr2-cl{display:none}
+.kr2-single .kr2-spread{grid-template-columns:1fr}
+.kr2-single{max-width:560px}
+.kr2-probe{position:absolute;left:0;top:0;visibility:hidden;pointer-events:none}
 
-
-/* ===== efek buku kertas: halaman melipat saat dibalik ===== */
-.kr2-bookbox{position:relative;z-index:2;flex:1;min-height:0;display:flex}
-.kr2-bookbox .kr2-stage{flex:1;z-index:auto}
-.kr2-flipwrap{position:absolute;inset:0;z-index:5;pointer-events:none;perspective:2400px;perspective-origin:0% 50%;overflow:hidden}
-.kr2-flipwrap .kr2-snap{position:absolute;inset:0;overflow:hidden;background:linear-gradient(160deg,var(--kr-bg1),var(--kr-bg2))}
-.kr2-leaf{position:absolute;inset:0;transform-origin:0 50%;transform-style:preserve-3d;will-change:transform}
+/* lembar yang dibalik */
+.kr2-flipwrap{position:absolute;inset:0;z-index:8;pointer-events:none;perspective:2600px;overflow:hidden}
+.kr2-leaf{position:absolute;top:0;bottom:0;transform-style:preserve-3d;will-change:transform}
 .kr2-face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:linear-gradient(160deg,var(--kr-bg1),var(--kr-bg2))}
 .kr2-face.kr2-back{transform:rotateY(180deg)}
-.kr2-face .kr2-snap{position:absolute;inset:0}
-.kr2-face.kr2-back .kr2-snap{transform:scaleX(-1);opacity:.1;filter:blur(.4px)}
-.kr2-face.kr2-back::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.20),rgba(0,0,0,0) 30%,rgba(255,255,255,.12) 100%)}
-.kr2-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.0) 40%,rgba(0,0,0,.38) 100%);opacity:0}
-.kr2-cast{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,.14) 38%,rgba(0,0,0,0) 72%);opacity:0}
-.kr2-fold{position:absolute;top:0;bottom:0;left:0;width:26px;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0));opacity:.0}
-/* sudut kertas yang terlipat (klik untuk membalik) */
-.kr2-curl{--cs:44px;position:absolute;right:0;bottom:0;z-index:6;width:var(--cs);height:var(--cs);border:0;padding:0;cursor:pointer;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--kr-bg1) 55%,#fff) 0%,color-mix(in srgb,var(--kr-bg2) 88%,#000) 49%,transparent 50.5%);
-  filter:drop-shadow(-3px -3px 4px rgba(0,0,0,.22));border-top-left-radius:6px;transition:width .3s cubic-bezier(.2,.8,.2,1),height .3s cubic-bezier(.2,.8,.2,1)}
-.kr2-curl:hover,.kr2-curl:focus-visible{--cs:84px;outline:0}
-.kr2-curl[disabled]{display:none}
-@media(max-width:700px){.kr2-curl{--cs:36px}}
+.kr2-face .kr2-pg{position:absolute;inset:0;padding-top:clamp(22px,4.2vw,46px)}
+.kr2-face .kr2-pg p{animation:none!important}
+.kr2-face.kr2-ghost .kr2-pg{transform:scaleX(-1);opacity:.1}
+.kr2-shade{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(90deg,rgba(0,0,0,0) 35%,rgba(30,15,5,.4) 100%)}
+.kr2-sheen{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(100deg,rgba(255,255,255,0) 25%,rgba(255,255,255,.42) 45%,rgba(255,255,255,0) 62%)}
+.kr2-cast{position:absolute;top:0;bottom:0;pointer-events:none;opacity:0}
 
-/* footer */
-.kr2-foot{padding:6px 18px 16px;display:flex;flex-direction:column;gap:8px}
-.kr2-mood{min-height:16px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.04em;color:color-mix(in srgb,var(--kr-tx) 62%,transparent);transition:opacity .5s}
-.kr2-bar{height:4px;border-radius:4px;background:color-mix(in srgb,var(--kr-tx) 13%,transparent);overflow:hidden}
-.kr2-bar i{display:block;height:100%;width:0;border-radius:4px;background:var(--kr-ac);transition:width .45s ease}
+/* sudut kertas terlipat */
+.kr2-curl{--cs:42px;position:absolute;bottom:0;z-index:9;width:var(--cs);height:var(--cs);border:0;padding:0;cursor:pointer;transition:width .3s cubic-bezier(.2,.8,.2,1),height .3s cubic-bezier(.2,.8,.2,1)}
+.kr2-curl.kr2-cr{right:0;background:linear-gradient(135deg,color-mix(in srgb,var(--kr-bg1) 55%,#fff) 0%,color-mix(in srgb,var(--kr-bg2) 85%,#000) 49%,transparent 50.5%);filter:drop-shadow(-3px -3px 4px rgba(0,0,0,.25));border-top-left-radius:6px}
+.kr2-curl.kr2-cl{left:0;background:linear-gradient(225deg,color-mix(in srgb,var(--kr-bg1) 55%,#fff) 0%,color-mix(in srgb,var(--kr-bg2) 85%,#000) 49%,transparent 50.5%);filter:drop-shadow(3px -3px 4px rgba(0,0,0,.25));border-top-right-radius:6px}
+.kr2-curl:hover,.kr2-curl:focus-visible{--cs:86px;outline:0}
+.kr2-curl[disabled]{display:none}
+
+/* bawah */
+.kr2-bottom{width:100%;max-width:1160px;flex-shrink:0;display:flex;flex-direction:column;gap:7px;color:#e2e8f0}
+.kr2-mood{min-height:15px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.04em;color:rgba(226,232,240,.75);transition:opacity .5s}
+.kr2-bar{height:4px;border-radius:4px;background:rgba(255,255,255,.14);overflow:hidden}
+.kr2-bar i{display:block;height:100%;width:0;border-radius:4px;background:#f59e0b;transition:width .45s ease}
 .kr2-nav{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.kr2-nav .kr2-pg{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;text-align:center;color:color-mix(in srgb,var(--kr-tx) 65%,transparent)}
-.kr2-nav .kr2-pg small{display:block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:none;opacity:.8;margin-top:2px}
-.kr2-nbtn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;padding:11px 18px;border-radius:999px;font-size:12px;font-weight:800;color:var(--kr-tx);background:color-mix(in srgb,var(--kr-tx) 9%,transparent);transition:.2s}
-.kr2-nbtn.kr2-nx{background:var(--kr-ac);color:#fff;box-shadow:0 10px 22px color-mix(in srgb,var(--kr-ac) 38%,transparent)}
+.kr2-pgi{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;text-align:center;color:#e2e8f0}
+.kr2-pgi small{display:block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:none;opacity:.7;margin-top:2px}
+.kr2-nbtn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;padding:11px 18px;border-radius:999px;font-size:12px;font-weight:800;color:#f1f5f9;background:rgba(255,255,255,.12);transition:.2s}
+.kr2-nbtn.kr2-nx{background:#f59e0b;color:#1c1204;box-shadow:0 10px 22px rgba(245,158,11,.3)}
 .kr2-nbtn:hover:not(:disabled){transform:translateY(-2px)}
 .kr2-nbtn:disabled{opacity:.3;cursor:default}
-.kr2-toast{position:absolute;z-index:7;left:50%;top:70px;transform:translate(-50%,-10px);padding:8px 16px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;background:rgba(15,23,42,.88);opacity:0;pointer-events:none;transition:.35s;white-space:nowrap}
+.kr2-toast{position:absolute;z-index:40;left:50%;top:64px;transform:translate(-50%,-10px);padding:8px 16px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;background:rgba(15,23,42,.92);opacity:0;pointer-events:none;transition:.35s;white-space:nowrap}
 .kr2-toast.show{opacity:1;transform:translate(-50%,0)}
-
-@media(max-width:700px){
-  #modal-book-reader .kr2-shell{padding:0}
-  #modal-book-reader .kr2-card{max-height:none;border-radius:0}
-  .kr2-head{padding:max(14px,env(safe-area-inset-top)) 12px 4px 18px}
-  .kr2-btn{width:38px;height:38px}
-  .kr2-tools{gap:6px}
-  .kr2-nbtn span{display:none}
-  .kr2-nbtn{padding:12px 16px}
-  .kr2-foot{padding-bottom:max(14px,env(safe-area-inset-bottom))}
-  .kr2-panel{right:10px;top:60px}
+@media(max-width:899px){
+  #modal-book-reader .kr2-shell{padding:max(10px,env(safe-area-inset-top)) 8px max(10px,env(safe-area-inset-bottom))}
+  .kr2-book{padding:8px 9px 12px;border-radius:12px}
+  .kr2-nbtn span{display:none}.kr2-nbtn{padding:12px 16px}
+  .kr2-btn{width:38px;height:38px}.kr2-tools{gap:6px}
+  .kr2-curl{--cs:34px}
 }
-@media(prefers-reduced-motion:reduce){.kr2-page p{animation:none}#modal-book-reader .kr2-card{animation:none}}
+@media(prefers-reduced-motion:reduce){.kr2-pgin p{animation:none}.kr2-book{animation:none}}
 </style>
 
 <script id="kr2-script">
@@ -10747,51 +10758,57 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
   try { reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   function savePref() { try { localStorage.setItem('kr2_prefs', JSON.stringify(PREF)); } catch (e) {} }
 
+
   /* ---------- kerangka ---------- */
   modal.innerHTML =
-    '<div class="kr2-shell"><div class="kr2-card" id="kr2-card" data-theme="auto">' +
-      '<canvas id="kr2-canvas"></canvas><div class="kr2-flash" id="kr2-flash"></div>' +
-      '<div class="kr2-toast" id="kr2-toast"></div>' +
-      '<div class="kr2-head"><div class="kr2-ttl"><h3 id="book-title"></h3><p id="book-author"></p></div>' +
+    '<div class="kr2-shell">' +
+      '<div class="kr2-top"><div class="kr2-ttl"><h3 id="book-title"></h3><p id="book-author"></p></div>' +
         '<div class="kr2-tools">' +
           '<button type="button" class="kr2-btn" id="kr2-listen" aria-label="Dengarkan cerita" title="Dengarkan cerita"><i class="fas fa-headphones"></i></button>' +
           '<button type="button" class="kr2-btn on" id="kr2-fx" aria-label="Animasi suasana" title="Animasi suasana"><i class="fas fa-wand-magic-sparkles"></i></button>' +
           '<button type="button" class="kr2-btn kr2-aa" id="kr2-aa" aria-label="Pengaturan tampilan" title="Pengaturan tampilan">Aa</button>' +
-          '<button type="button" class="kr2-btn kr2-x" id="kr2-close" aria-label="Tutup"><i class="fas fa-xmark"></i></button>' +
+          '<button type="button" class="kr2-btn" id="kr2-close" aria-label="Tutup"><i class="fas fa-xmark"></i></button>' +
         '</div></div>' +
       '<div class="kr2-panel" id="kr2-panel">' +
         '<div class="kr2-row"><span class="kr2-lbl">Ukuran huruf</span><div class="kr2-size"><button type="button" id="kr2-fs-" aria-label="Kecilkan">A-</button><input type="range" id="kr2-fs" min="15" max="26" step="1"><button type="button" id="kr2-fs+" aria-label="Besarkan">A+</button></div></div>' +
-        '<div class="kr2-row"><span class="kr2-lbl">Tema</span><div class="kr2-seg" id="kr2-theme"><button type="button" data-v="auto">Otomatis</button><button type="button" data-v="paper">Kertas</button><button type="button" data-v="white">Putih</button><button type="button" data-v="dark">Gelap</button></div></div>' +
+        '<div class="kr2-row"><span class="kr2-lbl">Warna kertas</span><div class="kr2-seg" id="kr2-theme"><button type="button" data-v="auto">Otomatis</button><button type="button" data-v="paper">Kertas</button><button type="button" data-v="white">Putih</button><button type="button" data-v="dark">Gelap</button></div></div>' +
         '<div class="kr2-row"><span class="kr2-lbl">Jenis huruf</span><div class="kr2-seg" id="kr2-font"><button type="button" data-v="serif">Buku (serif)</button><button type="button" data-v="sans">Polos (sans)</button></div></div>' +
       '</div>' +
-      '<div class="kr2-bookbox" id="kr2-bookbox"><div class="kr2-stage" id="kr2-stage"><div class="kr2-page" id="book-page-content"></div></div><button type="button" class="kr2-curl" id="kr2-curl" aria-label="Balik halaman" title="Balik halaman"></button></div>' +
-      '<div class="kr2-foot"><div class="kr2-mood" id="kr2-mood"></div><div class="kr2-bar"><i id="book-progress-bar"></i></div>' +
+      '<div class="kr2-toast" id="kr2-toast"></div>' +
+      '<div class="kr2-desk" id="kr2-desk"><div class="kr2-book" id="kr2-book" data-theme="auto"><div class="kr2-spread" id="kr2-spread">' +
+        '<canvas id="kr2-canvas"></canvas>' +
+        '<div class="kr2-pg kr2-pgL" id="kr2-pgL"><div class="kr2-pgin"></div><div class="kr2-num"></div></div>' +
+        '<div class="kr2-pg kr2-pgR" id="kr2-pgR"><div class="kr2-pgin"></div><div class="kr2-num"></div></div>' +
+        '<div class="kr2-gutter"></div><div class="kr2-flash" id="kr2-flash"></div>' +
+        '<button type="button" class="kr2-curl kr2-cl" id="kr2-cl" aria-label="Halaman sebelumnya"></button>' +
+        '<button type="button" class="kr2-curl kr2-cr" id="kr2-cr" aria-label="Halaman berikutnya"></button>' +
+      '</div></div></div>' +
+      '<div class="kr2-bottom"><div class="kr2-mood" id="kr2-mood"></div><div class="kr2-bar"><i id="book-progress-bar"></i></div>' +
         '<div class="kr2-nav"><button type="button" class="kr2-nbtn" id="book-prev-btn"><i class="fas fa-chevron-left"></i><span>Sebelumnya</span></button>' +
-          '<div class="kr2-pg"><span id="book-page-indicator"></span><small id="kr2-eta"></small></div>' +
+          '<div class="kr2-pgi"><span id="book-page-indicator"></span><small id="kr2-eta"></small></div>' +
           '<button type="button" class="kr2-nbtn kr2-nx" id="book-next-btn"><span>Selanjutnya</span><i class="fas fa-chevron-right"></i></button></div></div>' +
-    '</div></div>';
+    '</div>';
 
   var $ = function (id) { return document.getElementById(id); };
-  var card = $('kr2-card'), stage = $('kr2-stage'), pageEl = $('book-page-content'), canvas = $('kr2-canvas'),
-      flashEl = $('kr2-flash'), panel = $('kr2-panel'), moodEl = $('kr2-mood'), toastEl = $('kr2-toast');
+  var book = $('kr2-book'), spread = $('kr2-spread'), desk = $('kr2-desk'), canvas = $('kr2-canvas'), flashEl = $('kr2-flash'),
+      pgL = $('kr2-pgL'), pgR = $('kr2-pgR'), panel = $('kr2-panel'), moodEl = $('kr2-mood'), toastEl = $('kr2-toast');
+  var card = book; /* variabel tema (dipakai mesin partikel & tema) */
 
-  /* ---------- state ---------- */
-  var S = { item: null, rowId: null, paras: [], pages: [], cur: 0, scene: { keys: ['calm'], storm: false }, listening: false, busy: false, ratio: 0, words: 0 };
+  var S = { rowId: null, paras: [], items: [], cur: 0, spread: true, scene: { keys: ['calm'], storm: false }, listening: false, busy: false, words: 0, N: 0, item: null };
   var synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
   if (!synth) $('kr2-listen').style.display = 'none';
 
-  function esc(t) { return String(t == null ? '' : t); }
   function toast(msg) {
     toastEl.textContent = msg; toastEl.classList.add('show');
     clearTimeout(toast._t); toast._t = setTimeout(function () { toastEl.classList.remove('show'); }, 2600);
   }
 
-  /* ---------- tampilan: tema, ukuran, font ---------- */
+  /* ---------- tampilan ---------- */
   function applyLook() {
-    card.style.setProperty('--fs', PREF.fs + 'px');
-    card.style.setProperty('--lh', PREF.fs >= 22 ? '1.85' : '1.95');
-    card.classList.toggle('kr2-sans', PREF.font === 'sans');
-    card.setAttribute('data-theme', PREF.theme);
+    book.style.setProperty('--fs', PREF.fs + 'px');
+    book.style.setProperty('--lh', PREF.fs >= 22 ? '1.75' : '1.85');
+    book.classList.toggle('kr2-sans', PREF.font === 'sans');
+    book.setAttribute('data-theme', PREF.theme);
     $('kr2-fs').value = PREF.fs;
     Array.prototype.forEach.call($('kr2-theme').children, function (b) { b.classList.toggle('on', b.getAttribute('data-v') === PREF.theme); });
     Array.prototype.forEach.call($('kr2-font').children, function (b) { b.classList.toggle('on', b.getAttribute('data-v') === PREF.font); });
@@ -10802,132 +10819,95 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
   function applyPalette() {
     if (PREF.theme === 'auto') {
       var p = palette().pal;
-      card.style.setProperty('--kr-bg1', p[0]); card.style.setProperty('--kr-bg2', p[1]);
-      card.style.setProperty('--kr-tx', p[2]); card.style.setProperty('--kr-ac', p[3]);
+      book.style.setProperty('--kr-bg1', p[0]); book.style.setProperty('--kr-bg2', p[1]);
+      book.style.setProperty('--kr-tx', p[2]); book.style.setProperty('--kr-ac', p[3]);
     } else {
-      ['--kr-bg1', '--kr-bg2', '--kr-tx', '--kr-ac'].forEach(function (v) { card.style.removeProperty(v); });
+      ['--kr-bg1', '--kr-bg2', '--kr-tx', '--kr-ac'].forEach(function (v) { book.style.removeProperty(v); });
     }
   }
-  function isDark() {
-    if (PREF.theme === 'dark') return true;
-    if (PREF.theme === 'auto') return !!palette().dark;
-    return false;
+  function isDark() { return PREF.theme === 'dark' || (PREF.theme === 'auto' && !!palette().dark); }
+
+  /* ---------- isi halaman ---------- */
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function fillPage(pg, item) {
+    var inn = pg.querySelector('.kr2-pgin'), num = pg.querySelector('.kr2-num');
+    inn.innerHTML = ''; inn.className = 'kr2-pgin';
+    if (!item) { num.textContent = ''; return; }
+    if (item.t === 'title') {
+      inn.classList.add('kr2-titlepg');
+      inn.appendChild(el('div', 'o', '✦')); inn.appendChild(el('h2', '', S.item.judul_karya || 'Tanpa Judul'));
+      inn.appendChild(el('div', 'r')); inn.appendChild(el('div', 'a', S.item.nama_pembuat || 'Anonim'));
+      if (S.item.jenis_karya) inn.appendChild(el('div', 'j', S.item.jenis_karya));
+      inn.appendChild(el('div', 's', 'SMK IT Al Mubarok'));
+    } else if (item.t === 'end') {
+      inn.classList.add('kr2-endpg');
+      inn.appendChild(el('div', 'o', '✦')); inn.appendChild(el('b', '', 'Tamat')); inn.appendChild(el('span', '', 'Terima kasih sudah membaca'));
+    } else {
+      if (item.n === 1) inn.classList.add('kr2-first');
+      item.paras.forEach(function (t, i) { var p = el('p', '', t); p.style.setProperty('--d', i); inn.appendChild(p); });
+    }
+    num.textContent = item.t === 'text' ? String(item.n) : '';
   }
 
-  /* ---------- paginasi (menyesuaikan ukuran huruf & layar) ---------- */
-  function paginate(paras, cpl, lines) {
-    var pages = [], cur = [], used = 0, gap = 0.75;
-    function cost(t) { return Math.max(1, Math.ceil(t.length / cpl)); }
-    function flush() { if (cur.length) { pages.push(cur); cur = []; used = 0; } }
-    paras.forEach(function (p) {
-      var rest = p, guard = 0;
-      while (rest && guard++ < 500) {
-        var need = cost(rest) + (cur.length ? gap : 0);
-        if (used + need <= lines) { cur.push(rest); used += need; rest = ''; break; }
-        var room = lines - used - (cur.length ? gap : 0);
-        if (room >= 3 && cost(rest) > room) {
-          var sents = rest.match(/[^.!?…]+[.!?…]+["”’')\]]*\s*|[^.!?…]+$/g) || [rest];
-          var take = '', i = 0;
-          while (i < sents.length && cost(take + sents[i]) <= room) { take += sents[i]; i++; }
-          if (take.trim()) { cur.push(take.trim()); rest = sents.slice(i).join('').trim(); flush(); continue; }
+  /* ---------- paginasi berdasarkan ukuran asli halaman ---------- */
+  var SENT = /[^.!?…]+[.!?…]+["”’')\]]*\s*|[^.!?…]+$/g;
+  function buildItems() {
+    var ref = pgR.querySelector('.kr2-pgin'), r = ref.getBoundingClientRect();
+    var probe = el('div', 'kr2-pgin kr2-probe');
+    probe.style.width = r.width + 'px'; probe.style.height = r.height + 'px';
+    spread.appendChild(probe);
+    var pages = [], cur = [];
+    function fits() { return probe.scrollHeight <= probe.clientHeight + 1; }
+    function addP(t) { var p = el('p', '', t); p.style.animation = 'none'; probe.appendChild(p); return p; }
+    function commit() { if (cur.length) { pages.push(cur); cur = []; } probe.innerHTML = ''; }
+    S.paras.forEach(function (t) {
+      var rest = t, guard = 0;
+      while (rest && guard++ < 600) {
+        var p = addP(rest);
+        if (fits()) { cur.push(rest); rest = ''; break; }
+        probe.removeChild(p);
+        var sents = rest.match(SENT) || [rest], take = '', i = 0;
+        while (i < sents.length) {
+          var test = take + sents[i], q = addP(test), ok = fits(); probe.removeChild(q);
+          if (!ok) break; take = test; i++;
         }
-        if (cur.length) { flush(); } else { cur.push(rest); rest = ''; flush(); }
+        if (take.trim()) { cur.push(take.trim()); rest = sents.slice(i).join('').trim(); commit(); }
+        else if (cur.length) { commit(); }
+        else { cur.push(rest); rest = ''; commit(); }
+        if (rest === '' && !cur.length) break;
       }
     });
-    flush();
-    return pages.length ? pages : [['']];
+    commit();
+    spread.removeChild(probe);
+    var items = [{ t: 'title' }];
+    pages.forEach(function (p, i) { items.push({ t: 'text', paras: p, n: i + 1 }); });
+    if (S.spread && items.length % 2 === 1) items.push({ t: 'end' });
+    S.N = pages.length; S.items = items;
   }
-  function layoutPages() {
-    var cs = getComputedStyle(stage);
-    var innerW = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    var innerH = stage.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-    var fs = PREF.fs, lh = fs * (fs >= 22 ? 1.85 : 1.95);
-    var textW = Math.min(innerW, fs * 34);
-    var cpl = Math.max(18, Math.floor(textW / (fs * (PREF.font === 'sans' ? 0.54 : 0.5))));
-    var lines = Math.max(5, Math.floor(innerH / lh) - 1);
-    S.pages = paginate(S.paras, cpl, lines);
-  }
+  function decideMode() { S.spread = desk.clientWidth >= 860 && window.innerWidth >= 900; book.classList.toggle('kr2-single', !S.spread); }
+  function step() { return S.spread ? 2 : 1; }
+  function visible() { return S.spread ? [S.items[S.cur], S.items[S.cur + 1]] : [null, S.items[S.cur]]; }
 
-  /* ---------- render halaman ---------- */
-  function renderPage(dir) {
-    var total = S.pages.length, cur = S.cur;
-    var apply = function () {
-      pageEl.innerHTML = '';
-      pageEl.classList.toggle('kr2-first', cur === 0);
-      S.pages[cur].forEach(function (t, i) {
-        var p = document.createElement('p'); p.textContent = t; p.style.setProperty('--d', i); pageEl.appendChild(p);
-      });
-      stage.scrollTop = 0;
-      $('book-page-indicator').textContent = 'Halaman ' + (cur + 1) + ' dari ' + total;
-      $('book-progress-bar').style.width = (((cur + 1) / total) * 100) + '%';
-      $('book-prev-btn').disabled = cur === 0;
-      $('book-next-btn').disabled = cur === total - 1;
-      $('kr2-curl').disabled = cur === total - 1;
-      var left = Math.max(1, Math.round(S.words * (1 - cur / total) / 200));
-      $('kr2-eta').textContent = cur === total - 1 ? 'Tamat 🎉' : '± ' + left + ' menit lagi';
-      updateScene();
-      try { localStorage.setItem('kr2_pos_' + S.rowId, String(cur / total)); } catch (e) {}
-      if (S.listening) setTimeout(speakPage, 80);
-    };
-    if (!dir || reduceMotion || !PREF.anim || S.busy) { apply(); return; }
-    flipPage(dir, apply);
+  /* ---------- keterangan bawah, suasana ---------- */
+  function meta(animated) {
+    var vis = visible(), nums = [];
+    vis.forEach(function (it) { if (it && it.t === 'text') nums.push(it.n); });
+    var last = nums.length ? nums[nums.length - 1] : 0;
+    $('book-page-indicator').textContent = nums.length > 1 ? 'Halaman ' + nums[0] + '–' + nums[1] + ' dari ' + S.N : (nums.length ? 'Halaman ' + nums[0] + ' dari ' + S.N : 'Sampul');
+    $('book-progress-bar').style.width = (S.N ? Math.min(100, (last / S.N) * 100) : 0) + '%';
+    var atEnd = S.cur + step() >= S.items.length;
+    $('book-prev-btn').disabled = S.cur === 0; $('kr2-cl').disabled = S.cur === 0;
+    $('book-next-btn').disabled = atEnd; $('kr2-cr').disabled = atEnd;
+    var left = Math.max(1, Math.round(S.words * (1 - last / Math.max(1, S.N)) / 200));
+    $('kr2-eta').textContent = atEnd ? 'Tamat 🎉' : '± ' + left + ' menit lagi';
+    updateScene();
+    try { localStorage.setItem('kr2_pos_' + S.rowId, String(S.cur / S.items.length)); } catch (e) {}
+    if (S.listening) setTimeout(speakPage, animated ? 1000 : 120);
   }
-  /* salinan halaman (untuk lembar yang dibalik) */
-  function snap() {
-    var c = stage.cloneNode(true);
-    c.removeAttribute('id'); c.classList.add('kr2-snap');
-    Array.prototype.forEach.call(c.querySelectorAll('[id]'), function (n) { n.removeAttribute('id'); });
-    Array.prototype.forEach.call(c.querySelectorAll('p'), function (p) { p.style.animation = 'none'; p.classList.remove('kr2-speak'); });
-    c.style.overflow = 'hidden';
-    var pg = c.firstElementChild; if (pg) pg.style.transform = 'translateY(' + (-stage.scrollTop) + 'px)';
-    return c;
-  }
-  function face(cls, kid) { var f = document.createElement('div'); f.className = 'kr2-face ' + cls; f.appendChild(kid); return f; }
-  function flipPage(dir, apply) {
-    S.busy = true;
-    var box = $('kr2-bookbox'), wrap = document.createElement('div'); wrap.className = 'kr2-flipwrap';
-    var leaf = document.createElement('div'); leaf.className = 'kr2-leaf';
-    var cast = document.createElement('div'); cast.className = 'kr2-cast';
-    var shade = document.createElement('i'); shade.className = 'kr2-shade';
-    var old = snap(), under = null, frontKid;
-    if (dir === 'next') { apply(); frontKid = old; }
-    else { under = old; apply(); frontKid = snap(); }
-    var front = face('kr2-front', frontKid); front.appendChild(shade);
-    var back = face('kr2-back', frontKid.cloneNode(true));
-    leaf.appendChild(front); leaf.appendChild(back);
-    if (under) wrap.appendChild(under);
-    wrap.appendChild(cast); wrap.appendChild(leaf); box.appendChild(wrap);
-    var dur = 1050, ease = 'cubic-bezier(.5,.05,.25,1)';
-    var kf = [
-      { transform: 'rotateY(0deg) skewY(0deg)' },
-      { transform: 'rotateY(-62deg) skewY(-1.6deg)', offset: .38 },
-      { transform: 'rotateY(-118deg) skewY(1.2deg)', offset: .68 },
-      { transform: 'rotateY(-180deg) skewY(0deg)' }
-    ];
-    var shKf = [{ opacity: 0 }, { opacity: .55, offset: .45 }, { opacity: .9 }];
-    var caKf = [{ opacity: 0 }, { opacity: .95, offset: .4 }, { opacity: 0 }];
-    if (dir === 'prev') { kf = kf.map(function (k) { return { transform: k.transform, offset: k.offset == null ? undefined : 1 - k.offset }; }).reverse(); kf[0].offset = 0; kf[kf.length - 1].offset = 1; shKf = shKf.slice().reverse().map(function (k, i, arr) { return { opacity: k.opacity }; }); }
-    var done = function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); S.busy = false; };
-    var opt = { duration: dur, easing: ease, fill: 'forwards' };
-    try {
-      leaf.animate(kf, opt); shade.animate(shKf, opt); cast.animate(caKf, { duration: dur, easing: 'ease-in-out', fill: 'forwards' }).onfinish = done;
-    } catch (e) { done(); }
-    setTimeout(function () { if (S.busy) done(); }, dur + 400);
-  }
-  function goTo(n, dir) {
-    if (n < 0 || n > S.pages.length - 1 || n === S.cur) return;
-    S.cur = n; renderPage(dir || (n > S.cur ? 'next' : 'prev'));
-  }
-  function nextPage() { if (S.cur < S.pages.length - 1 && !S.busy) { S.cur++; renderPage('next'); } }
-  function prevPage() { if (S.cur > 0 && !S.busy) { S.cur--; renderPage('prev'); } }
-
-  /* ---------- suasana: analisis halaman -> efek ---------- */
   function updateScene() {
-    var text = S.pages[S.cur].join(' ');
-    // beri konteks halaman sebelumnya supaya adegan tidak "putus" mendadak
-    var sc = analyze(text, S.scene.keys);
-    S.scene = sc;
-    applyPalette();
+    var text = visible().map(function (it) { return it && it.t === 'text' ? it.paras.join(' ') : ''; }).join(' ');
+    var sc = text.trim() ? analyze(text, S.scene.keys) : { keys: S.scene.keys, storm: false };
+    S.scene = sc; applyPalette();
     moodEl.style.opacity = '0';
     setTimeout(function () {
       moodEl.textContent = PREF.anim ? sc.keys.map(function (k) { return MOODS[k].label; }).join('  ·  ') : '';
@@ -10935,6 +10915,219 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
     }, 260);
     FX.setScene(sc);
   }
+  function paint(opts) {
+    opts = opts || {}; var v = visible();
+    if (S.spread && !opts.holdL) fillPage(pgL, v[0]);
+    if (!opts.holdR) fillPage(pgR, v[1]);
+  }
+
+  /* ---------- membalik halaman seperti buku ---------- */
+  function makeSnap(src, item, ghost) {
+    var c = src.cloneNode(true); c.removeAttribute('id');
+    Array.prototype.forEach.call(c.querySelectorAll('[id]'), function (n) { n.removeAttribute('id'); });
+    if (item !== undefined) fillPage(c, item);
+    Array.prototype.forEach.call(c.querySelectorAll('p'), function (p) { p.style.animation = 'none'; p.classList.remove('kr2-speak'); });
+    return c;
+  }
+  function faceOf(pgClone, cls) { var f = el('div', 'kr2-face ' + cls); f.appendChild(pgClone); return f; }
+  function noAnim(pg) { Array.prototype.forEach.call(pg.querySelectorAll('p'), function (p) { p.style.animation = 'none'; }); }
+  function turn(dir) {
+    var target = S.cur + (dir === 'next' ? step() : -step());
+    if (target < 0 || target >= S.items.length) return;
+    if (!PREF.anim || reduceMotion || S.busy) { S.cur = target; paint(); meta(false); return; }
+    S.busy = true;
+    var oldL = S.spread ? makeSnap(pgL) : null, oldR = makeSnap(pgR);
+    S.cur = target;
+    var nv = visible();
+    var wrap = el('div', 'kr2-flipwrap'), leaf = el('div', 'kr2-leaf'), shade = el('i', 'kr2-shade'), sheen = el('i', 'kr2-sheen');
+    var c1 = el('div', 'kr2-cast'), c2 = el('div', 'kr2-cast');
+    var front, back, onDone, kf, c1kf, c2kf = null, under = null;
+    var dur = 1100, ease = 'cubic-bezier(.5,.05,.25,1)';
+    var bend = [-62, -118];
+    function mk(sign, rev) {
+      var a = [{ transform: 'rotateY(0deg) skewY(0deg)' },
+               { transform: 'rotateY(' + (sign * 62) + 'deg) skewY(' + (sign * -1.8) + 'deg)', offset: .38 },
+               { transform: 'rotateY(' + (sign * 118) + 'deg) skewY(' + (sign * 1.2) + 'deg)', offset: .68 },
+               { transform: 'rotateY(' + (sign * 180) + 'deg) skewY(0deg)' }];
+      if (rev) { a = [a[3], { transform: a[2].transform, offset: .32 }, { transform: a[1].transform, offset: .62 }, a[0]]; }
+      return a;
+    }
+    if (S.spread && dir === 'next') {
+      front = faceOf(oldR, 'kr2-front'); back = faceOf(makeSnap(pgL, nv[0]), 'kr2-back');
+      leaf.style.cssText = 'left:50%;width:50%;transform-origin:0 50%';
+      c1.style.cssText = 'left:50%;width:50%;background:linear-gradient(90deg,rgba(0,0,0,.45),rgba(0,0,0,0) 75%)';
+      c2.style.cssText = 'left:0;width:50%;background:linear-gradient(270deg,rgba(0,0,0,.4),rgba(0,0,0,0) 75%)';
+      kf = mk(-1, false); c1kf = [{ opacity: 0 }, { opacity: 1, offset: .3 }, { opacity: 0, offset: .6 }, { opacity: 0 }];
+      c2kf = [{ opacity: 0 }, { opacity: 0, offset: .5 }, { opacity: .9, offset: .85 }, { opacity: 0 }];
+      paint({ holdL: true }); onDone = function () { fillPage(pgL, nv[0]); noAnim(pgL); };
+    } else if (S.spread) {
+      front = faceOf(oldL, 'kr2-front'); back = faceOf(makeSnap(pgR, nv[1]), 'kr2-back');
+      leaf.style.cssText = 'left:0;width:50%;transform-origin:100% 50%';
+      c1.style.cssText = 'left:0;width:50%;background:linear-gradient(270deg,rgba(0,0,0,.45),rgba(0,0,0,0) 75%)';
+      c2.style.cssText = 'left:50%;width:50%;background:linear-gradient(90deg,rgba(0,0,0,.4),rgba(0,0,0,0) 75%)';
+      kf = mk(1, false); c1kf = [{ opacity: 0 }, { opacity: 1, offset: .3 }, { opacity: 0, offset: .6 }, { opacity: 0 }];
+      c2kf = [{ opacity: 0 }, { opacity: 0, offset: .5 }, { opacity: .9, offset: .85 }, { opacity: 0 }];
+      paint({ holdR: true }); onDone = function () { fillPage(pgR, nv[1]); noAnim(pgR); };
+    } else if (dir === 'next') {
+      var gh = makeSnap(oldR); front = faceOf(oldR, 'kr2-front'); back = faceOf(gh, 'kr2-back kr2-ghost');
+      leaf.style.cssText = 'left:0;width:100%;transform-origin:0 50%';
+      c1.style.cssText = 'left:0;width:100%;background:linear-gradient(90deg,rgba(0,0,0,.45),rgba(0,0,0,0) 80%)';
+      kf = mk(-1, false); c1kf = [{ opacity: 0 }, { opacity: 1, offset: .35 }, { opacity: 0 }];
+      paint(); onDone = function () {};
+    } else {
+      under = oldR; paint();
+      front = faceOf(makeSnap(pgR, nv[1]), 'kr2-front'); back = faceOf(makeSnap(oldR), 'kr2-back kr2-ghost');
+      leaf.style.cssText = 'left:0;width:100%;transform-origin:0 50%';
+      c1.style.cssText = 'left:0;width:100%;background:linear-gradient(90deg,rgba(0,0,0,.45),rgba(0,0,0,0) 80%)';
+      kf = mk(-1, true); c1kf = [{ opacity: 0 }, { opacity: 1, offset: .65 }, { opacity: 0 }];
+      onDone = function () {};
+    }
+    front.appendChild(shade); front.appendChild(sheen);
+    leaf.appendChild(front); leaf.appendChild(back);
+    if (under) { under.style.cssText = 'position:absolute;inset:0;background:linear-gradient(160deg,var(--kr-bg1),var(--kr-bg2))'; wrap.appendChild(under); }
+    wrap.appendChild(c1); if (c2kf) wrap.appendChild(c2); wrap.appendChild(leaf); spread.appendChild(wrap);
+    var finished = false;
+    var done = function () { if (finished) return; finished = true; onDone(); if (wrap.parentNode) wrap.parentNode.removeChild(wrap); S.busy = false; };
+    var opt = { duration: dur, easing: ease, fill: 'forwards' }, copt = { duration: dur, easing: 'ease-in-out', fill: 'forwards' };
+    try {
+      var rev = !S.spread && dir === 'prev';
+      leaf.animate(kf, opt);
+      shade.animate(rev ? [{ opacity: .9 }, { opacity: .5, offset: .55 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: .5, offset: .45 }, { opacity: .9 }], opt);
+      sheen.animate([{ opacity: 0 }, { opacity: .9, offset: .35 }, { opacity: 0, offset: .6 }, { opacity: 0 }], copt);
+      c1.animate(c1kf, copt); if (c2kf) c2.animate(c2kf, copt);
+      var main = leaf.getAnimations()[0]; main.onfinish = done;
+    } catch (e) { done(); }
+    setTimeout(done, dur + 500);
+    meta(true);
+  }
+  function nextPage() { if (!S.busy) turn('next'); }
+  function prevPage() { if (!S.busy) turn('prev'); }
+
+  /* ---------- bacakan otomatis ---------- */
+  var speakToken = 0;
+  function pickVoice() {
+    var vs = synth && synth.getVoices ? synth.getVoices() : [];
+    for (var i = 0; i < vs.length; i++) if (/^id[-_]/i.test(vs[i].lang) || /indonesia/i.test(vs[i].name)) return vs[i];
+    return null;
+  }
+  function allP() { return Array.prototype.slice.call(spread.querySelectorAll('#kr2-pgL .kr2-pgin p, #kr2-pgR .kr2-pgin p')); }
+  function markSpeak(p) { allP().forEach(function (x) { x.classList.remove('kr2-speak'); }); if (p) p.classList.add('kr2-speak'); }
+  function speakPage() {
+    if (!synth || !S.listening) return;
+    synth.cancel();
+    var ps = allP(), i = 0, my = ++speakToken, v = pickVoice();
+    function stp() {
+      if (my !== speakToken || !S.listening) return;
+      if (i >= ps.length) {
+        markSpeak(null);
+        if (S.cur + step() < S.items.length) turn('next'); else stopSpeak();
+        return;
+      }
+      var p = ps[i++]; markSpeak(p);
+      var u = new SpeechSynthesisUtterance(p.textContent);
+      u.lang = 'id-ID'; u.rate = .95; if (v) u.voice = v;
+      u.onend = stp;
+      u.onerror = function (e) { if (e && (e.error === 'canceled' || e.error === 'interrupted')) return; stopSpeak(); };
+      synth.speak(u);
+    }
+    stp();
+  }
+  function startSpeak() {
+    if (!synth) return;
+    S.listening = true; $('kr2-listen').classList.add('on'); $('kr2-listen').innerHTML = '<i class="fas fa-pause"></i>';
+    toast('Cerita dibacakan otomatis'); speakPage();
+  }
+  function stopSpeak() {
+    S.listening = false; speakToken++;
+    if (synth) synth.cancel();
+    markSpeak(null);
+    $('kr2-listen').classList.remove('on'); $('kr2-listen').innerHTML = '<i class="fas fa-headphones"></i>';
+  }
+
+  /* ---------- buka / tutup / ukuran ---------- */
+  function layoutAll(keepIdx) {
+    decideMode(); buildItems();
+    var idx = Math.max(0, Math.min(S.items.length - 1, keepIdx || 0));
+    if (S.spread) idx -= idx % 2;
+    S.cur = idx;
+  }
+  function openReader(rowId) {
+    var item = ((window.DATA || (typeof DATA !== 'undefined' ? DATA : {})).karya || []).find(function (k) { return k._rowId === rowId; });
+    if (!item) return;
+    var isi = String(item.isi_karya || '').replace(/\r\n?/g, '\n').trim();
+    if (!isi) return;
+    if (typeof trackViewKarya === 'function') { try { trackViewKarya(rowId); } catch (e) {} }
+    S.item = item; S.rowId = rowId; S.busy = false;
+    S.paras = isi.split(/\n+/).map(function (p) { return p.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
+    S.words = isi.split(/\s+/).length;
+    S.scene = { keys: ['calm'], storm: false };
+    $('book-title').textContent = item.judul_karya || 'Tanpa Judul';
+    $('book-author').textContent = (item.nama_pembuat || 'Anonim') + (item.jenis_karya ? ' • ' + item.jenis_karya : '');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    book.style.animation = 'none'; void book.offsetWidth; book.style.animation = '';
+    panel.classList.remove('open');
+    applyLook(); FX.reset(); FX.resize();
+    requestAnimationFrame(function () {
+      decideMode();
+      var saved = 0; try { saved = parseFloat(localStorage.getItem('kr2_pos_' + rowId) || '0') || 0; } catch (e) {}
+      var idx = Math.round(saved * S.items.length);
+      layoutAll(idx);
+      var v0 = visible()[1]; if (S.cur > 0 && v0 && v0.n) toast('Melanjutkan dari halaman ' + v0.n);
+      paint(); meta(false);
+    });
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+  }
+  function closeReader() {
+    stopSpeak();
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+    document.removeEventListener('keydown', onKey);
+    document.body.style.overflow = '';
+  }
+  function onKey(e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && !e.target.closest('input,button'))) { e.preventDefault(); nextPage(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevPage();
+    else if (e.key === 'Escape') { if (panel.classList.contains('open')) panel.classList.remove('open'); else closeReader(); }
+  }
+  function relayout() {
+    if (!S.paras.length || modal.classList.contains('hidden')) return;
+    var was = S.listening; S.listening = false;
+    var vis = visible(), keep = 0;
+    vis.forEach(function (it) { if (it && it.t === 'text' && !keep) keep = it.n; });
+    layoutAll(keep);
+    paint(); meta(false); S.listening = was;
+  }
+
+  /* ---------- kontrol ---------- */
+  $('kr2-close').onclick = closeReader;
+  $('book-prev-btn').onclick = prevPage; $('kr2-cl').onclick = prevPage;
+  $('book-next-btn').onclick = nextPage; $('kr2-cr').onclick = nextPage;
+  $('kr2-aa').onclick = function (e) { e.stopPropagation(); panel.classList.toggle('open'); };
+  modal.addEventListener('click', function (e) {
+    if (!panel.contains(e.target) && e.target !== $('kr2-aa')) panel.classList.remove('open');
+    if (e.target === modal || e.target.classList.contains('kr2-shell') || e.target === desk) closeReader();
+  });
+  $('kr2-fx').onclick = function () {
+    PREF.anim = !PREF.anim; savePref(); applyLook();
+    if (!PREF.anim) moodEl.textContent = ''; else updateScene();
+    toast(PREF.anim ? 'Animasi suasana & lipatan halaman aktif' : 'Animasi dimatikan');
+  };
+  $('kr2-listen').onclick = function () { if (S.listening) stopSpeak(); else startSpeak(); };
+  function setFs(v) { PREF.fs = Math.max(15, Math.min(26, v)); savePref(); applyLook(); clearTimeout(setFs._t); setFs._t = setTimeout(relayout, 140); }
+  $('kr2-fs-').onclick = function () { setFs(PREF.fs - 1); };
+  $('kr2-fs+').onclick = function () { setFs(PREF.fs + 1); };
+  $('kr2-fs').oninput = function () { setFs(parseInt(this.value, 10)); };
+  $('kr2-theme').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; PREF.theme = b.getAttribute('data-v'); savePref(); applyLook(); };
+  $('kr2-font').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; PREF.font = b.getAttribute('data-v'); savePref(); applyLook(); setTimeout(relayout, 80); };
+
+  var tx0 = null, ty0 = null;
+  spread.addEventListener('touchstart', function (e) { tx0 = e.changedTouches[0].clientX; ty0 = e.changedTouches[0].clientY; }, { passive: true });
+  spread.addEventListener('touchend', function (e) {
+    if (tx0 === null) return;
+    var dx = e.changedTouches[0].clientX - tx0, dy = e.changedTouches[0].clientY - ty0; tx0 = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { if (dx < 0) nextPage(); else prevPage(); }
+  }, { passive: true });
+  var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(relayout, 250); });
 
   /* ---------- mesin partikel ---------- */
   var FX = (function () {
@@ -11088,133 +11281,10 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
     }
     function start() { if (!raf) { resize(); last = 0; raf = requestAnimationFrame(frame); } }
     function reset() { layers = []; }
-    window.addEventListener('resize', function () { if (!modal.classList.contains('hidden')) { resize(); layers = []; if (S.pages.length) FX.setScene(S.scene); } });
+    window.addEventListener('resize', function () { if (!modal.classList.contains('hidden')) { resize(); layers = []; if (S.items.length) FX.setScene(S.scene); } });
     return { setScene: setScene, start: start, reset: reset, resize: resize };
   })();
 
-  /* ---------- bacakan otomatis (suara) ---------- */
-  var speakToken = 0, voiceId = null;
-  function pickVoice() {
-    if (!synth) return null;
-    var vs = synth.getVoices ? synth.getVoices() : [];
-    for (var i = 0; i < vs.length; i++) if (/^id[-_]/i.test(vs[i].lang) || /indonesia/i.test(vs[i].name)) return vs[i];
-    return null;
-  }
-  function markSpeak(p) {
-    Array.prototype.forEach.call(pageEl.querySelectorAll('p'), function (x) { x.classList.remove('kr2-speak'); });
-    if (p) { p.classList.add('kr2-speak'); try { p.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }
-  }
-  function speakPage() {
-    if (!synth || !S.listening) return;
-    synth.cancel();
-    var ps = Array.prototype.slice.call(pageEl.querySelectorAll('p')), i = 0, my = ++speakToken, v = pickVoice();
-    function step() {
-      if (my !== speakToken || !S.listening) return;
-      if (i >= ps.length) {
-        markSpeak(null);
-        if (S.cur < S.pages.length - 1) { S.cur++; renderPage('next'); } else stopSpeak();
-        return;
-      }
-      var p = ps[i++]; markSpeak(p);
-      var u = new SpeechSynthesisUtterance(p.textContent);
-      u.lang = 'id-ID'; u.rate = .95; if (v) u.voice = v;
-      u.onend = step;
-      u.onerror = function (e) { if (e && (e.error === 'canceled' || e.error === 'interrupted')) return; stopSpeak(); };
-      synth.speak(u);
-    }
-    step();
-  }
-  function startSpeak() {
-    if (!synth) return;
-    S.listening = true; $('kr2-listen').classList.add('on'); $('kr2-listen').innerHTML = '<i class="fas fa-pause"></i>';
-    toast('Cerita dibacakan otomatis'); speakPage();
-  }
-  function stopSpeak() {
-    S.listening = false; speakToken++;
-    if (synth) synth.cancel();
-    markSpeak(null);
-    $('kr2-listen').classList.remove('on'); $('kr2-listen').innerHTML = '<i class="fas fa-headphones"></i>';
-  }
-
-  /* ---------- buka / tutup ---------- */
-  function openReader(rowId) {
-    var item = ((window.DATA || (typeof DATA !== 'undefined' ? DATA : {})).karya || []).find(function (k) { return k._rowId === rowId; });
-    if (!item) return;
-    var isi = String(item.isi_karya || '').replace(/\r\n?/g, '\n').trim();
-    if (!isi) return;
-    if (typeof trackViewKarya === 'function') { try { trackViewKarya(rowId); } catch (e) {} }
-
-    S.item = item; S.rowId = rowId;
-    S.paras = isi.split(/\n+/).map(function (p) { return p.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
-    S.words = isi.split(/\s+/).length;
-    S.scene = { keys: ['calm'], storm: false };
-    $('book-title').textContent = item.judul_karya || 'Tanpa Judul';
-    $('book-author').textContent = (item.nama_pembuat || 'Anonim') + (item.jenis_karya ? ' • ' + item.jenis_karya : '');
-
-    modal.classList.remove('hidden'); modal.classList.add('flex');
-    card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
-    panel.classList.remove('open');
-    applyLook();
-    FX.reset(); FX.resize();
-
-    requestAnimationFrame(function () {
-      layoutPages();
-      var saved = 0; try { saved = parseFloat(localStorage.getItem('kr2_pos_' + rowId) || '0') || 0; } catch (e) {}
-      S.cur = Math.min(S.pages.length - 1, Math.round(saved * S.pages.length));
-      if (S.cur > 0) toast('Melanjutkan dari halaman ' + (S.cur + 1));
-      renderPage(false);
-    });
-    document.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
-  }
-  function closeReader() {
-    stopSpeak();
-    modal.classList.add('hidden'); modal.classList.remove('flex');
-    document.removeEventListener('keydown', onKey);
-    document.body.style.overflow = '';
-  }
-  function onKey(e) {
-    if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && !e.target.closest('input,button'))) { e.preventDefault(); nextPage(); }
-    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevPage();
-    else if (e.key === 'Escape') { if (panel.classList.contains('open')) panel.classList.remove('open'); else closeReader(); }
-  }
-  function relayout() {
-    if (!S.paras.length) return;
-    var ratio = S.cur / Math.max(1, S.pages.length);
-    layoutPages(); S.cur = Math.min(S.pages.length - 1, Math.round(ratio * S.pages.length));
-    var was = S.listening; S.listening = false; renderPage(false); S.listening = was;
-  }
-
-  /* ---------- kontrol ---------- */
-  $('kr2-close').onclick = closeReader;
-  $('book-prev-btn').onclick = prevPage;
-  $('book-next-btn').onclick = nextPage;
-  $('kr2-curl').onclick = nextPage;
-  $('kr2-aa').onclick = function (e) { e.stopPropagation(); panel.classList.toggle('open'); };
-  card.addEventListener('click', function (e) { if (!panel.contains(e.target) && e.target !== $('kr2-aa')) panel.classList.remove('open'); });
-  modal.addEventListener('click', function (e) { if (e.target === modal) closeReader(); });
-  $('kr2-fx').onclick = function () {
-    PREF.anim = !PREF.anim; savePref(); applyLook();
-    if (!PREF.anim) { moodEl.textContent = ''; } else { updateScene(); }
-    toast(PREF.anim ? 'Animasi suasana aktif' : 'Animasi suasana dimatikan');
-  };
-  $('kr2-listen').onclick = function () { if (S.listening) stopSpeak(); else startSpeak(); };
-  function setFs(v) { PREF.fs = Math.max(15, Math.min(26, v)); savePref(); applyLook(); clearTimeout(setFs._t); setFs._t = setTimeout(relayout, 120); }
-  $('kr2-fs-').onclick = function () { setFs(PREF.fs - 1); };
-  $('kr2-fs+').onclick = function () { setFs(PREF.fs + 1); };
-  $('kr2-fs').oninput = function () { setFs(parseInt(this.value, 10)); };
-  $('kr2-theme').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; PREF.theme = b.getAttribute('data-v'); savePref(); applyLook(); };
-  $('kr2-font').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; PREF.font = b.getAttribute('data-v'); savePref(); applyLook(); setTimeout(relayout, 60); };
-
-  var tx0 = null, ty0 = null;
-  stage.addEventListener('touchstart', function (e) { tx0 = e.changedTouches[0].clientX; ty0 = e.changedTouches[0].clientY; }, { passive: true });
-  stage.addEventListener('touchend', function (e) {
-    if (tx0 === null) return;
-    var dx = e.changedTouches[0].clientX - tx0, dy = e.changedTouches[0].clientY - ty0; tx0 = null;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { if (dx < 0) nextPage(); else prevPage(); }
-  }, { passive: true });
-  var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (!modal.classList.contains('hidden')) relayout(); }, 220); });
-  if (synth && synth.addEventListener) synth.addEventListener('voiceschanged', function () {});
 
   /* ---------- ganti fungsi lama (kode asli tidak diubah) ---------- */
   window.openBookReader = openReader;

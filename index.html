@@ -10644,6 +10644,29 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
 .kr2-sans{--ff:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
 .kr2-sans .kr2-page p{text-indent:0}
 
+
+/* ===== efek buku kertas: halaman melipat saat dibalik ===== */
+.kr2-bookbox{position:relative;z-index:2;flex:1;min-height:0;display:flex}
+.kr2-bookbox .kr2-stage{flex:1;z-index:auto}
+.kr2-flipwrap{position:absolute;inset:0;z-index:5;pointer-events:none;perspective:2400px;perspective-origin:0% 50%;overflow:hidden}
+.kr2-flipwrap .kr2-snap{position:absolute;inset:0;overflow:hidden;background:linear-gradient(160deg,var(--kr-bg1),var(--kr-bg2))}
+.kr2-leaf{position:absolute;inset:0;transform-origin:0 50%;transform-style:preserve-3d;will-change:transform}
+.kr2-face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:linear-gradient(160deg,var(--kr-bg1),var(--kr-bg2))}
+.kr2-face.kr2-back{transform:rotateY(180deg)}
+.kr2-face .kr2-snap{position:absolute;inset:0}
+.kr2-face.kr2-back .kr2-snap{transform:scaleX(-1);opacity:.1;filter:blur(.4px)}
+.kr2-face.kr2-back::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.20),rgba(0,0,0,0) 30%,rgba(255,255,255,.12) 100%)}
+.kr2-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.0) 40%,rgba(0,0,0,.38) 100%);opacity:0}
+.kr2-cast{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,.14) 38%,rgba(0,0,0,0) 72%);opacity:0}
+.kr2-fold{position:absolute;top:0;bottom:0;left:0;width:26px;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0));opacity:.0}
+/* sudut kertas yang terlipat (klik untuk membalik) */
+.kr2-curl{--cs:44px;position:absolute;right:0;bottom:0;z-index:6;width:var(--cs);height:var(--cs);border:0;padding:0;cursor:pointer;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--kr-bg1) 55%,#fff) 0%,color-mix(in srgb,var(--kr-bg2) 88%,#000) 49%,transparent 50.5%);
+  filter:drop-shadow(-3px -3px 4px rgba(0,0,0,.22));border-top-left-radius:6px;transition:width .3s cubic-bezier(.2,.8,.2,1),height .3s cubic-bezier(.2,.8,.2,1)}
+.kr2-curl:hover,.kr2-curl:focus-visible{--cs:84px;outline:0}
+.kr2-curl[disabled]{display:none}
+@media(max-width:700px){.kr2-curl{--cs:36px}}
+
 /* footer */
 .kr2-foot{padding:6px 18px 16px;display:flex;flex-direction:column;gap:8px}
 .kr2-mood{min-height:16px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.04em;color:color-mix(in srgb,var(--kr-tx) 62%,transparent);transition:opacity .5s}
@@ -10741,7 +10764,7 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
         '<div class="kr2-row"><span class="kr2-lbl">Tema</span><div class="kr2-seg" id="kr2-theme"><button type="button" data-v="auto">Otomatis</button><button type="button" data-v="paper">Kertas</button><button type="button" data-v="white">Putih</button><button type="button" data-v="dark">Gelap</button></div></div>' +
         '<div class="kr2-row"><span class="kr2-lbl">Jenis huruf</span><div class="kr2-seg" id="kr2-font"><button type="button" data-v="serif">Buku (serif)</button><button type="button" data-v="sans">Polos (sans)</button></div></div>' +
       '</div>' +
-      '<div class="kr2-stage" id="kr2-stage"><div class="kr2-page" id="book-page-content"></div></div>' +
+      '<div class="kr2-bookbox" id="kr2-bookbox"><div class="kr2-stage" id="kr2-stage"><div class="kr2-page" id="book-page-content"></div></div><button type="button" class="kr2-curl" id="kr2-curl" aria-label="Balik halaman" title="Balik halaman"></button></div>' +
       '<div class="kr2-foot"><div class="kr2-mood" id="kr2-mood"></div><div class="kr2-bar"><i id="book-progress-bar"></i></div>' +
         '<div class="kr2-nav"><button type="button" class="kr2-nbtn" id="book-prev-btn"><i class="fas fa-chevron-left"></i><span>Sebelumnya</span></button>' +
           '<div class="kr2-pg"><span id="book-page-indicator"></span><small id="kr2-eta"></small></div>' +
@@ -10839,25 +10862,57 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
       $('book-progress-bar').style.width = (((cur + 1) / total) * 100) + '%';
       $('book-prev-btn').disabled = cur === 0;
       $('book-next-btn').disabled = cur === total - 1;
+      $('kr2-curl').disabled = cur === total - 1;
       var left = Math.max(1, Math.round(S.words * (1 - cur / total) / 200));
       $('kr2-eta').textContent = cur === total - 1 ? 'Tamat 🎉' : '± ' + left + ' menit lagi';
       updateScene();
       try { localStorage.setItem('kr2_pos_' + S.rowId, String(cur / total)); } catch (e) {}
       if (S.listening) setTimeout(speakPage, 80);
     };
-    if (!dir || reduceMotion || !PREF.anim) { apply(); return; }
+    if (!dir || reduceMotion || !PREF.anim || S.busy) { apply(); return; }
+    flipPage(dir, apply);
+  }
+  /* salinan halaman (untuk lembar yang dibalik) */
+  function snap() {
+    var c = stage.cloneNode(true);
+    c.removeAttribute('id'); c.classList.add('kr2-snap');
+    Array.prototype.forEach.call(c.querySelectorAll('[id]'), function (n) { n.removeAttribute('id'); });
+    Array.prototype.forEach.call(c.querySelectorAll('p'), function (p) { p.style.animation = 'none'; p.classList.remove('kr2-speak'); });
+    c.style.overflow = 'hidden';
+    var pg = c.firstElementChild; if (pg) pg.style.transform = 'translateY(' + (-stage.scrollTop) + 'px)';
+    return c;
+  }
+  function face(cls, kid) { var f = document.createElement('div'); f.className = 'kr2-face ' + cls; f.appendChild(kid); return f; }
+  function flipPage(dir, apply) {
     S.busy = true;
-    var out = pageEl.animate(
-      [{ opacity: 1, transform: 'translateX(0) rotateY(0)' }, { opacity: 0, transform: 'translateX(' + (dir === 'next' ? -34 : 34) + 'px) rotateY(' + (dir === 'next' ? 10 : -10) + 'deg)' }],
-      { duration: 200, easing: 'ease-in', fill: 'forwards' });
-    out.onfinish = function () {
-      apply();
-      var inn = pageEl.animate(
-        [{ opacity: 0, transform: 'translateX(' + (dir === 'next' ? 34 : -34) + 'px) rotateY(' + (dir === 'next' ? -10 : 10) + 'deg)' }, { opacity: 1, transform: 'translateX(0) rotateY(0)' }],
-        { duration: 320, easing: 'cubic-bezier(.2,.8,.2,1)' });
-      out.cancel();
-      inn.onfinish = function () { S.busy = false; };
-    };
+    var box = $('kr2-bookbox'), wrap = document.createElement('div'); wrap.className = 'kr2-flipwrap';
+    var leaf = document.createElement('div'); leaf.className = 'kr2-leaf';
+    var cast = document.createElement('div'); cast.className = 'kr2-cast';
+    var shade = document.createElement('i'); shade.className = 'kr2-shade';
+    var old = snap(), under = null, frontKid;
+    if (dir === 'next') { apply(); frontKid = old; }
+    else { under = old; apply(); frontKid = snap(); }
+    var front = face('kr2-front', frontKid); front.appendChild(shade);
+    var back = face('kr2-back', frontKid.cloneNode(true));
+    leaf.appendChild(front); leaf.appendChild(back);
+    if (under) wrap.appendChild(under);
+    wrap.appendChild(cast); wrap.appendChild(leaf); box.appendChild(wrap);
+    var dur = 1050, ease = 'cubic-bezier(.5,.05,.25,1)';
+    var kf = [
+      { transform: 'rotateY(0deg) skewY(0deg)' },
+      { transform: 'rotateY(-62deg) skewY(-1.6deg)', offset: .38 },
+      { transform: 'rotateY(-118deg) skewY(1.2deg)', offset: .68 },
+      { transform: 'rotateY(-180deg) skewY(0deg)' }
+    ];
+    var shKf = [{ opacity: 0 }, { opacity: .55, offset: .45 }, { opacity: .9 }];
+    var caKf = [{ opacity: 0 }, { opacity: .95, offset: .4 }, { opacity: 0 }];
+    if (dir === 'prev') { kf = kf.map(function (k) { return { transform: k.transform, offset: k.offset == null ? undefined : 1 - k.offset }; }).reverse(); kf[0].offset = 0; kf[kf.length - 1].offset = 1; shKf = shKf.slice().reverse().map(function (k, i, arr) { return { opacity: k.opacity }; }); }
+    var done = function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); S.busy = false; };
+    var opt = { duration: dur, easing: ease, fill: 'forwards' };
+    try {
+      leaf.animate(kf, opt); shade.animate(shKf, opt); cast.animate(caKf, { duration: dur, easing: 'ease-in-out', fill: 'forwards' }).onfinish = done;
+    } catch (e) { done(); }
+    setTimeout(function () { if (S.busy) done(); }, dur + 400);
   }
   function goTo(n, dir) {
     if (n < 0 || n > S.pages.length - 1 || n === S.cur) return;
@@ -11134,6 +11189,7 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
   $('kr2-close').onclick = closeReader;
   $('book-prev-btn').onclick = prevPage;
   $('book-next-btn').onclick = nextPage;
+  $('kr2-curl').onclick = nextPage;
   $('kr2-aa').onclick = function (e) { e.stopPropagation(); panel.classList.toggle('open'); };
   card.addEventListener('click', function (e) { if (!panel.contains(e.target) && e.target !== $('kr2-aa')) panel.classList.remove('open'); });
   modal.addEventListener('click', function (e) { if (e.target === modal) closeReader(); });

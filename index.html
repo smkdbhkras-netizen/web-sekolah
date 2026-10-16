@@ -4895,7 +4895,8 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                           + '<p class="text-teal-100 text-xs md:text-sm mt-1 font-medium">Isi biodata & keluhan Anda, kami tunjukkan titik yang perlu dipijat</p>'
                           + '</div>'
                           + '<button onclick="openPijatModal()" class="relative z-10 flex-shrink-0 bg-white text-teal-700 hover:bg-teal-50 px-8 py-4 rounded-[1rem] font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 flex items-center gap-2"><i class="fas fa-hand-holding-medical"></i> Daftar / Booking</button>'
-                          + '</div>';
+                          + '</div>'
+                          + '<div id="pijat-inline-host" style="scroll-margin-top:100px"></div>';
 
                     if (kegiatanItems.length > 0) {
                         let itemsDesc = kegiatanItems.slice().reverse();
@@ -9720,48 +9721,98 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         // ================================================================
         // MODAL BOOKING PIJAT TERAPIS
         // ================================================================
-        function openPijatModal() {
+        let PIJAT_PANEL_REF = null;
+        function pijatPanel() {
+            if (!PIJAT_PANEL_REF) PIJAT_PANEL_REF = document.getElementById('pijat-panel');
+            return PIJAT_PANEL_REF;
+        }
+        function pijatSteps(n) {
+            document.querySelectorAll('#pijat-steps li').forEach(function (li) {
+                const s = parseInt(li.getAttribute('data-s'), 10);
+                li.classList.toggle('on', s === n);
+                li.classList.toggle('done', s < n);
+            });
+        }
+        function pijatScrollPanel() {
+            const p = pijatPanel();
+            if (p && p.scrollIntoView) setTimeout(function () { p.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+        }
+        function pijatSiapkanForm() {
             renderKeluhanGrid();
             pijatInitSuara();
             const tglInput = document.getElementById('pijat-tanggal');
-            if (tglInput && !tglInput.value) {
-                tglInput.value = new Date().toISOString().split('T')[0];
-            }
+            if (tglInput && !tglInput.value) tglInput.value = new Date().toISOString().split('T')[0];
             document.getElementById('pijat-view-form').classList.remove('hidden');
             document.getElementById('pijat-view-hasil').classList.add('hidden');
-            const modal = document.getElementById('modal-pijat');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            document.querySelectorAll('.pjp-err').forEach(function (e) { e.classList.remove('pjp-err'); });
+            pijatSteps(1);
         }
-
+        // Membuka form booking langsung di dalam halaman (bukan popup).
+        function openPijatModal() {
+            const panel = pijatPanel();
+            if (!panel) return;
+            const host = document.getElementById('pijat-inline-host');
+            const holder = document.getElementById('modal-pijat');
+            const sudahTerbuka = (host && host.contains(panel)) || (holder && holder.classList.contains('pjp-overlay'));
+            if (!sudahTerbuka) {
+                pijatSiapkanForm();
+                if (host) { host.appendChild(panel); host.classList.add('open'); }
+                else if (holder) { holder.classList.remove('hidden'); holder.classList.add('pjp-overlay'); } // cadangan
+                panel.style.animation = 'none'; void panel.offsetWidth; panel.style.animation = '';
+            }
+            pijatScrollPanel();
+        }
         function closePijatModal() {
             try { pijatSuaraBerhenti(true); } catch (e) { }
-            const modal = document.getElementById('modal-pijat');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            const panel = pijatPanel(), holder = document.getElementById('modal-pijat');
+            const host = document.getElementById('pijat-inline-host');
+            if (panel && holder) {
+                holder.appendChild(panel);
+                holder.classList.add('hidden');
+                holder.classList.remove('pjp-overlay');
+            }
+            if (host) host.classList.remove('open');
+            const cta = document.getElementById('kg-sec-booking');
+            if (cta && cta.scrollIntoView) cta.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-
         function resetPijatForm() {
             document.getElementById('form-pijat').reset();
             document.getElementById('pijat-lokasi-status').innerText = '';
-            openPijatModal();
+            pijatSiapkanForm();
+            pijatScrollPanel();
+        }
+        function pijatJumlah(d) {
+            const el = document.getElementById('pijat-jumlah');
+            if (!el) return;
+            el.value = Math.max(1, Math.min(99, (parseInt(el.value, 10) || 1) + d));
+        }
+        function pijatUpdateCount() {
+            const n = document.querySelectorAll('.keluhan-check:checked').length;
+            const b = document.getElementById('pijat-klh-count');
+            if (b) { b.textContent = n + ' dipilih'; b.classList.toggle('on', n > 0); }
+            const g = document.getElementById('keluhan-grid');
+            if (g && n > 0) g.classList.remove('pjp-err');
+        }
+        function pijatTandaiError(ids) {
+            document.querySelectorAll('.pjp-f.pjp-err').forEach(function (e) { e.classList.remove('pjp-err'); });
+            ids.forEach(function (id, i) {
+                const el = document.getElementById(id);
+                const f = el && el.closest('.pjp-f');
+                if (f) f.classList.add('pjp-err');
+                if (i === 0 && el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
         }
 
         function renderKeluhanGrid() {
             const grid = document.getElementById('keluhan-grid');
             if (!grid) return;
-            grid.innerHTML = KELUHAN_DATA.map(k => `
-                <label class="keluhan-card flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:border-teal-300">
-                    <input type="checkbox" value="${k.no}" class="keluhan-check hidden">
-                    <span class="keluhan-dot w-5 h-5 rounded-md border-2 border-slate-300 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors">
-                        <i class="fas fa-check text-white text-[10px] opacity-0"></i>
-                    </span>
-                    <span class="text-xs">
-                        <span class="font-bold text-slate-700 block">${k.masalah}</span>
-                        <span class="text-slate-400 text-[10.5px] leading-snug">${k.area}</span>
-                    </span>
-                </label>
-            `).join('');
+            grid.className = 'pjp-kgrid';
+            grid.innerHTML = KELUHAN_DATA.map(function (k) {
+                return '<label class="pjp-kc"><input type="checkbox" value="' + k.no + '" class="keluhan-check" onchange="pijatUpdateCount()">'
+                    + '<span class="pjp-kc-box"><i class="fas fa-check"></i></span>'
+                    + '<span class="pjp-kc-tx"><b>' + k.masalah + '</b><small>' + k.area + '</small></span></label>';
+            }).join('');
+            pijatUpdateCount();
         }
 
         // ================================================================
@@ -9906,10 +9957,13 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 [['pijat-nama', 'nama'], ['pijat-kontak', 'kontak'], ['pijat-desa', 'desa']].forEach(function (p) {
                     const inp = document.getElementById(p[0]);
                     if (!inp) return;
-                    const wrap = document.createElement('div');
-                    wrap.className = 'pj-field';
-                    inp.parentNode.insertBefore(wrap, inp);
-                    wrap.appendChild(inp);
+                    let wrap = inp.parentNode;
+                    if (!wrap.classList.contains('pjp-in')) {
+                        wrap = document.createElement('div');
+                        wrap.className = 'pj-field';
+                        inp.parentNode.insertBefore(wrap, inp);
+                        wrap.appendChild(inp);
+                    }
                     inp.classList.add('pj-has-mic');
                     const b = document.createElement('button');
                     b.type = 'button'; b.className = 'pj-mic'; b.title = 'Isi dengan suara';
@@ -9923,6 +9977,11 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     '<div class="pj-klh-voice"><button type="button" class="pj-mic-big" onclick="pijatSuaraMulai(\'keluhan\', this)"><i class="fas fa-microphone"></i> <span>Sebutkan Keluhan</span></button>'
                     + '<small>Contoh: &ldquo;punggung pegal, leher kaku, dan kaki pegal setelah berdiri lama&rdquo;. Pilihan akan tercentang otomatis.</small></div>'
                     + '<div id="pijat-suara-keluhan-hasil" class="pj-klh-hasil"></div>');
+            }
+            if (!form.dataset.clr) {
+                form.dataset.clr = '1';
+                form.addEventListener('input', function (e) { const f = e.target.closest && e.target.closest('.pjp-f'); if (f) f.classList.remove('pjp-err'); });
+                form.addEventListener('change', function (e) { const f = e.target.closest && e.target.closest('.pjp-f'); if (f) f.classList.remove('pjp-err'); });
             }
             const h = document.getElementById('pijat-suara-keluhan-hasil');
             if (h) { h.style.display = 'none'; h.innerHTML = ''; }
@@ -9949,7 +10008,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         function pijatSuaraMulai(mode, btn) {
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR) {
-                Swal.fire('Browser belum mendukung', 'Fitur suara berjalan di Google Chrome, Microsoft Edge, atau Safari versi terbaru. Silakan pakai salah satunya, atau isi secara manual.', 'info');
+                pijatBarTampil('Browser belum mendukung suara', 'Pakai Google Chrome, Microsoft Edge, atau Safari terbaru, atau isi secara manual.', 'err');
                 return;
             }
             if (PIJAT_SUARA) { pijatSuaraBerhenti(); return; } // tekan lagi = berhenti
@@ -9986,8 +10045,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             rec.onerror = function (e) {
                 s.error = e.error || 'error';
                 if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-                    Swal.fire('Izin mikrofon ditolak', 'Izinkan akses mikrofon pada browser (ikon gembok di address bar), lalu coba lagi.', 'warning');
-                    pijatBarSembunyi();
+                    pijatBarTampil('Izin mikrofon ditolak', 'Izinkan mikrofon lewat ikon gembok di address bar, lalu coba lagi.', 'err');
                 } else if (e.error === 'no-speech') {
                     pijatBarTampil('Suara tidak terdengar', 'Dekatkan mikrofon dan coba lagi.', 'err');
                 } else if (e.error === 'audio-capture') {
@@ -10007,7 +10065,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 pijatTerapkanSuara(mode, teks);
             };
             try { rec.start(); }
-            catch (err) { PIJAT_SUARA = null; Swal.fire('Gagal memulai', 'Mikrofon belum bisa dipakai. Muat ulang halaman lalu coba lagi.', 'error'); }
+            catch (err) { PIJAT_SUARA = null; pijatBarTampil('Gagal memulai', 'Mikrofon belum bisa dipakai. Muat ulang halaman lalu coba lagi.', 'err'); }
         }
 
         function pijatTerapkanSuara(mode, teks) {
@@ -10111,11 +10169,13 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
 
             const checkedBoxes = Array.from(document.querySelectorAll('.keluhan-check:checked'));
             if (!nama || !kontak || !gender || !desa) {
-                Swal.fire('Lengkapi Data', 'Nama, No. HP, Jenis Kelamin, dan Lokasi/Desa wajib diisi.', 'warning');
+                pijatTandaiError([!nama && 'pijat-nama', !kontak && 'pijat-kontak', !gender && 'pijat-gender', !desa && 'pijat-desa'].filter(Boolean));
+                pijatBarTampil('Data belum lengkap', 'Nama, No. HP, Jenis Kelamin, dan Lokasi/Desa wajib diisi.', 'err');
                 return;
             }
             if (checkedBoxes.length === 0) {
-                Swal.fire('Pilih Keluhan', 'Pilih minimal satu keluhan yang Anda rasakan.', 'warning');
+                const g = document.getElementById('keluhan-grid'); if (g) { g.classList.add('pjp-err'); g.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+                pijatBarTampil('Pilih keluhan', 'Pilih minimal satu keluhan yang Anda rasakan.', 'err');
                 return;
             }
 
@@ -10154,7 +10214,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 .withFailureHandler(err => {
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim & Lihat Titik Pijat';
-                    Swal.fire('Gagal Mengirim', err.message, 'error');
+                    pijatBarTampil('Gagal mengirim', (err && err.message) || 'Periksa koneksi lalu coba lagi.', 'err');
                 })
                 .saveData('kegiatan', dataObj, null);
         }
@@ -10163,12 +10223,10 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             document.getElementById('pijat-view-form').classList.add('hidden');
             document.getElementById('pijat-view-hasil').classList.remove('hidden');
 
-            document.getElementById('pijat-ringkasan-keluhan').innerHTML = `
-                <p class="text-[10px] font-black text-teal-700 uppercase tracking-widest mb-2">Keluhan Anda</p>
-                <p class="text-sm font-bold text-slate-800 mb-3">${namaKeluhan}</p>
-                <p class="text-[10px] font-black text-teal-700 uppercase tracking-widest mb-1">Area yang Direkomendasikan</p>
-                <p class="text-xs text-slate-600 leading-relaxed">${[...new Set(selectedItems.map(k => k.area))].join('; ')}</p>
-            `;
+            document.getElementById('pijat-ringkasan-keluhan').innerHTML = '<div class="pjp-sum"><div><small>Keluhan Anda</small><div class="pjp-chipset">'
+                + selectedItems.map(function (k) { return '<span>' + kgEsc(k.masalah) + '</span>'; }).join('')
+                + '</div></div><div><small>Area yang direkomendasikan</small><p>'
+                + kgEsc([...new Set(selectedItems.map(k => k.area))].join('; ')) + '</p></div></div>';
 
             let allZones = new Set();
             selectedItems.forEach(k => k.zones.forEach(z => allZones.add(z)));
@@ -10176,6 +10234,8 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             // gambar anatomi + label penunjuk tepat di area yang dipijat (sama seperti di kartu kegiatan)
             const wrap = document.getElementById('pijat-anatomi');
             if (wrap) wrap.innerHTML = pijatStatusHtml(selectedItems);
+            pijatSteps(3);
+            pijatScrollPanel();
         }
 
         // ================================================================
@@ -10500,96 +10560,217 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         html.dark .pj-suara-card b{color:#99f6e4}html.dark .pj-suara-card p,html.dark .pj-klh-voice small{color:#cbd5e1}
         html.dark .pj-mic{background:#042f2e;border-color:#115e59;color:#5eead4}
         html.dark .pj-klh-hasil{background:#042f2e;border-color:#115e59;color:#99f6e4}
+        /* ===== PANEL BOOKING PIJAT (INLINE, TANPA POPUP) ===== */
+        #pijat-inline-host.open{margin-bottom:32px}
+        .pjp-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.6);display:flex!important;align-items:flex-start;justify-content:center;padding:16px;overflow:auto}
+        .pjp-overlay .pjp{width:100%;max-width:900px}
+        .pjp{background:#fff;border:1px solid #e2e8f0;border-radius:28px;box-shadow:0 24px 60px -16px rgba(15,118,110,.28);overflow:hidden;overflow:clip;scroll-margin-top:96px;animation:pjpIn .35s ease both;text-align:left}
+        @keyframes pjpIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+        @keyframes pjpPop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+        .pjp-head{position:relative;display:flex;align-items:center;gap:14px;padding:22px 26px;background:linear-gradient(120deg,#0b162a 0%,#0f766e 100%);color:#fff;overflow:hidden}
+        .pjp-deco{position:absolute;right:62px;bottom:-22px;font-size:96px;color:rgba(255,255,255,.07);pointer-events:none}
+        .pjp-head-ico{width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+        .pjp-head-tx{flex:1;min-width:0;position:relative}
+        .pjp-head-tx span{display:block;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#99f6e4}
+        .pjp-head-tx h3{margin:2px 0 0;font-size:20px;font-weight:900;letter-spacing:-.01em;color:#fff}
+        .pjp-head-tx p{margin:4px 0 0;font-size:12px;color:#ccfbf1;line-height:1.45}
+        .pjp-close{position:relative;width:38px;height:38px;border-radius:12px;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;transition:.2s}
+        .pjp-close:hover{background:rgba(255,255,255,.28)}
+        .pjp-steps{display:flex;list-style:none;margin:0;padding:14px 26px;background:#f8fafc;border-bottom:1px solid #e2e8f0}
+        .pjp-steps li{flex:1;display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+        .pjp-steps li:last-child{flex:0 0 auto}
+        .pjp-steps li b{width:26px;height:26px;border-radius:50%;background:#e2e8f0;color:#64748b;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;transition:.25s}
+        .pjp-steps li:not(:last-child):after{content:"";flex:1;height:2px;background:#e2e8f0;margin:0 10px;border-radius:2px;min-width:12px}
+        .pjp-steps li.on{color:#0f766e}.pjp-steps li.on b{background:#0f766e;color:#fff;box-shadow:0 0 0 4px rgba(15,118,110,.16)}
+        .pjp-steps li.done{color:#0f766e}.pjp-steps li.done b{background:#14b8a6;color:#fff}.pjp-steps li.done:after{background:#14b8a6}
+        .pjp-body{padding:26px}
+        .pjp-sec{background:#fff;border:1px solid #e8edf4;border-radius:20px;padding:20px;margin-bottom:18px}
+        .pjp-sec-h{display:flex;align-items:center;gap:10px;margin:0 0 16px}
+        .pjp-sec-h .n{width:28px;height:28px;border-radius:10px;background:linear-gradient(135deg,#14b8a6,#0f766e);color:#fff;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .pjp-sec-h h4{margin:0;font-size:13px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:#0f172a;flex:1}
+        .pjp-badge{font-size:11px;font-weight:800;padding:4px 11px;border-radius:999px;background:#f1f5f9;color:#64748b;transition:.2s}
+        .pjp-badge.on{background:#0f766e;color:#fff}
+        .pjp-help{font-size:12px;color:#64748b;margin:-6px 0 14px;line-height:1.5}
+        .pjp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+        .pjp-full{grid-column:1/-1}
+        .pjp-f label{display:block;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#64748b;margin-bottom:6px}
+        .pjp-f label em{color:#ef4444;font-style:normal}
+        .pjp-in{position:relative;display:flex;align-items:center}
+        .pjp-in>i.pjp-ic{position:absolute;left:15px;color:#94a3b8;font-size:13px;pointer-events:none;z-index:1}
+        .pjp-in input,.pjp-in select{width:100%;height:48px;border:1.5px solid #e2e8f0;border-radius:14px;padding:0 14px 0 40px;font-size:14px;background:#fff;color:#0f172a;outline:none;transition:.2s;font-family:inherit;box-sizing:border-box}
+        .pjp-in input::placeholder{color:#b6c0cd}
+        .pjp-in input:focus,.pjp-in select:focus{border-color:#14b8a6;box-shadow:0 0 0 4px rgba(20,184,166,.15)}
+        .pjp-in select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center}
+        .pjp-in .pj-mic{position:absolute;right:7px;top:50%;transform:translateY(-50%)}
+        .pjp-in input.pj-has-mic{padding-right:52px}
+        .pjp-err label{color:#dc2626}
+        .pjp-err .pjp-in input,.pjp-err .pjp-in select{border-color:#ef4444;background:#fef2f2;animation:pjpShake .35s}
+        @keyframes pjpShake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+        .pjp-num{display:flex;align-items:center;border:1.5px solid #e2e8f0;border-radius:14px;height:48px;overflow:hidden;background:#fff}
+        .pjp-num button{width:48px;height:100%;border:0;background:#f8fafc;color:#0f766e;font-size:13px;cursor:pointer;transition:.15s}
+        .pjp-num button:hover{background:#ccfbf1}
+        .pjp-num input{flex:1;min-width:0;height:100%;border:0;text-align:center;font-size:15px;font-weight:800;color:#0f172a;outline:none;background:transparent;-moz-appearance:textfield;font-family:inherit}
+        .pjp-num input::-webkit-outer-spin-button,.pjp-num input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+        .pjp-coord{display:flex;gap:10px}
+        .pjp-coord .pjp-in{flex:1}
+        .pjp-btn-dark{flex-shrink:0;display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 18px;border:0;border-radius:14px;background:#0f172a;color:#fff;font-size:11px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;transition:.2s}
+        .pjp-btn-dark:hover{background:#0f766e}
+        .pjp-hint{font-size:11px;color:#64748b;margin:6px 2px 0;min-height:14px}
+        .pjp-kgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+        .pjp-kc{position:relative;display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1.5px solid #e2e8f0;border-radius:16px;background:#fff;cursor:pointer;transition:.18s;-webkit-tap-highlight-color:transparent}
+        .pjp-kc:hover{border-color:#5eead4;transform:translateY(-1px)}
+        .pjp-kc input{position:absolute;opacity:0;pointer-events:none}
+        .pjp-kc-box{width:22px;height:22px;border-radius:8px;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;color:transparent;font-size:10px;transition:.18s}
+        .pjp-kc-tx b{display:block;font-size:13px;font-weight:800;color:#1e293b}
+        .pjp-kc-tx small{display:block;font-size:11px;color:#94a3b8;line-height:1.4;margin-top:2px}
+        .pjp-kc:has(input:checked){background:#f0fdfa;border-color:#0f766e;box-shadow:0 6px 16px -8px rgba(15,118,110,.45)}
+        .pjp-kc:has(input:checked) .pjp-kc-box{background:#0f766e;border-color:#0f766e;color:#fff}
+        .pjp-kgrid.pjp-err{outline:2px solid #fca5a5;outline-offset:4px;border-radius:16px}
+        .pjp-btn-main{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;height:54px;border:0;border-radius:16px;background:linear-gradient(120deg,#0f766e,#14b8a6);color:#fff;font-weight:900;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 14px 26px -10px rgba(15,118,110,.55);transition:.2s;font-family:inherit}
+        .pjp-btn-main:hover{transform:translateY(-1px)}
+        .pjp-btn-main:disabled{opacity:.7;cursor:wait;transform:none}
+        .pjp-btn-ghost{flex:1;height:50px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:.2s;font-family:inherit}
+        .pjp-btn-ghost:hover{background:#f8fafc}
+        .pjp-btn-solid{flex:1;height:50px;border-radius:14px;border:0;background:#0f766e;color:#fff;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:.2s;font-family:inherit}
+        .pjp-btn-solid:hover{background:#115e59}
+        .pjp-secure{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:#94a3b8;margin:12px 0 0}
+        .pjp-ok{text-align:center;margin-bottom:20px}
+        .pjp-ok-ic{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#14b8a6,#0f766e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;box-shadow:0 14px 28px -10px rgba(15,118,110,.6);animation:pjpPop .5s ease both}
+        .pjp-ok h4{margin:0;font-size:20px;font-weight:900;color:#0f172a}
+        .pjp-ok p{margin:4px 0 0;font-size:12.5px;color:#64748b}
+        .pjp-sum{display:grid;gap:14px;background:#f0fdfa;border:1px solid #99f6e4;border-radius:18px;padding:16px 18px;margin-bottom:18px}
+        .pjp-sum small{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#0f766e;margin-bottom:6px}
+        .pjp-sum p{margin:0;font-size:12.5px;line-height:1.6;color:#475569}
+        .pjp-chipset{display:flex;flex-wrap:wrap;gap:6px}
+        .pjp-chipset span{font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px;background:#fff;border:1px solid #99f6e4;color:#115e59}
+        .pjp-acts{display:flex;gap:12px;margin-top:18px}
+        .pjp .pj-bar{top:98px}
+        @media(max-width:640px){
+            .pjp{border-radius:22px}
+            .pjp-head{padding:18px}.pjp-head-tx h3{font-size:17px}.pjp-head-ico{display:none}
+            .pjp-steps{padding:12px 16px}.pjp-steps li span{display:none}.pjp-steps li.on span{display:inline}
+            .pjp-body{padding:14px}.pjp-sec{padding:16px;border-radius:18px}
+            .pjp-grid,.pjp-kgrid{grid-template-columns:1fr}
+            .pjp-coord{flex-direction:column}.pjp-btn-dark{justify-content:center}
+            .pjp-acts{flex-direction:column}
+        }
+        html.dark .pjp{background:#0f172a;border-color:#334155}
+        html.dark .pjp-steps{background:#111c33;border-color:#334155}
+        html.dark .pjp-steps li b{background:#334155;color:#94a3b8}
+        html.dark .pjp-steps li.on b{background:#0f766e;color:#fff}.pjp-steps li.done b{color:#fff}
+        html.dark .pjp-sec{background:#111c33;border-color:#334155}
+        html.dark .pjp-sec-h h4,html.dark .pjp-ok h4,html.dark .pjp-kc-tx b{color:#f1f5f9}
+        html.dark .pjp-in input,html.dark .pjp-in select,html.dark .pjp-num{background:#0b1220;border-color:#334155;color:#e2e8f0}
+        html.dark .pjp-num input{color:#e2e8f0}html.dark .pjp-num button{background:#162238}
+        html.dark .pjp-kc{background:#0b1220;border-color:#334155}
+        html.dark .pjp-kc:has(input:checked){background:#042f2e;border-color:#14b8a6}
+        html.dark .pjp-sum{background:#042f2e;border-color:#115e59}html.dark .pjp-sum p{color:#cbd5e1}
+        html.dark .pjp-chipset span{background:#0b1220;color:#99f6e4;border-color:#115e59}
+        html.dark .pjp-btn-ghost{background:#0b1220;border-color:#334155;color:#cbd5e1}
+        html.dark .pjp-badge{background:#334155;color:#cbd5e1}
         .keluhan-card { transition: all .2s ease; cursor:pointer; }
         .keluhan-card:has(input:checked) { background:#f0fdfa; border-color:#0f766e; }
         .keluhan-card:has(input:checked) .keluhan-dot { background:#0f766e; border-color:#0f766e; }
         .keluhan-card:has(input:checked) .keluhan-dot i { opacity:1; }
     </style>
-    <div id="modal-pijat" class="fixed inset-0 bg-black/60 z-[9998] hidden items-center justify-center p-3 md:p-6">
-        <div class="bg-white w-full max-w-4xl rounded-[2rem] shadow-2xl overflow-hidden animate-fadeIn flex flex-col max-h-[94vh]">
-            <div class="flex items-center justify-between px-6 py-5 md:px-8 border-b border-slate-200 bg-gradient-to-r from-[#0b162a] to-[#0f766e]">
-                <div>
-                    <span class="text-[10px] font-black text-teal-200 uppercase tracking-widest block">Terapis Kesehatan</span>
-                    <h3 class="text-lg md:text-xl font-black uppercase text-white tracking-tight">Booking Pijat Terapis</h3>
+    <div id="modal-pijat" class="hidden">
+        <!-- Penampung panel. Saat "Booking" ditekan, panel dipindah ke dalam halaman (#pijat-inline-host), bukan popup. -->
+        <section id="pijat-panel" class="pjp">
+            <header class="pjp-head">
+                <i class="fas fa-spa pjp-deco"></i>
+                <div class="pjp-head-ico"><i class="fas fa-hand-holding-medical"></i></div>
+                <div class="pjp-head-tx">
+                    <span>Terapis Kesehatan</span>
+                    <h3>Booking Pijat Terapis</h3>
+                    <p>Isi data &amp; keluhan, lalu lihat titik pijat yang aman untuk Anda.</p>
                 </div>
-                <button onclick="closePijatModal()" class="text-3xl font-black text-white/70 hover:text-white leading-none">×</button>
-            </div>
+                <button type="button" class="pjp-close" onclick="closePijatModal()" aria-label="Tutup form"><i class="fas fa-xmark"></i></button>
+            </header>
+            <ol class="pjp-steps" id="pijat-steps">
+                <li class="on" data-s="1"><b>1</b><span>Biodata</span></li>
+                <li data-s="2"><b>2</b><span>Keluhan</span></li>
+                <li data-s="3"><b>3</b><span>Peta Titik</span></li>
+            </ol>
 
-            <div class="p-6 md:p-8 overflow-y-auto flex-1 bg-white">
-
+            <div class="pjp-body">
                 <!-- VIEW 1: FORM -->
                 <div id="pijat-view-form">
-                    <form id="form-pijat" onsubmit="submitPijatForm(event); return false;">
-                        <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 pb-2 border-b border-slate-100">1. Biodata Pelanggan</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 block">Nama Lengkap *</label>
-                                <input required type="text" id="pijat-nama" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500" placeholder="Nama pelanggan">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 block">No. HP / WhatsApp *</label>
-                                <input required type="text" id="pijat-kontak" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500" placeholder="08xxxxxxxxxx">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 block">Jenis Kelamin *</label>
-                                <select required id="pijat-gender" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 bg-white">
-                                    <option value="">Pilih...</option>
-                                    <option value="Perempuan">Perempuan</option>
-                                    <option value="Laki-laki">Laki-laki</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 block">Tanggal Pelaksanaan</label>
-                                <input type="date" id="pijat-tanggal" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 block">Lokasi / Desa *</label>
-                                <input required type="text" id="pijat-desa" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500" placeholder="Nama desa/kecamatan">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 block">Jumlah Orang</label>
-                                <input type="number" min="1" value="1" id="pijat-jumlah" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 block">Titik Koordinat Lokasi</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="pijat-koordinat" class="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500" placeholder="-7.9153568, 112.0427926">
-                                    <button type="button" onclick="ambilLokasiPijat()" class="flex-shrink-0 bg-slate-800 hover:bg-slate-900 text-white px-5 rounded-xl text-xs font-bold uppercase tracking-widest flex items-center gap-2"><i class="fas fa-location-crosshairs"></i> Ambil Lokasi</button>
+                    <form id="form-pijat" onsubmit="submitPijatForm(event); return false;" novalidate>
+                        <div class="pjp-sec">
+                            <div class="pjp-sec-h"><span class="n">1</span><h4>Biodata Pelanggan</h4></div>
+                            <div class="pjp-grid">
+                                <div class="pjp-f">
+                                    <label for="pijat-nama">Nama Lengkap <em>*</em></label>
+                                    <div class="pjp-in"><i class="fas fa-user pjp-ic"></i><input type="text" id="pijat-nama" placeholder="Nama pelanggan" autocomplete="name"></div>
                                 </div>
-                                <p id="pijat-lokasi-status" class="text-[10px] text-slate-400 mt-1.5"></p>
+                                <div class="pjp-f">
+                                    <label for="pijat-kontak">No. HP / WhatsApp <em>*</em></label>
+                                    <div class="pjp-in"><i class="fas fa-phone pjp-ic"></i><input type="tel" inputmode="tel" id="pijat-kontak" placeholder="08xxxxxxxxxx" autocomplete="tel"></div>
+                                </div>
+                                <div class="pjp-f">
+                                    <label for="pijat-gender">Jenis Kelamin <em>*</em></label>
+                                    <div class="pjp-in"><i class="fas fa-venus-mars pjp-ic"></i>
+                                        <select id="pijat-gender">
+                                            <option value="">Pilih...</option>
+                                            <option value="Perempuan">Perempuan</option>
+                                            <option value="Laki-laki">Laki-laki</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="pjp-f">
+                                    <label for="pijat-tanggal">Tanggal Pelaksanaan</label>
+                                    <div class="pjp-in"><i class="fas fa-calendar-days pjp-ic"></i><input type="date" id="pijat-tanggal"></div>
+                                </div>
+                                <div class="pjp-f">
+                                    <label for="pijat-desa">Lokasi / Desa <em>*</em></label>
+                                    <div class="pjp-in"><i class="fas fa-location-dot pjp-ic"></i><input type="text" id="pijat-desa" placeholder="Nama desa/kecamatan"></div>
+                                </div>
+                                <div class="pjp-f">
+                                    <label for="pijat-jumlah">Jumlah Orang</label>
+                                    <div class="pjp-num">
+                                        <button type="button" onclick="pijatJumlah(-1)" aria-label="Kurangi"><i class="fas fa-minus"></i></button>
+                                        <input type="number" min="1" value="1" id="pijat-jumlah">
+                                        <button type="button" onclick="pijatJumlah(1)" aria-label="Tambah"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="pjp-f pjp-full">
+                                    <label for="pijat-koordinat">Titik Koordinat Lokasi</label>
+                                    <div class="pjp-coord">
+                                        <div class="pjp-in"><i class="fas fa-map-pin pjp-ic"></i><input type="text" id="pijat-koordinat" placeholder="-7.9153568, 112.0427926"></div>
+                                        <button type="button" onclick="ambilLokasiPijat()" class="pjp-btn-dark"><i class="fas fa-location-crosshairs"></i> Ambil Lokasi</button>
+                                    </div>
+                                    <p id="pijat-lokasi-status" class="pjp-hint"></p>
+                                </div>
                             </div>
                         </div>
 
-                        <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-1 pb-2 border-b border-slate-100">2. Keluhan / Masalah</h4>
-                        <p class="text-[11px] text-slate-400 mb-4">Pilih satu atau lebih keluhan yang Anda rasakan</p>
-                        <div id="keluhan-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-8"></div>
+                        <div class="pjp-sec">
+                            <div class="pjp-sec-h"><span class="n">2</span><h4>Keluhan / Masalah</h4><span id="pijat-klh-count" class="pjp-badge">0 dipilih</span></div>
+                            <p class="pjp-help">Pilih satu atau lebih keluhan yang Anda rasakan.</p>
+                            <div id="keluhan-grid" class="pjp-kgrid"></div>
+                        </div>
 
-                        <button type="submit" id="pijat-submit-btn" class="w-full bg-[#0f766e] hover:bg-teal-800 text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-teal-700/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
-                            <i class="fas fa-paper-plane"></i> Kirim & Lihat Titik Pijat
-                        </button>
+                        <button type="submit" id="pijat-submit-btn" class="pjp-btn-main"><i class="fas fa-paper-plane"></i> Kirim & Lihat Titik Pijat</button>
+                        <p class="pjp-secure"><i class="fas fa-lock"></i> Data Anda hanya dipakai untuk keperluan layanan pijat.</p>
                     </form>
                 </div>
 
                 <!-- VIEW 2: HASIL -->
                 <div id="pijat-view-hasil" class="hidden">
-                    <div class="text-center mb-6">
-                        <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3"><i class="fas fa-circle-check"></i></div>
-                        <h4 class="text-lg font-black text-slate-900">Data Berhasil Dikirim!</h4>
-                        <p class="text-xs text-slate-500 mt-1">Berikut peta titik pijat yang aman, hati-hati, dan dihindari sesuai keluhan Anda</p>
+                    <div class="pjp-ok">
+                        <div class="pjp-ok-ic"><i class="fas fa-check"></i></div>
+                        <h4>Data Berhasil Dikirim!</h4>
+                        <p>Berikut peta titik pijat yang aman, hati-hati, dan dihindari sesuai keluhan Anda.</p>
                     </div>
-
-                    <div id="pijat-ringkasan-keluhan" class="bg-teal-50 border border-teal-100 rounded-2xl p-5 mb-6"></div>
-
-                    <div id="pijat-anatomi" class="mb-6"></div>
-
-                    <div class="flex gap-3">
-                        <button onclick="resetPijatForm()" class="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest">Booking Lagi</button>
-                        <button onclick="closePijatModal()" class="flex-1 bg-[#0f766e] hover:bg-teal-800 text-white py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest">Selesai</button>
+                    <div id="pijat-ringkasan-keluhan"></div>
+                    <div id="pijat-anatomi"></div>
+                    <div class="pjp-acts">
+                        <button type="button" onclick="resetPijatForm()" class="pjp-btn-ghost"><i class="fas fa-rotate-left"></i> Booking Lagi</button>
+                        <button type="button" onclick="closePijatModal()" class="pjp-btn-solid">Selesai</button>
                     </div>
                 </div>
-
             </div>
-        </div>
+        </section>
     </div>
     <!-- ============================================================ -->
     <!-- MODAL ISI JURNAL GURU (PUBLIK, TANPA LOGIN) -->

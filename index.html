@@ -9894,7 +9894,130 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
 
             // gambar anatomi + label penunjuk tepat di area yang dipijat (sama seperti di kartu kegiatan)
             const wrap = document.getElementById('pijat-anatomi');
-            if (wrap) wrap.innerHTML = kgAnatomiHtml(allZones);
+            if (wrap) wrap.innerHTML = pijatStatusHtml(selectedItems);
+        }
+
+        // ================================================================
+        // STATUS KEAMANAN TITIK PIJAT: HIJAU (aman) / KUNING (hati-hati) / MERAH (hindari)
+        // ================================================================
+        const PIJAT_STATUS_META = {
+            hijau:  { judul: 'Aman',      sub: 'Sesuai keluhan Anda, boleh dipijat dengan tekanan sedang.' },
+            kuning: { judul: 'Hati-hati', sub: 'Boleh disentuh, tapi gunakan tekanan ringan / lembut.' },
+            merah:  { judul: 'Hindari',   sub: 'Tidak perlu atau tidak aman dipijat pada keluhan ini.' }
+        };
+        // area rawan (tulang/sendi/tendon/pembuluh darah/saraf): tidak pernah "hijau"
+        const PIJAT_ZONA_SENSITIF = {
+            kepala:             { ada: 'Pijat sangat lembut di pelipis & kulit kepala. Hindari tekanan kuat.', tidak: 'Area kepala rawan. Tidak ada keluhan di sini, jangan dipijat.' },
+            leher:              { ada: 'Pijat lembut di sisi & belakang leher. Jangan menekan leher bagian depan (dekat pembuluh nadi) dan jangan memutar/menekuk paksa.', tidak: 'Leher rawan (pembuluh darah & saraf). Tidak ada keluhan di sini, jangan dipijat.' },
+            lutut:              { ada: 'Jangan menekan tempurung lutut & lekukan belakang lutut. Pijat otot di sekitarnya dengan lembut.', tidak: 'Area sendi lutut. Tidak ada keluhan di sini, hindari tekanan.' },
+            pergelangan_tangan: { ada: 'Area tulang & tendon, pakai tekanan ringan dan gerakan mengusap.', tidak: 'Area sendi pergelangan tangan. Tidak ada keluhan di sini, hindari tekanan.' },
+            pergelangan_kaki:   { ada: 'Area tulang & tendon, pakai tekanan ringan dan gerakan mengusap.', tidak: 'Area sendi pergelangan kaki. Tidak ada keluhan di sini, hindari tekanan.' }
+        };
+        // area yang berdekatan (untuk status kuning "area sekitar keluhan")
+        const PIJAT_ZONA_TETANGGA = {
+            kepala: ['leher','tengkuk'], leher: ['kepala','tengkuk','bahu'], tengkuk: ['kepala','leher','bahu','punggung_atas'],
+            bahu: ['leher','tengkuk','punggung_atas','lengan_atas'], lengan_atas: ['bahu','lengan_bawah'],
+            lengan_bawah: ['lengan_atas','pergelangan_tangan'], pergelangan_tangan: ['lengan_bawah','telapak_tangan'],
+            telapak_tangan: ['pergelangan_tangan','jari_tangan'], jari_tangan: ['telapak_tangan'],
+            punggung_atas: ['bahu','tengkuk','punggung_tengah'], punggung_tengah: ['punggung_atas','pinggang'],
+            pinggang: ['punggung_tengah','pinggul','bokong'], pinggul: ['pinggang','bokong','paha_depan','paha_belakang'],
+            bokong: ['pinggang','pinggul','paha_belakang'], paha_depan: ['pinggul','lutut'],
+            paha_belakang: ['bokong','pinggul','lutut','betis'], lutut: ['paha_depan','paha_belakang','betis'],
+            betis: ['lutut','paha_belakang','pergelangan_kaki'], pergelangan_kaki: ['betis','telapak_kaki'],
+            telapak_kaki: ['pergelangan_kaki','kaki_depan'], kaki_depan: ['telapak_kaki','pergelangan_kaki']
+        };
+
+        /** Hitung status tiap area tubuh berdasarkan keluhan yang dipilih. */
+        function pijatHitungStatus(selectedItems) {
+            const kz = new Set();
+            selectedItems.forEach(function (k) { k.zones.forEach(function (z) { kz.add(z); }); });
+            const semua = kz.has('SEMUA');
+            const hasil = {};
+            Object.keys(KG_ZONE_LABEL).forEach(function (z) {
+                const sens = PIJAT_ZONA_SENSITIF[z];
+                const termasuk = semua || kz.has(z);
+                let status, catatan, spesifik = false;
+                if (termasuk) {
+                    if (sens) { status = 'kuning'; catatan = sens.ada; spesifik = true; }
+                    else { status = 'hijau'; catatan = 'Sesuai keluhan, aman dipijat.'; }
+                } else {
+                    const dekat = (PIJAT_ZONA_TETANGGA[z] || []).some(function (n) { return semua || kz.has(n); });
+                    if (sens) { status = 'merah'; catatan = sens.tidak; spesifik = true; }
+                    else if (dekat) { status = 'kuning'; catatan = 'Dekat area keluhan: cukup sentuhan ringan sebagai peralihan.'; }
+                    else { status = 'merah'; catatan = 'Tidak ada keluhan di area ini, tidak perlu dipijat.'; }
+                }
+                hasil[z] = { status: status, nama: KG_ZONE_LABEL[z], catatan: catatan, spesifik: spesifik };
+            });
+            return hasil;
+        }
+
+        /** Satu gambar tubuh (depan/belakang) dengan area & label berwarna sesuai status. */
+        function pijatStatusFigur(svgBase, anchors, hasil, caption) {
+            const items = [];
+            Object.keys(anchors).forEach(function (z) {
+                if (!hasil[z]) return;
+                const a = anchors[z], lines = kgLabelLines(KG_ZONE_LABEL[z]);
+                items.push({ z: z, ax: a[0], ay: a[1], side: a[2], lines: lines, h: lines.length * 12 + 2, st: hasil[z].status });
+            });
+            if (!items.length) return '';
+            let yMin = 1e9, yMax = -1e9, out = '';
+            ['L', 'R'].forEach(function (side) {
+                const col = items.filter(function (i) { return i.side === side; }).sort(function (a, b) { return a.ay - b.ay; });
+                let prev = null;
+                col.forEach(function (it) {
+                    it.cy = it.ay;
+                    if (prev) it.cy = Math.max(it.cy, prev.cy + prev.h / 2 + it.h / 2 + 2);
+                    prev = it;
+                    yMin = Math.min(yMin, it.ay - 14, it.cy - it.h / 2);
+                    yMax = Math.max(yMax, it.ay + 14, it.cy + it.h / 2);
+                    const left = side === 'L';
+                    const ex = left ? 10 : 190, tx = left ? 6 : 194, anc = left ? 'end' : 'start';
+                    out += '<line class="kg-lead pj-l-' + it.st + '" x1="' + it.ax + '" y1="' + it.ay + '" x2="' + ex + '" y2="' + it.cy + '"/>'
+                        + '<circle class="kg-dot pj-d-' + it.st + '" cx="' + it.ax + '" cy="' + it.ay + '" r="2.8"/>';
+                    it.lines.forEach(function (ln, n) {
+                        const y = it.cy + (n - (it.lines.length - 1) / 2) * 12;
+                        out += '<text class="kg-lbl-t pj-t-' + it.st + '" x="' + tx + '" y="' + y + '" dy=".35em" text-anchor="' + anc + '">' + kgEsc(ln) + '</text>';
+                    });
+                });
+            });
+            const y0 = Math.max(0, Math.floor(Math.min(yMin, 0))), y1 = Math.max(436, Math.ceil(yMax + 8));
+            const base = svgBase.replace(/data-zone="([a-z_]+)" class="zona-pijat"/g, function (m, z) {
+                return hasil[z] ? 'data-zone="' + z + '" class="zona-pijat zs-' + hasil[z].status + '"' : m;
+            });
+            return '<figure class="kg-fig pj-fig"><svg viewBox="-84 ' + y0 + ' 368 ' + (y1 - y0) + '" role="img" aria-label="' + caption + '">'
+                + base + out + '</svg><figcaption>' + caption + '</figcaption></figure>';
+        }
+
+        function pijatGrupHtml(key, items) {
+            const m = PIJAT_STATUS_META[key];
+            const spesifik = items.filter(function (i) { return i.spesifik; });
+            const umum = items.filter(function (i) { return !i.spesifik; });
+            let h = '<div class="pj-grp pj-' + key + '"><div class="pj-grp-head"><i class="pj-sw"></i><b>' + m.judul + '</b><span class="pj-cnt">' + items.length + ' area</span></div>'
+                + '<p class="pj-sub">' + m.sub + '</p>';
+            if (spesifik.length) h += '<ul class="pj-list">' + spesifik.map(function (i) { return '<li><b>' + kgEsc(i.nama) + '</b>' + kgEsc(i.catatan) + '</li>'; }).join('') + '</ul>';
+            if (umum.length) h += '<div class="pj-chips">' + umum.map(function (i) { return '<span>' + kgEsc(i.nama) + '</span>'; }).join('') + '</div>';
+            if (!items.length) h += '<p class="pj-empty">Tidak ada area pada kategori ini.</p>';
+            return h + '</div>';
+        }
+
+        /** HTML lengkap: legenda + gambar depan/belakang + daftar status + catatan keselamatan. */
+        function pijatStatusHtml(selectedItems) {
+            const hasil = pijatHitungStatus(selectedItems);
+            const grup = { hijau: [], kuning: [], merah: [] };
+            Object.keys(hasil).forEach(function (z) { grup[hasil[z].status].push(hasil[z]); });
+            const legend = '<div class="pj-legend">'
+                + ['hijau', 'kuning', 'merah'].map(function (k) {
+                    return '<div class="pj-lg pj-' + k + '"><i></i>' + PIJAT_STATUS_META[k].judul + '<em>' + grup[k].length + ' area</em></div>';
+                }).join('') + '</div>';
+            const figs = [
+                pijatStatusFigur(SVG_ZONA_DEPAN, KG_ANCHOR_DEPAN, hasil, 'Tampak depan'),
+                pijatStatusFigur(SVG_ZONA_BELAKANG, KG_ANCHOR_BELAKANG, hasil, 'Tampak belakang')
+            ].filter(Boolean).join('');
+            return '<div class="pj-wrap">' + legend
+                + '<div class="kg-anatblock"><div class="kg-anat-head"><b>Peta titik aman &amp; tidak aman</b></div><div class="kg-figs">' + figs + '</div></div>'
+                + pijatGrupHtml('hijau', grup.hijau) + pijatGrupHtml('kuning', grup.kuning) + pijatGrupHtml('merah', grup.merah)
+                + '<p class="pj-note"><b>Catatan:</b> Panduan ini bersifat umum, bukan pengganti saran medis. Tunda pijat bila sedang demam, hamil, ada luka/bengkak/memar, varises berat, patah tulang, atau nyeri tajam. Segera hentikan bila terasa sakit, dan konsultasikan ke dokter bila keluhan berlanjut.</p>'
+                + '</div>';
         }
 
         function renderAnatomiSVG() {
@@ -10021,6 +10144,48 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
     <style>
         .zona-pijat { fill:#cfd8e4; stroke:#94a3b8; stroke-width:1; stroke-linejoin:round; transition: fill .35s ease, stroke .35s ease; }
         .zona-pijat.zona-aktif { fill:#f43f5e; stroke:#be123c; filter:drop-shadow(0 0 2.5px rgba(244,63,94,.55)); }
+        /* ===== STATUS KEAMANAN TITIK PIJAT (hijau / kuning / merah) ===== */
+        .zona-pijat.zs-hijau  { fill:#4ade80; stroke:#15803d; filter:drop-shadow(0 0 2.5px rgba(34,197,94,.55)); }
+        .zona-pijat.zs-kuning { fill:#fde047; stroke:#a16207; filter:drop-shadow(0 0 2.5px rgba(234,179,8,.55)); }
+        .zona-pijat.zs-merah  { fill:#f87171; stroke:#b91c1c; filter:drop-shadow(0 0 2.5px rgba(239,68,68,.45)); }
+        .kg-fig.pj-fig .pj-l-hijau{stroke:#15803d} .kg-fig.pj-fig .pj-l-kuning{stroke:#a16207} .kg-fig.pj-fig .pj-l-merah{stroke:#b91c1c}
+        .kg-fig.pj-fig .pj-d-hijau{fill:#4ade80;stroke:#15803d} .kg-fig.pj-fig .pj-d-kuning{fill:#fde047;stroke:#a16207} .kg-fig.pj-fig .pj-d-merah{fill:#f87171;stroke:#b91c1c}
+        .kg-fig.pj-fig .pj-t-hijau{fill:#166534} .kg-fig.pj-fig .pj-t-kuning{fill:#854d0e} .kg-fig.pj-fig .pj-t-merah{fill:#991b1b}
+        .kg-fig.pj-fig .kg-lbl-t{font-size:11px}
+        html.dark .kg-fig.pj-fig .pj-t-hijau{fill:#86efac} html.dark .kg-fig.pj-fig .pj-t-kuning{fill:#fde047} html.dark .kg-fig.pj-fig .pj-t-merah{fill:#fca5a5}
+        html.dark .kg-fig.pj-fig .pj-l-hijau{stroke:#4ade80} html.dark .kg-fig.pj-fig .pj-l-kuning{stroke:#facc15} html.dark .kg-fig.pj-fig .pj-l-merah{stroke:#f87171}
+        .pj-wrap{display:grid;gap:12px}
+        .pj-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+        .pj-lg{border-radius:14px;padding:10px 8px;text-align:center;border:1px solid;font-size:11px;font-weight:800;line-height:1.3}
+        .pj-lg i{display:block;width:14px;height:14px;border-radius:50%;margin:0 auto 6px}
+        .pj-lg em{display:block;font-style:normal;font-weight:600;font-size:10px;opacity:.85;margin-top:2px}
+        .pj-lg.pj-hijau{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.pj-lg.pj-hijau i{background:#22c55e}
+        .pj-lg.pj-kuning{background:#fefce8;border-color:#fde68a;color:#854d0e}.pj-lg.pj-kuning i{background:#eab308}
+        .pj-lg.pj-merah{background:#fef2f2;border-color:#fecaca;color:#991b1b}.pj-lg.pj-merah i{background:#ef4444}
+        .pj-grp{border-radius:16px;padding:14px 16px;border:1px solid;border-left-width:5px}
+        .pj-grp.pj-hijau{background:#f0fdf4;border-color:#86efac}.pj-grp.pj-kuning{background:#fefce8;border-color:#fde047}.pj-grp.pj-merah{background:#fef2f2;border-color:#fca5a5}
+        .pj-grp-head{display:flex;align-items:center;gap:8px;font-size:13px}
+        .pj-grp-head b{font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+        .pj-sw{width:12px;height:12px;border-radius:50%;display:inline-block}
+        .pj-hijau .pj-sw{background:#22c55e}.pj-kuning .pj-sw{background:#eab308}.pj-merah .pj-sw{background:#ef4444}
+        .pj-hijau .pj-grp-head b{color:#166534}.pj-kuning .pj-grp-head b{color:#854d0e}.pj-merah .pj-grp-head b{color:#991b1b}
+        .pj-cnt{margin-left:auto;font-size:10.5px;font-weight:800;color:#64748b}
+        .pj-sub{font-size:11.5px;font-weight:600;color:#475569;margin:4px 0 8px}
+        .pj-list{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:6px}
+        .pj-list li{font-size:12px;color:#334155;line-height:1.45}
+        .pj-list li b{display:block;font-weight:800;color:#0f172a}
+        .pj-chips{display:flex;flex-wrap:wrap;gap:6px}
+        .pj-chips span{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid rgba(0,0,0,.08);color:#334155}
+        .pj-empty{font-size:11.5px;color:#94a3b8;font-style:italic;margin:0}
+        .pj-note{font-size:11px;line-height:1.5;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:10px 12px}
+        html.dark .pj-lg.pj-hijau,html.dark .pj-grp.pj-hijau{background:#052e16;border-color:#166534}
+        html.dark .pj-lg.pj-kuning,html.dark .pj-grp.pj-kuning{background:#422006;border-color:#854d0e}
+        html.dark .pj-lg.pj-merah,html.dark .pj-grp.pj-merah{background:#450a0a;border-color:#991b1b}
+        html.dark .pj-lg.pj-hijau{color:#86efac}html.dark .pj-lg.pj-kuning{color:#fde047}html.dark .pj-lg.pj-merah{color:#fca5a5}
+        html.dark .pj-hijau .pj-grp-head b{color:#86efac}html.dark .pj-kuning .pj-grp-head b{color:#fde047}html.dark .pj-merah .pj-grp-head b{color:#fca5a5}
+        html.dark .pj-sub,html.dark .pj-list li{color:#cbd5e1}html.dark .pj-list li b{color:#f1f5f9}
+        html.dark .pj-chips span{background:rgba(15,23,42,.6);color:#e2e8f0;border-color:rgba(255,255,255,.1)}
+        html.dark .pj-note{background:#422006;border-color:#854d0e;color:#fde68a}
         .keluhan-card { transition: all .2s ease; cursor:pointer; }
         .keluhan-card:has(input:checked) { background:#f0fdfa; border-color:#0f766e; }
         .keluhan-card:has(input:checked) .keluhan-dot { background:#0f766e; border-color:#0f766e; }
@@ -10096,7 +10261,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     <div class="text-center mb-6">
                         <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3"><i class="fas fa-circle-check"></i></div>
                         <h4 class="text-lg font-black text-slate-900">Data Berhasil Dikirim!</h4>
-                        <p class="text-xs text-slate-500 mt-1">Berikut rekomendasi titik pijat berdasarkan keluhan Anda</p>
+                        <p class="text-xs text-slate-500 mt-1">Berikut peta titik pijat yang aman, hati-hati, dan dihindari sesuai keluhan Anda</p>
                     </div>
 
                     <div id="pijat-ringkasan-keluhan" class="bg-teal-50 border border-teal-100 rounded-2xl p-5 mb-6"></div>

@@ -9722,6 +9722,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         // ================================================================
         function openPijatModal() {
             renderKeluhanGrid();
+            pijatInitSuara();
             const tglInput = document.getElementById('pijat-tanggal');
             if (tglInput && !tglInput.value) {
                 tglInput.value = new Date().toISOString().split('T')[0];
@@ -9734,6 +9735,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
 
         function closePijatModal() {
+            try { pijatSuaraBerhenti(true); } catch (e) { }
             const modal = document.getElementById('modal-pijat');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
@@ -9760,6 +9762,284 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     </span>
                 </label>
             `).join('');
+        }
+
+        // ================================================================
+        // INPUT SUARA (SPEECH-TO-TEXT) UNTUK BOOKING PIJAT
+        // Mengubah ucapan jadi teks (bukan menyimpan rekaman). Bahasa: Indonesia.
+        // ================================================================
+        let PIJAT_SUARA = null; // { rec, mode, btn, fin, itm, abort, error, btnHtml }
+        let PIJAT_BAR_TIMER = null;
+
+        const PIJAT_ANGKA_KATA = { nol: '0', kosong: '0', satu: '1', dua: '2', tiga: '3', empat: '4', lima: '5', enam: '6', tujuh: '7', delapan: '8', sembilan: '9' };
+
+        /** "nol delapan satu dua" -> "0812" (angka biasa dibiarkan). */
+        function pijatAngkaDariUcapan(t) {
+            return String(t || '').toLowerCase()
+                .replace(/\b(nol|kosong|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)\b/g, function (m) { return PIJAT_ANGKA_KATA[m]; })
+                .replace(/\bplus\b/g, '+');
+        }
+        function pijatTitleCase(s) {
+            return String(s || '').toLowerCase().replace(/(^|[\s\-'])([a-zà-ÿ])/g, function (m, a, b) { return a + b.toUpperCase(); });
+        }
+        function pijatBersihTeks(s) { return String(s || '').replace(/[.,;!?]+$/g, '').replace(/\s+/g, ' ').trim(); }
+        function pijatBersihNama(t) {
+            return pijatTitleCase(pijatBersihTeks(t).replace(/^(nama\s+lengkap|nama|panggil)(\s+saya)?(\s+adalah)?\s+/i, '').replace(/^(saya|aku)\s+/i, ''));
+        }
+        function pijatBersihDesa(t) {
+            return pijatTitleCase(pijatBersihTeks(t).replace(/^(saya\s+)?(tinggal\s+di|berasal\s+dari|alamat|lokasi|desa|kecamatan|dari|di)\s+/i, ''));
+        }
+        function pijatBersihNomor(t) {
+            let d = pijatAngkaDariUcapan(t).replace(/[^\d+]/g, '');
+            if (d.indexOf('+62') === 0) d = '0' + d.slice(3);
+            else if (d.indexOf('62') === 0 && d.length > 10) d = '0' + d.slice(2);
+            return d.replace(/\+/g, '');
+        }
+
+        /** Cocokkan ucapan keluhan -> nomor KELUHAN_DATA. Mengembalikan array nomor. */
+        function pijatCocokKeluhan(teks) {
+            let t = ' ' + String(teks || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ') + ' ';
+            const hit = new Set();
+            if (/\b(seluruh|sekujur|semua)\s+(tubuh|badan)|\b(tubuh|badan)\s+(terasa\s+)?(pegal\s+)?semua|pegal\s+semua|pegal\s+pegal\s+semua/.test(t)) hit.add(22);
+            if (/pergelangan(?!\s+kaki)/.test(t)) hit.add(8);
+            if (/\bjari\b/.test(t)) hit.add(7);
+            if (/telapak\s+kaki|tumit/.test(t)) hit.add(12);
+            // buang frasa spesifik agar tidak salah masuk "tangan pegal" / "kaki pegal"
+            const sisa = t.replace(/jari(\s+jari)?(\s+tangan)?|pergelangan(\s+tangan)?|telapak\s+kaki|pergelangan\s+kaki|tumit/g, ' ');
+            if (/\b(tangan|lengan)\b/.test(sisa)) hit.add(6);
+            if (/\bkaki\b/.test(sisa)) hit.add(9);
+            if (/punggung/.test(t)) hit.add(1);
+            if (/pinggang/.test(t)) hit.add(2);
+            if (/\b(bahu|pundak)\b/.test(t)) hit.add(3);
+            if (/\b(leher|tengkuk)\b/.test(t)) hit.add(4);
+            if (/\b(kepala|pusing)\b/.test(t)) hit.add(5);
+            if (/\bpaha\b/.test(t)) hit.add(10);
+            if (/\bbetis\b/.test(t)) hit.add(11);
+            if (/\blutut\b/.test(t)) hit.add(13);
+            if (/\bpinggul\b/.test(t)) hit.add(14);
+            if (/\b(bokong|pantat)\b/.test(t)) hit.add(15);
+            if (/\b(capek|capai|lelah|letih)\b/.test(t)) hit.add(16);
+            if (/\b(badan|tubuh)\b.*\bkaku\b|\bkaku\b.*\b(badan|tubuh)\b/.test(t)) hit.add(17);
+            if (/aktivitas|olahraga/.test(t)) hit.add(18);
+            if (/duduk/.test(t)) hit.add(19);
+            if (/berdiri/.test(t)) hit.add(20);
+            if (/berjalan|jalan\s+jauh|jalan\s+kaki/.test(t)) hit.add(21);
+            return Array.from(hit).sort(function (a, b) { return a - b; });
+        }
+
+        /** Centang keluhan di form. Mengembalikan daftar nama keluhan yang dicentang. */
+        function pijatCentangKeluhan(nomorList) {
+            const names = [];
+            nomorList.forEach(function (no) {
+                const cb = document.querySelector('.keluhan-check[value="' + no + '"]');
+                const k = KELUHAN_DATA.find(function (d) { return d.no === no; });
+                if (cb && k) { cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true })); names.push(k.masalah); }
+            });
+            return names;
+        }
+
+        /** Parse ucapan panjang -> isi seluruh form sekaligus. */
+        function pijatIsiDariUcapan(teks) {
+            const t = ' ' + String(teks || '').toLowerCase().replace(/[.!?]+/g, ',').replace(/\s+/g, ' ') + ' ';
+            const terisi = [];
+            const set = function (id, v) { const el = document.getElementById(id); if (el && v) { el.value = v; return true; } return false; };
+            const stop = '(?=,|\\b(?:nomor|no|hp|wa|whatsapp|telepon|telp|jenis kelamin|laki|pria|perempuan|wanita|desa|lokasi|alamat|kecamatan|tinggal|dari|keluhan|jumlah|saya)\\b|\\s*$)';
+
+            let m = t.match(new RegExp('\\bnama\\s+(?:lengkap\\s+)?(?:saya\\s+|adalah\\s+)*(.+?)' + stop));
+            if (m && set('pijat-nama', pijatBersihNama(m[1]))) terisi.push('Nama');
+
+            const num = pijatAngkaDariUcapan(t);
+            m = num.match(/(?:\+?\s?62|0)(?:[\s\-]*\d){8,13}/);
+            if (m && set('pijat-kontak', pijatBersihNomor(m[0]))) terisi.push('No. HP');
+
+            const g = document.getElementById('pijat-gender');
+            if (g) {
+                if (/laki[\s\-]?laki|\bpria\b|\bcowok\b/.test(t)) { g.value = 'Laki-laki'; terisi.push('Jenis kelamin'); }
+                else if (/perempuan|wanita|\bcewek\b/.test(t)) { g.value = 'Perempuan'; terisi.push('Jenis kelamin'); }
+            }
+
+            m = t.match(new RegExp('\\b(?:desa|lokasi|alamat|kecamatan|tinggal di|berasal dari)\\s+(.+?)' + stop));
+            if (m && set('pijat-desa', pijatBersihDesa(m[1]))) terisi.push('Lokasi/Desa');
+
+            m = t.match(/(\d+|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh)\s+orang/);
+            if (m) {
+                const n = /^\d+$/.test(m[1]) ? parseInt(m[1], 10) : (m[1] === 'sepuluh' ? 10 : parseInt(PIJAT_ANGKA_KATA[m[1]], 10));
+                if (n >= 1 && n <= 99 && set('pijat-jumlah', String(n))) terisi.push('Jumlah orang');
+            }
+
+            const idx = t.search(/keluhan|mengeluh|merasa|sakit/);
+            const klh = pijatCentangKeluhan(pijatCocokKeluhan(idx >= 0 ? t.slice(idx) : t));
+            if (klh.length) terisi.push('Keluhan (' + klh.length + ')');
+            return { terisi: terisi, keluhan: klh };
+        }
+
+        // ---------- UI ----------
+        function pijatBarTampil(judul, teks, tipe) {
+            const bar = document.getElementById('pijat-suara-bar');
+            if (!bar) return;
+            clearTimeout(PIJAT_BAR_TIMER);
+            bar.className = 'pj-bar' + (tipe ? ' pj-bar-' + tipe : '');
+            bar.style.display = 'flex';
+            document.getElementById('pijat-suara-judul').textContent = judul;
+            document.getElementById('pijat-suara-teks').textContent = teks || '';
+            document.getElementById('pijat-suara-stop').style.display = tipe ? 'none' : '';
+            if (tipe) PIJAT_BAR_TIMER = setTimeout(pijatBarSembunyi, 7000);
+        }
+        function pijatBarSembunyi() {
+            const bar = document.getElementById('pijat-suara-bar');
+            if (bar) bar.style.display = 'none';
+        }
+
+        function pijatInitSuara() {
+            const form = document.getElementById('pijat-view-form');
+            if (!form) return;
+            if (!form.dataset.suara) {
+                form.dataset.suara = '1';
+                const f = document.getElementById('form-pijat');
+                f.insertAdjacentHTML('afterbegin',
+                    '<div id="pijat-suara-bar" class="pj-bar" style="display:none"><i class="pj-bar-dot"></i>'
+                    + '<div class="pj-bar-txt"><b id="pijat-suara-judul"></b><span id="pijat-suara-teks"></span></div>'
+                    + '<button type="button" id="pijat-suara-stop" onclick="pijatSuaraBerhenti()">Selesai</button></div>'
+                    + '<div class="pj-suara-card"><div class="pj-suara-ico"><i class="fas fa-microphone"></i></div>'
+                    + '<div class="pj-st"><b>Isi dengan suara</b><p>Tekan tombol, lalu ucapkan sekaligus. Contoh: &ldquo;Nama saya Budi Santoso, nomor HP 0812 3456 7890, laki-laki, desa Pare, keluhan punggung pegal dan leher kaku&rdquo;. Anda juga bisa memakai ikon mikrofon di tiap kolom.</p></div>'
+                    + '<button type="button" id="pj-mic-semua" class="pj-mic-big" onclick="pijatSuaraMulai(\'semua\', this)"><i class="fas fa-microphone"></i> <span>Mulai Bicara</span></button></div>');
+                [['pijat-nama', 'nama'], ['pijat-kontak', 'kontak'], ['pijat-desa', 'desa']].forEach(function (p) {
+                    const inp = document.getElementById(p[0]);
+                    if (!inp) return;
+                    const wrap = document.createElement('div');
+                    wrap.className = 'pj-field';
+                    inp.parentNode.insertBefore(wrap, inp);
+                    wrap.appendChild(inp);
+                    inp.classList.add('pj-has-mic');
+                    const b = document.createElement('button');
+                    b.type = 'button'; b.className = 'pj-mic'; b.title = 'Isi dengan suara';
+                    b.setAttribute('aria-label', 'Isi dengan suara');
+                    b.innerHTML = '<i class="fas fa-microphone"></i>';
+                    b.onclick = function () { pijatSuaraMulai(p[1], b); };
+                    wrap.appendChild(b);
+                });
+                const grid = document.getElementById('keluhan-grid');
+                if (grid) grid.insertAdjacentHTML('beforebegin',
+                    '<div class="pj-klh-voice"><button type="button" class="pj-mic-big" onclick="pijatSuaraMulai(\'keluhan\', this)"><i class="fas fa-microphone"></i> <span>Sebutkan Keluhan</span></button>'
+                    + '<small>Contoh: &ldquo;punggung pegal, leher kaku, dan kaki pegal setelah berdiri lama&rdquo;. Pilihan akan tercentang otomatis.</small></div>'
+                    + '<div id="pijat-suara-keluhan-hasil" class="pj-klh-hasil"></div>');
+            }
+            const h = document.getElementById('pijat-suara-keluhan-hasil');
+            if (h) { h.style.display = 'none'; h.innerHTML = ''; }
+            pijatBarSembunyi();
+        }
+
+        function pijatSuaraSetTombol(s, aktif) {
+            if (!s || !s.btn) return;
+            s.btn.classList.toggle('pj-mic-on', aktif);
+            const span = s.btn.querySelector('span');
+            const ikon = s.btn.querySelector('i');
+            if (span) span.textContent = aktif ? 'Berhenti' : s.teksAsli;
+            if (ikon) ikon.className = aktif ? 'fas fa-stop' : 'fas fa-microphone';
+            if (!span && ikon) ikon.className = aktif ? 'fas fa-stop' : 'fas fa-microphone';
+        }
+
+        function pijatSuaraBerhenti(abort) {
+            if (!PIJAT_SUARA) { if (abort) pijatBarSembunyi(); return; }
+            PIJAT_SUARA.abort = !!abort;
+            try { abort ? PIJAT_SUARA.rec.abort() : PIJAT_SUARA.rec.stop(); } catch (e) { }
+            if (abort) { pijatSuaraSetTombol(PIJAT_SUARA, false); PIJAT_SUARA = null; pijatBarSembunyi(); }
+        }
+
+        function pijatSuaraMulai(mode, btn) {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) {
+                Swal.fire('Browser belum mendukung', 'Fitur suara berjalan di Google Chrome, Microsoft Edge, atau Safari versi terbaru. Silakan pakai salah satunya, atau isi secara manual.', 'info');
+                return;
+            }
+            if (PIJAT_SUARA) { pijatSuaraBerhenti(); return; } // tekan lagi = berhenti
+
+            const rec = new SR();
+            rec.lang = 'id-ID';
+            rec.interimResults = true;
+            rec.maxAlternatives = 1;
+            rec.continuous = (mode === 'semua' || mode === 'keluhan');
+            const span = btn && btn.querySelector('span');
+            const s = { rec: rec, mode: mode, btn: btn, fin: '', itm: '', abort: false, error: '', teksAsli: span ? span.textContent : '' };
+            PIJAT_SUARA = s;
+
+            const petunjuk = {
+                nama: 'Sebutkan nama lengkap Anda', kontak: 'Sebutkan nomor HP, angka demi angka',
+                desa: 'Sebutkan lokasi / desa', keluhan: 'Sebutkan keluhan, mis. "punggung pegal dan leher kaku"',
+                semua: 'Sebutkan nama, nomor HP, jenis kelamin, desa, dan keluhan'
+            };
+
+            rec.onstart = function () {
+                pijatSuaraSetTombol(s, true);
+                pijatBarTampil('Mendengarkan...', petunjuk[mode]);
+            };
+            rec.onresult = function (e) {
+                let fin = '', itm = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    const r = e.results[i];
+                    if (r.isFinal) fin += r[0].transcript + ' '; else itm += r[0].transcript;
+                }
+                s.fin = fin; s.itm = itm;
+                const live = (fin + itm).trim();
+                if (live) pijatBarTampil('Mendengarkan...', live);
+            };
+            rec.onerror = function (e) {
+                s.error = e.error || 'error';
+                if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+                    Swal.fire('Izin mikrofon ditolak', 'Izinkan akses mikrofon pada browser (ikon gembok di address bar), lalu coba lagi.', 'warning');
+                    pijatBarSembunyi();
+                } else if (e.error === 'no-speech') {
+                    pijatBarTampil('Suara tidak terdengar', 'Dekatkan mikrofon dan coba lagi.', 'err');
+                } else if (e.error === 'audio-capture') {
+                    pijatBarTampil('Mikrofon tidak ditemukan', 'Pastikan mikrofon terpasang dan aktif.', 'err');
+                } else if (e.error === 'network') {
+                    pijatBarTampil('Koneksi bermasalah', 'Pengenalan suara butuh internet. Coba lagi.', 'err');
+                } else if (e.error !== 'aborted') {
+                    pijatBarTampil('Gagal merekam', 'Kode: ' + e.error, 'err');
+                }
+            };
+            rec.onend = function () {
+                pijatSuaraSetTombol(s, false);
+                if (PIJAT_SUARA === s) PIJAT_SUARA = null;
+                if (s.abort) return;
+                const teks = (s.fin + ' ' + s.itm).replace(/\s+/g, ' ').trim();
+                if (!teks) { if (!s.error) pijatBarTampil('Tidak ada suara terdengar', 'Tekan mikrofon dan coba lagi.', 'err'); return; }
+                pijatTerapkanSuara(mode, teks);
+            };
+            try { rec.start(); }
+            catch (err) { PIJAT_SUARA = null; Swal.fire('Gagal memulai', 'Mikrofon belum bisa dipakai. Muat ulang halaman lalu coba lagi.', 'error'); }
+        }
+
+        function pijatTerapkanSuara(mode, teks) {
+            const el = function (id) { return document.getElementById(id); };
+            if (mode === 'nama') {
+                const v = pijatBersihNama(teks); el('pijat-nama').value = v;
+                pijatBarTampil('Nama terisi', v, 'ok');
+            } else if (mode === 'kontak') {
+                const v = pijatBersihNomor(teks); el('pijat-kontak').value = v;
+                if (v.length < 9) pijatBarTampil('Nomor kurang jelas', 'Terbaca: "' + v + '". Ulangi atau perbaiki manual.', 'err');
+                else pijatBarTampil('No. HP terisi', v, 'ok');
+            } else if (mode === 'desa') {
+                const v = pijatBersihDesa(teks); el('pijat-desa').value = v;
+                pijatBarTampil('Lokasi terisi', v, 'ok');
+            } else if (mode === 'keluhan') {
+                const no = pijatCocokKeluhan(teks);
+                const box = el('pijat-suara-keluhan-hasil');
+                if (!no.length) {
+                    pijatBarTampil('Keluhan belum terdeteksi', 'Terdengar: "' + teks + '". Coba sebut bagian tubuh, mis. "punggung pegal".', 'err');
+                    if (box) { box.style.display = 'block'; box.innerHTML = 'Terdengar: <b>' + kgEsc(teks) + '</b><br>Belum ada keluhan yang cocok. Coba sebut bagian tubuh + "pegal/kaku", atau pilih manual di bawah.'; }
+                } else {
+                    const names = pijatCentangKeluhan(no);
+                    pijatBarTampil('Keluhan tercentang', names.join(', '), 'ok');
+                    if (box) { box.style.display = 'block'; box.innerHTML = 'Terdengar: <b>' + kgEsc(teks) + '</b><br>Tercentang: ' + names.map(kgEsc).join(', ') + '. Periksa kembali, bisa diubah manual.'; }
+                }
+            } else {
+                const r = pijatIsiDariUcapan(teks);
+                const box = el('pijat-suara-keluhan-hasil');
+                if (r.keluhan.length && box) { box.style.display = 'block'; box.innerHTML = 'Tercentang: ' + r.keluhan.map(kgEsc).join(', ') + '. Periksa kembali, bisa diubah manual.'; }
+                if (r.terisi.length) pijatBarTampil('Terisi: ' + r.terisi.join(', '), 'Mohon periksa kembali isian Anda sebelum mengirim.', 'ok');
+                else pijatBarTampil('Belum ada data terdeteksi', 'Terdengar: "' + teks + '". Coba ucapkan lebih jelas, atau pakai mikrofon per kolom.', 'err');
+            }
         }
 
         function ambilLokasiPijat() {
@@ -9819,6 +10099,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
 
         function submitPijatForm(event) {
             if (event) event.preventDefault();
+            try { pijatSuaraBerhenti(true); } catch (e) { }
 
             const nama = document.getElementById('pijat-nama').value.trim();
             const kontak = document.getElementById('pijat-kontak').value.trim();
@@ -10186,6 +10467,39 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         html.dark .pj-sub,html.dark .pj-list li{color:#cbd5e1}html.dark .pj-list li b{color:#f1f5f9}
         html.dark .pj-chips span{background:rgba(15,23,42,.6);color:#e2e8f0;border-color:rgba(255,255,255,.1)}
         html.dark .pj-note{background:#422006;border-color:#854d0e;color:#fde68a}
+        /* ===== INPUT SUARA (BOOKING PIJAT) ===== */
+        .pj-field{position:relative}
+        .pj-field input.pj-has-mic{padding-right:50px}
+        .pj-field .pj-mic{position:absolute;right:7px;top:50%;transform:translateY(-50%)}
+        .pj-mic{width:34px;height:34px;border-radius:50%;border:1px solid #99f6e4;background:#f0fdfa;color:#0f766e;display:inline-flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .2s;flex-shrink:0}
+        .pj-mic:hover{background:#ccfbf1}
+        .pj-mic.pj-mic-on{background:#ef4444;border-color:#ef4444;color:#fff;animation:pjPulse 1.2s infinite}
+        @keyframes pjPulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.55)}70%{box-shadow:0 0 0 12px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+        .pj-suara-card{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg,#f0fdfa,#ecfeff);border:1px solid #99f6e4;border-radius:18px;padding:14px 16px;margin-bottom:22px}
+        .pj-suara-ico{width:42px;height:42px;border-radius:14px;background:#0f766e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+        .pj-suara-card .pj-st{flex:1;min-width:200px}
+        .pj-suara-card b{font-size:13px;font-weight:900;color:#134e4a;display:block}
+        .pj-suara-card p{font-size:11px;color:#475569;line-height:1.5;margin:3px 0 0}
+        .pj-mic-big{display:inline-flex;align-items:center;gap:8px;background:#0f766e;color:#fff;border:0;border-radius:12px;padding:11px 18px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+        .pj-mic-big:hover{background:#115e59}
+        .pj-mic-big.pj-mic-on{background:#ef4444;animation:pjPulse 1.2s infinite}
+        .pj-bar{position:sticky;top:-8px;z-index:20;display:flex;align-items:center;gap:12px;background:#0f172a;color:#fff;border-radius:14px;padding:10px 14px;margin-bottom:14px;box-shadow:0 8px 24px rgba(15,23,42,.25)}
+        .pj-bar.pj-bar-ok{background:#166534}
+        .pj-bar.pj-bar-err{background:#991b1b}
+        .pj-bar-dot{width:10px;height:10px;border-radius:50%;background:#f87171;flex-shrink:0;animation:pjPulse 1.2s infinite}
+        .pj-bar.pj-bar-ok .pj-bar-dot,.pj-bar.pj-bar-err .pj-bar-dot{animation:none;background:#fff}
+        .pj-bar-txt{flex:1;min-width:0;font-size:12px;line-height:1.4}
+        .pj-bar-txt b{display:block;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+        .pj-bar-txt span{display:block;opacity:.85;word-break:break-word}
+        .pj-bar button{background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:10px;padding:7px 12px;font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+        .pj-klh-voice{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+        .pj-klh-voice .pj-mic-big{padding:9px 14px}
+        .pj-klh-voice small{font-size:10.5px;color:#64748b;flex:1;min-width:180px}
+        .pj-klh-hasil{display:none;font-size:11.5px;color:#134e4a;background:#f0fdfa;border:1px solid #99f6e4;border-radius:12px;padding:9px 12px;margin:0 0 12px;line-height:1.5}
+        html.dark .pj-suara-card{background:#042f2e;border-color:#115e59}
+        html.dark .pj-suara-card b{color:#99f6e4}html.dark .pj-suara-card p,html.dark .pj-klh-voice small{color:#cbd5e1}
+        html.dark .pj-mic{background:#042f2e;border-color:#115e59;color:#5eead4}
+        html.dark .pj-klh-hasil{background:#042f2e;border-color:#115e59;color:#99f6e4}
         .keluhan-card { transition: all .2s ease; cursor:pointer; }
         .keluhan-card:has(input:checked) { background:#f0fdfa; border-color:#0f766e; }
         .keluhan-card:has(input:checked) .keluhan-dot { background:#0f766e; border-color:#0f766e; }

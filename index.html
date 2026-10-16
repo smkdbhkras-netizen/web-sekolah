@@ -4003,6 +4003,13 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     + '</div></div>';
             }
 
+            // PROGRES TERAPI: skala nyeri sebelum -> sesudah pijat
+            const nySeb = parseInt(item.skala_nyeri_sebelum, 10);
+            const nySes = parseInt(item.skala_nyeri_sesudah, 10);
+            const nyeriHtml = (nySeb >= 1 && nySeb <= 10)
+                ? '<div class="nyr-card" id="nyr-slot-' + item._rowId + '">' + nyeriProgresHtml(nySeb, isNaN(nySes) ? null : nySes, kgTxt(item.catatan_progres), item._rowId) + '</div>'
+                : '';
+
             const descLong = deskripsi.length > DESC_MAX;
             const descShow = descLong ? deskripsi.slice(0, DESC_MAX).replace(/\s+\S*$/, '') + '…' : deskripsi;
             const descHtml = deskripsi ? '<div class="kg-desc"><i class="fas fa-quote-left"></i>' + kgEsc(descShow).replace(/\n/g, '<br>') + '</div>' : '';
@@ -4036,6 +4043,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 + (layanan ? '<span class="kg-svc"><i class="fas fa-hand-holding-medical"></i>' + kgEsc(layanan) + '</span>' : '')
                 + descHtml
                 + keluhanHtml
+                + nyeriHtml
                 + (foot ? '<div class="kg-foot">' + foot + '</div>' : '')
                 + '</div></article>';
         }
@@ -6279,6 +6287,10 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 const lokasi = [row.lokasi_desa, row.jenis_kelamin].filter(Boolean).map(kgEsc).join(' &middot; ');
                 const layanan = kgEsc(row.kategori_layanan || '');
                 const kl = kgEsc(row.keluhan || '');
+                const nyS = parseInt(row.skala_nyeri_sebelum, 10), nyA = parseInt(row.skala_nyeri_sesudah, 10);
+                const nyAdmin = (nyS >= 1 && nyS <= 10)
+                    ? '<p class="kg-akl"><b>Skala nyeri:</b> ' + nyS + (nyA >= 1 && nyA <= 10 ? ' &rarr; ' + nyA + ' (' + (nyS - nyA >= 0 ? 'turun ' : 'naik ') + Math.abs(nyS - nyA) + ' poin)' : ' &rarr; belum dicatat') + '</p>'
+                    : '';
                 return '<div class="kg-acard"><div class="kg-acard-top">'
                     + (foto ? '<img class="kg-athumb" loading="lazy" src="' + kgEsc(foto) + '" alt="">' : '<div class="kg-athumb"><i class="fas fa-image"></i></div>')
                     + '<div class="kg-ainfo"><b class="kg-aname">' + nama + '</b>'
@@ -6287,6 +6299,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     + (layanan ? '<span class="kg-asvc">' + layanan + '</span>' : '')
                     + '</div></div>'
                     + (kl ? '<p class="kg-akl"><b>Keluhan:</b> ' + kl + '</p>' : '')
+                    + nyAdmin
                     + '<div class="kg-aact">'
                     + '<button type="button" class="kg-aedit" onclick="openEditor(\'' + sheetName + '\', ' + row._rowId + ')"><i class="fas fa-pen-to-square"></i> Ubah</button>'
                     + '<button type="button" class="kg-adel" onclick="confirmDelete(\'' + sheetName + '\', ' + row._rowId + ')"><i class="fas fa-trash"></i> Hapus</button>'
@@ -9739,6 +9752,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
         function pijatSiapkanForm() {
             renderKeluhanGrid();
+            nyeriInitForm();
             pijatInitSuara();
             const tglInput = document.getElementById('pijat-tanggal');
             if (tglInput && !tglInput.value) tglInput.value = new Date().toISOString().split('T')[0];
@@ -10157,6 +10171,149 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             if (status) status.innerText = 'Lokasi berhasil diambil.';
         });
 
+        // ================================================================
+        // PEMANTAUAN PROGRES TERAPI: SKALA NYERI 1-10
+        // sebelum = diisi di form booking, sesudah = dicatat setelah pijat selesai
+        // ================================================================
+        function nyeriLevel(n) { return n <= 3 ? 'lv-lo' : (n <= 6 ? 'lv-mid' : (n <= 8 ? 'lv-hi' : 'lv-xhi')); }
+        function nyeriLabel(n) { return n <= 3 ? 'Ringan' : (n <= 6 ? 'Sedang' : (n <= 8 ? 'Berat' : 'Sangat berat')); }
+
+        function nyeriBangunGrid(gridId, hiddenId, badgeId) {
+            const g = document.getElementById(gridId);
+            if (!g) return;
+            let h = '';
+            for (let i = 1; i <= 10; i++) h += '<button type="button" class="nyr-btn" data-v="' + i + '" aria-label="Skala nyeri ' + i + '">' + i + '</button>';
+            g.innerHTML = h;
+            g.classList.remove('pjp-err');
+            g.onclick = function (e) {
+                const b = e.target.closest ? e.target.closest('.nyr-btn') : null;
+                if (b) nyeriPilih(gridId, hiddenId, badgeId, parseInt(b.getAttribute('data-v'), 10));
+            };
+        }
+
+        function nyeriPilih(gridId, hiddenId, badgeId, v) {
+            const g = document.getElementById(gridId), hid = document.getElementById(hiddenId);
+            if (!g || !hid) return;
+            hid.value = v;
+            g.classList.remove('pjp-err');
+            g.querySelectorAll('.nyr-btn').forEach(function (b) {
+                const n = parseInt(b.getAttribute('data-v'), 10);
+                b.className = 'nyr-btn' + (n === v ? ' on ' + nyeriLevel(n) : '');
+            });
+            const bd = badgeId ? document.getElementById(badgeId) : null;
+            if (bd) { bd.textContent = v + ' / 10 \u00B7 ' + nyeriLabel(v); bd.classList.add('on'); }
+            if (hiddenId === 'pijat-nyeri-sebelum') {
+                const w = document.getElementById('pijat-nyeri-warn');
+                if (w) w.style.display = v >= 9 ? 'block' : 'none';
+            }
+        }
+
+        function nyeriInitForm() {
+            const hid = document.getElementById('pijat-nyeri-sebelum');
+            if (hid) hid.value = '';
+            nyeriBangunGrid('pijat-nyeri-grid', 'pijat-nyeri-sebelum', 'pijat-nyeri-badge');
+            const bd = document.getElementById('pijat-nyeri-badge');
+            if (bd) { bd.textContent = 'Belum dipilih'; bd.classList.remove('on'); }
+            const w = document.getElementById('pijat-nyeri-warn');
+            if (w) w.style.display = 'none';
+        }
+
+        // Ringkasan progres (dipakai di kartu kegiatan, panel hasil, dan dialog)
+        function nyeriProgresHtml(seb, ses, catatan, rowId) {
+            const hasSes = (ses !== null && ses !== undefined && !isNaN(ses));
+            let h = '<small><i class="fas fa-chart-line"></i> Progres Terapi (Skala Nyeri)</small><div class="nyr-flow">'
+                + '<span class="nyr-chip ' + nyeriLevel(seb) + '" title="Sebelum pijat">' + seb + '</span>';
+            if (hasSes) {
+                const d = seb - ses;
+                const pct = seb > 0 ? Math.round(Math.abs(d) / seb * 100) : 0;
+                h += '<i class="fas fa-arrow-right" style="color:#94a3b8"></i><span class="nyr-chip ' + nyeriLevel(ses) + '" title="Sesudah pijat">' + ses + '</span>';
+                if (d > 0) h += '<span class="nyr-res up">Nyeri turun ' + d + ' poin (' + pct + '%)</span>';
+                else if (d === 0) h += '<span class="nyr-res same">Belum ada perubahan</span>';
+                else h += '<span class="nyr-res down">Nyeri naik ' + Math.abs(d) + ' poin</span>';
+                h += '</div>';
+                if (d < 0) h += '<p class="nyr-note">Nyeri lebih tinggi dari sebelum pijat. Disarankan konsultasi dengan terapis atau tenaga medis.</p>';
+                if (catatan) h += '<p class="nyr-note"><i class="fas fa-note-sticky"></i> ' + kgEsc(catatan) + '</p>';
+            } else {
+                h += '<span style="font-size:12px;font-weight:700;color:#64748b">Sebelum pijat &middot; sesudah pijat belum dicatat</span></div>';
+                h += '<button type="button" class="nyr-act" onclick="nyeriBukaDialog(' + (rowId ? Number(rowId) : "''") + ',' + seb + ')"><i class="fas fa-pen-to-square"></i> Catat nyeri setelah pijat</button>';
+            }
+            return h;
+        }
+
+        function nyeriRenderPanelHasil() {
+            const box = document.getElementById('pijat-nyeri-sesudah-box');
+            const L = window.__PIJAT_LAST;
+            if (!box || !L) return;
+            box.innerHTML = '<div class="nyr-card">' + nyeriProgresHtml(L.sebelum, null, '', '') + '</div>';
+            // tombol di panel hasil memakai nomor HP yang baru saja diisi
+            const btn = box.querySelector('.nyr-act');
+            if (btn) btn.setAttribute('onclick', "nyeriBukaDialog('', " + L.sebelum + ", true)");
+        }
+
+        function nyeriTutupDialog() {
+            const o = document.getElementById('nyr-dlg-ov');
+            if (o && o.parentNode) o.parentNode.removeChild(o);
+        }
+
+        // rowId = '' bila dipanggil dari panel hasil booking; pakaiHasil = true -> isi No. HP otomatis
+        function nyeriBukaDialog(rowId, sebelum, pakaiHasil) {
+            nyeriTutupDialog();
+            const L = window.__PIJAT_LAST || {};
+            const kontakAwal = pakaiHasil ? (L.kontak || '') : '';
+            const o = document.createElement('div');
+            o.id = 'nyr-dlg-ov';
+            o.className = 'nyr-ov';
+            o.onclick = function (e) { if (e.target === o) nyeriTutupDialog(); };
+            o.innerHTML = '<div class="nyr-dlg" id="nyr-dlg-body">'
+                + '<h4>Catat Skala Nyeri Setelah Pijat</h4>'
+                + '<p>Sebelum pijat: <b>' + sebelum + ' / 10</b>. Pilih skala nyeri yang Anda rasakan sekarang (1 = sangat ringan, 10 = sangat berat).</p>'
+                + '<div id="nyr-dlg-grid" class="nyr-row"></div><input type="hidden" id="nyr-dlg-val" value="">'
+                + '<div class="nyr-legend"><span>1 &middot; Ringan</span><span id="nyr-dlg-badge">Belum dipilih</span><span>10 &middot; Sangat berat</span></div>'
+                + '<label for="nyr-dlg-kontak">No. HP saat booking (verifikasi)</label>'
+                + '<input type="tel" inputmode="tel" id="nyr-dlg-kontak" placeholder="08xxxxxxxxxx" value="' + kgEsc(kontakAwal) + '">'
+                + '<label for="nyr-dlg-catatan">Catatan (opsional)</label>'
+                + '<textarea id="nyr-dlg-catatan" rows="2" maxlength="300" placeholder="Contoh: pegal di punggung jauh berkurang"></textarea>'
+                + '<div id="nyr-dlg-err" class="nyr-err"></div>'
+                + '<div class="nyr-dlg-acts"><button type="button" class="nyr-b-ghost" onclick="nyeriTutupDialog()">Batal</button>'
+                + '<button type="button" class="nyr-b-main" id="nyr-dlg-save" onclick="nyeriSimpanSesudah(' + (rowId ? Number(rowId) : "''") + ',' + sebelum + ')">Simpan</button></div></div>';
+            document.body.appendChild(o);
+            nyeriBangunGrid('nyr-dlg-grid', 'nyr-dlg-val', 'nyr-dlg-badge');
+        }
+
+        function nyeriSimpanSesudah(rowId, sebelum) {
+            const v = parseInt(document.getElementById('nyr-dlg-val').value, 10);
+            const kontak = document.getElementById('nyr-dlg-kontak').value.trim();
+            const catatan = document.getElementById('nyr-dlg-catatan').value.trim();
+            const err = document.getElementById('nyr-dlg-err');
+            const tampilErr = function (t) { err.textContent = t; err.style.display = 'block'; };
+            err.style.display = 'none';
+            if (!(v >= 1 && v <= 10)) { document.getElementById('nyr-dlg-grid').classList.add('pjp-err'); tampilErr('Pilih skala nyeri 1-10 terlebih dahulu.'); return; }
+            if (kontak.replace(/\D/g, '').length < 4) { tampilErr('Isi No. HP saat booking (minimal 4 digit terakhir).'); return; }
+
+            const btn = document.getElementById('nyr-dlg-save');
+            btn.disabled = true; btn.textContent = 'Menyimpan...';
+            google.script.run
+                .withSuccessHandler(function (res) {
+                    if (!res || !res.ok) { btn.disabled = false; btn.textContent = 'Simpan'; tampilErr((res && res.pesan) || 'Gagal menyimpan.'); return; }
+                    const seb = (res.sebelum !== null && res.sebelum !== undefined) ? res.sebelum : sebelum;
+                    // perbarui data di memori + tampilan agar langsung terlihat
+                    try {
+                        const arr = (DATA && DATA.kegiatan) || [];
+                        const it = arr.find(function (x) { return Number(x._rowId) === Number(res.rowId); });
+                        if (it) { it.skala_nyeri_sesudah = res.sesudah; it.catatan_progres = catatan; }
+                    } catch (e) { }
+                    const slot = document.getElementById('nyr-slot-' + res.rowId);
+                    if (slot) slot.innerHTML = nyeriProgresHtml(seb, res.sesudah, catatan, res.rowId);
+                    const box = document.getElementById('pijat-nyeri-sesudah-box');
+                    if (box && !rowId) box.innerHTML = '<div class="nyr-card">' + nyeriProgresHtml(seb, res.sesudah, catatan, res.rowId) + '</div>';
+                    const body = document.getElementById('nyr-dlg-body');
+                    if (body) body.innerHTML = '<h4>Progres Tersimpan</h4><div class="nyr-card">' + nyeriProgresHtml(seb, res.sesudah, catatan, res.rowId)
+                        + '</div><div class="nyr-dlg-acts"><button type="button" class="nyr-b-main" onclick="nyeriTutupDialog()">Selesai</button></div>';
+                })
+                .withFailureHandler(function (e) { btn.disabled = false; btn.textContent = 'Simpan'; tampilErr((e && e.message) || 'Periksa koneksi lalu coba lagi.'); })
+                .simpanSkalaNyeriSesudah(kontak, v, catatan, rowId || '');
+        }
+
         function submitPijatForm(event) {
             if (event) event.preventDefault();
             try { pijatSuaraBerhenti(true); } catch (e) { }
@@ -10181,6 +10338,14 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 return;
             }
 
+            const nyeriSebelum = parseInt(document.getElementById('pijat-nyeri-sebelum').value, 10);
+            if (!(nyeriSebelum >= 1 && nyeriSebelum <= 10)) {
+                const gn = document.getElementById('pijat-nyeri-grid'); if (gn) { gn.classList.add('pjp-err'); gn.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+                pijatBarTampil('Skala nyeri belum dipilih', 'Pilih angka 1-10 sesuai nyeri yang Anda rasakan saat ini.', 'err');
+                return;
+            }
+            window.__PIJAT_LAST = { kontak: kontak, sebelum: nyeriSebelum, nama: nama };
+
             const selectedItems = checkedBoxes.map(cb => KELUHAN_DATA.find(k => k.no === parseInt(cb.value)));
             const namaKeluhan = selectedItems.map(k => k.masalah).join(', ');
             const areaGabungan = [...new Set(selectedItems.map(k => k.area))].join('; ');
@@ -10197,7 +10362,11 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 lokasi_desa: desa,
                 keluhan: namaKeluhan,
                 area_pijat: areaGabungan,
-                durasi_pijat: pijatFmtDurasi(pijatDurasiTotal(selectedItems))
+                durasi_pijat: pijatFmtDurasi(pijatDurasiTotal(selectedItems)),
+                skala_nyeri_sebelum: nyeriSebelum,
+                skala_nyeri_sesudah: '',
+                catatan_progres: '',
+                tanggal_evaluasi: ''
             };
 
             const btn = document.getElementById('pijat-submit-btn');
@@ -10237,6 +10406,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             // gambar anatomi + label penunjuk tepat di area yang dipijat (sama seperti di kartu kegiatan)
             const wrap = document.getElementById('pijat-anatomi');
             if (wrap) wrap.innerHTML = pijatStatusHtml(selectedItems);
+            nyeriRenderPanelHasil();
             pijatSteps(3);
             pijatScrollPanel();
         }
@@ -10733,6 +10903,43 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         html.dark .pjp-kc{background:#0b1220;border-color:#334155}
         html.dark .pjp-kc:has(input:checked){background:#042f2e;border-color:#14b8a6}
         html.dark .pjp-sum{background:#042f2e;border-color:#115e59}html.dark .pjp-sum p{color:#cbd5e1}
+        /* ===== PEMANTAUAN PROGRES TERAPI: SKALA NYERI 1-10 ===== */
+        .nyr-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;border-radius:14px}
+        @media(min-width:640px){.nyr-row{grid-template-columns:repeat(10,1fr)}}
+        .nyr-row.pjp-err{outline:2px solid #ef4444;outline-offset:5px}
+        .nyr-btn{border:2px solid #e2e8f0;background:#fff;border-radius:12px;padding:11px 0;font-weight:900;font-size:15px;color:#334155;cursor:pointer;transition:.15s}
+        .nyr-btn:hover{transform:translateY(-1px);border-color:#14b8a6}
+        .nyr-btn.on{color:#fff;border-color:transparent;box-shadow:0 6px 14px rgba(0,0,0,.18)}
+        .nyr-btn.on.lv-lo{background:#16a34a}.nyr-btn.on.lv-mid{background:#d97706}.nyr-btn.on.lv-hi{background:#ea580c}.nyr-btn.on.lv-xhi{background:#dc2626}
+        .nyr-legend{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#64748b;margin-top:8px}
+        .nyr-warn{display:none;margin-top:10px;padding:10px 12px;border-radius:12px;background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;font-size:12px;font-weight:700;line-height:1.5}
+        .nyr-card{margin-top:12px;padding:12px 14px;border-radius:14px;background:#f0fdfa;border:1px solid #99f6e4}
+        .nyr-card small{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#0f766e;margin-bottom:8px}
+        .nyr-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .nyr-chip{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 8px;border-radius:10px;color:#fff;font-weight:900;font-size:15px}
+        .nyr-chip.lv-lo{background:#16a34a}.nyr-chip.lv-mid{background:#d97706}.nyr-chip.lv-hi{background:#ea580c}.nyr-chip.lv-xhi{background:#dc2626}
+        .nyr-res{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px}
+        .nyr-res.up{background:#dcfce7;color:#166534}.nyr-res.same{background:#f1f5f9;color:#475569}.nyr-res.down{background:#fee2e2;color:#991b1b}
+        .nyr-note{margin:8px 0 0;font-size:12px;line-height:1.5;color:#475569}
+        .nyr-act{margin-top:10px;display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;background:#0f766e;color:#fff;font-weight:800;font-size:12px;padding:9px 14px;border-radius:12px}
+        .nyr-act:hover{background:#115e59}
+        .nyr-ov{position:fixed;inset:0;z-index:10050;background:rgba(2,6,23,.6);display:flex;align-items:center;justify-content:center;padding:14px}
+        .nyr-dlg{background:#fff;width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:22px;padding:22px;box-shadow:0 25px 60px rgba(0,0,0,.35)}
+        .nyr-dlg h4{margin:0 0 4px;font-size:18px;font-weight:900;color:#0f172a}
+        .nyr-dlg p{margin:0 0 14px;font-size:13px;line-height:1.55;color:#64748b}
+        .nyr-dlg label{display:block;margin:14px 0 6px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#475569}
+        .nyr-dlg input[type=tel],.nyr-dlg textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #e2e8f0;background:#f8fafc;font-size:14px;outline:none}
+        .nyr-dlg input[type=tel]:focus,.nyr-dlg textarea:focus{border-color:#14b8a6;background:#fff}
+        .nyr-dlg-acts{display:flex;gap:10px;margin-top:18px}
+        .nyr-dlg-acts button{flex:1;border:0;cursor:pointer;border-radius:12px;padding:13px;font-weight:900;font-size:13px}
+        .nyr-b-main{background:#0f766e;color:#fff}.nyr-b-main:disabled{opacity:.6;cursor:wait}
+        .nyr-b-ghost{background:#f1f5f9;color:#334155}
+        .nyr-err{display:none;margin-top:12px;padding:10px 12px;border-radius:12px;background:#fef2f2;color:#b91c1c;font-size:12px;font-weight:700}
+        html.dark .nyr-btn{background:#0b1220;border-color:#334155;color:#e2e8f0}
+        html.dark .nyr-card{background:#042f2e;border-color:#115e59}html.dark .nyr-note,html.dark .nyr-legend{color:#cbd5e1}
+        html.dark .nyr-dlg{background:#0f172a}html.dark .nyr-dlg h4{color:#f1f5f9}
+        html.dark .nyr-dlg input[type=tel],html.dark .nyr-dlg textarea{background:#0b1220;border-color:#334155;color:#e2e8f0}
+        html.dark .nyr-b-ghost{background:#1e293b;color:#cbd5e1}
         html.dark .pjp-chipset span{background:#0b1220;color:#99f6e4;border-color:#115e59}
         html.dark .pjp-btn-ghost{background:#0b1220;border-color:#334155;color:#cbd5e1}
         html.dark .pjp-badge{background:#334155;color:#cbd5e1}
@@ -10858,6 +11065,15 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                             <div id="pijat-durasi-live" class="pjp-live"></div>
                         </div>
 
+                        <div class="pjp-sec" id="pijat-sec-nyeri">
+                            <div class="pjp-sec-h"><span class="n">3</span><h4>Skala Nyeri Saat Ini</h4><span id="pijat-nyeri-badge" class="pjp-badge">Belum dipilih</span></div>
+                            <p class="pjp-help">Seberapa nyeri / pegal yang Anda rasakan sekarang? 1 = sangat ringan, 10 = sangat berat. Setelah pijat, nilai ini dibandingkan lagi untuk memantau progres terapi Anda.</p>
+                            <div id="pijat-nyeri-grid" class="nyr-row"></div>
+                            <input type="hidden" id="pijat-nyeri-sebelum" value="">
+                            <div class="nyr-legend"><span>1 &middot; Ringan</span><span>10 &middot; Sangat berat</span></div>
+                            <div id="pijat-nyeri-warn" class="nyr-warn"><i class="fas fa-triangle-exclamation"></i> Nyeri sangat berat. Jika disertai mati rasa, demam, nyeri dada, atau cedera/benturan, sebaiknya periksa ke tenaga medis sebelum dipijat.</div>
+                        </div>
+
                         <button type="submit" id="pijat-submit-btn" class="pjp-btn-main"><i class="fas fa-paper-plane"></i> Kirim & Lihat Titik Pijat</button>
                         <p class="pjp-secure"><i class="fas fa-lock"></i> Data Anda hanya dipakai untuk keperluan layanan pijat.</p>
                     </form>
@@ -10872,6 +11088,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     </div>
                     <div id="pijat-ringkasan-keluhan"></div>
                     <div id="pijat-anatomi"></div>
+                    <div id="pijat-nyeri-sesudah-box"></div>
                     <div class="pjp-acts">
                         <button type="button" onclick="resetPijatForm()" class="pjp-btn-ghost"><i class="fas fa-rotate-left"></i> Booking Lagi</button>
                         <button type="button" onclick="closePijatModal()" class="pjp-btn-solid">Selesai</button>

@@ -10221,20 +10221,22 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         // Ringkasan progres (dipakai di kartu kegiatan, panel hasil, dan dialog)
         function nyeriProgresHtml(seb, ses, catatan, rowId) {
             const hasSes = (ses !== null && ses !== undefined && !isNaN(ses));
-            let h = '<small><i class="fas fa-chart-line"></i> Progres Terapi (Skala Nyeri)</small><div class="nyr-flow">'
-                + '<span class="nyr-chip ' + nyeriLevel(seb) + '" title="Sebelum pijat">' + seb + '</span>';
+            const bar = function (lbl, n) {
+                return '<div class="nyr-bar"><span class="nyr-bl">' + lbl + '</span>'
+                    + '<div class="nyr-track"><i class="' + nyeriLevel(n) + '" style="width:' + (n * 10) + '%"></i></div>'
+                    + '<b class="nyr-bn ' + nyeriLevel(n) + '">' + n + '<small>/10</small></b></div>';
+            };
+            let h = '<small><i class="fas fa-chart-line"></i> Progres Terapi &middot; Skala Nyeri</small>' + bar('Sebelum pijat', seb);
             if (hasSes) {
+                h += bar('Sesudah pijat', ses);
                 const d = seb - ses;
                 const pct = seb > 0 ? Math.round(Math.abs(d) / seb * 100) : 0;
-                h += '<i class="fas fa-arrow-right" style="color:#94a3b8"></i><span class="nyr-chip ' + nyeriLevel(ses) + '" title="Sesudah pijat">' + ses + '</span>';
-                if (d > 0) h += '<span class="nyr-res up">Nyeri turun ' + d + ' poin (' + pct + '%)</span>';
-                else if (d === 0) h += '<span class="nyr-res same">Belum ada perubahan</span>';
-                else h += '<span class="nyr-res down">Nyeri naik ' + Math.abs(d) + ' poin</span>';
-                h += '</div>';
-                if (d < 0) h += '<p class="nyr-note">Nyeri lebih tinggi dari sebelum pijat. Disarankan konsultasi dengan terapis atau tenaga medis.</p>';
+                if (d > 0) h += '<div class="nyr-verdict up"><i class="fas fa-arrow-trend-down"></i><div><b>Nyeri turun ' + d + ' poin</b><span>' + pct + '% lebih ringan setelah pijat</span></div></div>';
+                else if (d === 0) h += '<div class="nyr-verdict same"><i class="fas fa-equals"></i><div><b>Belum ada perubahan</b><span>Skala nyeri sama seperti sebelum pijat</span></div></div>';
+                else h += '<div class="nyr-verdict down"><i class="fas fa-arrow-trend-up"></i><div><b>Nyeri naik ' + Math.abs(d) + ' poin</b><span>Disarankan konsultasi dengan terapis atau tenaga medis</span></div></div>';
                 if (catatan) h += '<p class="nyr-note"><i class="fas fa-note-sticky"></i> ' + kgEsc(catatan) + '</p>';
             } else {
-                h += '<span style="font-size:12px;font-weight:700;color:#64748b">Sebelum pijat &middot; sesudah pijat belum dicatat</span></div>';
+                h += '<div class="nyr-bar nyr-wait"><span class="nyr-bl">Sesudah pijat</span><div class="nyr-track nyr-dash"></div><b class="nyr-bn">?</b></div>';
                 h += '<button type="button" class="nyr-act" onclick="nyeriBukaDialog(' + (rowId ? Number(rowId) : "''") + ',' + seb + ')"><i class="fas fa-pen-to-square"></i> Catat nyeri setelah pijat</button>';
             }
             return h;
@@ -10940,6 +10942,30 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         html.dark .nyr-dlg{background:#0f172a}html.dark .nyr-dlg h4{color:#f1f5f9}
         html.dark .nyr-dlg input[type=tel],html.dark .nyr-dlg textarea{background:#0b1220;border-color:#334155;color:#e2e8f0}
         html.dark .nyr-b-ghost{background:#1e293b;color:#cbd5e1}
+        /* ----- kartu MOVE: fokus 1 kartu per baris ----- */
+        .kg-cards{grid-template-columns:1fr !important;max-width:760px;margin-left:auto;margin-right:auto;gap:26px}
+        .kg-card{height:auto !important}
+        /* ----- progres skala nyeri (tampilan jelas) ----- */
+        .nyr-card{padding:16px 18px;border-radius:18px;margin-top:14px}
+        .nyr-card small{margin-bottom:12px}
+        .nyr-bar{display:grid;grid-template-columns:92px 1fr 54px;align-items:center;gap:10px;margin-bottom:10px}
+        .nyr-bl{font-size:12px;font-weight:800;color:#334155}
+        .nyr-track{height:12px;border-radius:999px;background:#e2e8f0;overflow:hidden}
+        .nyr-track i{display:block;height:100%;border-radius:999px;transition:width .6s ease}
+        .nyr-track i.lv-lo{background:#16a34a}.nyr-track i.lv-mid{background:#d97706}.nyr-track i.lv-hi{background:#ea580c}.nyr-track i.lv-xhi{background:#dc2626}
+        .nyr-bn{font-size:20px;font-weight:900;text-align:right;line-height:1}
+        .nyr-bn small{display:inline;margin:0;font-size:11px;font-weight:800;letter-spacing:0;text-transform:none;color:#94a3b8}
+        .nyr-bn.lv-lo{color:#16a34a}.nyr-bn.lv-mid{color:#d97706}.nyr-bn.lv-hi{color:#ea580c}.nyr-bn.lv-xhi{color:#dc2626}
+        .nyr-wait .nyr-bl,.nyr-wait .nyr-bn{color:#94a3b8}
+        .nyr-dash{background:repeating-linear-gradient(90deg,#cbd5e1 0 8px,transparent 8px 14px)}
+        .nyr-verdict{display:flex;align-items:center;gap:12px;margin-top:6px;padding:12px 14px;border-radius:14px}
+        .nyr-verdict>i{font-size:20px}
+        .nyr-verdict b{display:block;font-size:14px;font-weight:900}
+        .nyr-verdict span{display:block;font-size:12px;font-weight:600;margin-top:2px}
+        .nyr-verdict.up{background:#dcfce7;color:#166534}.nyr-verdict.same{background:#f1f5f9;color:#475569}.nyr-verdict.down{background:#fee2e2;color:#991b1b}
+        @media(max-width:420px){.nyr-bar{grid-template-columns:78px 1fr 48px}}
+        html.dark .nyr-bl{color:#e2e8f0}html.dark .nyr-track{background:#1e293b}
+        html.dark .nyr-verdict.up{background:#052e16;color:#86efac}html.dark .nyr-verdict.same{background:#1e293b;color:#cbd5e1}html.dark .nyr-verdict.down{background:#450a0a;color:#fca5a5}
         html.dark .pjp-chipset span{background:#0b1220;color:#99f6e4;border-color:#115e59}
         html.dark .pjp-btn-ghost{background:#0b1220;border-color:#334155;color:#cbd5e1}
         html.dark .pjp-badge{background:#334155;color:#cbd5e1}

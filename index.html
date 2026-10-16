@@ -12306,5 +12306,107 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
 })();
 </script>
 
+<!-- ==========================================================
+     HALAMAN TANDA TANGAN DIGITAL (persetujuan booking pijat MOVE)
+     PASANG: tempel SELURUH blok ini TEPAT SEBELUM </body> di index.html.
+     Aktif hanya kalau URL berisi  ?ttd=<token>. Selain itu tidak berbuat apa-apa.
+     ========================================================== -->
+<style id="ttd-style">
+  #ttd-overlay{position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.78);overflow:auto;padding:16px;display:flex;justify-content:center;align-items:flex-start;-webkit-overflow-scrolling:touch}
+  #ttd-box{background:#fff;color:#0f172a;width:100%;max-width:520px;border-radius:20px;padding:22px 20px;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.35);font-family:inherit}
+  #ttd-box h2{font-size:20px;font-weight:900;margin:0 0 4px;color:#0f766e}
+  #ttd-box .ttd-sub{font-size:12px;color:#64748b;margin:0 0 14px}
+  #ttd-box .ttd-ring{background:#f0fdfa;border:1px solid #99f6e4;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;margin-bottom:12px}
+  #ttd-box .ttd-ring b{color:#0f766e}
+  #ttd-box .ttd-teks{white-space:pre-wrap;font-size:12.5px;line-height:1.55;background:#f8fafc;border-radius:12px;padding:10px 12px;margin-bottom:12px;color:#334155}
+  #ttd-box label{display:block;font-size:12px;font-weight:700;margin:10px 0 4px}
+  #ttd-box input[type=text]{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;font-size:14px}
+  #ttd-box .ttd-cek{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;margin:12px 0}
+  #ttd-canvas{width:100%;height:170px;border:2px dashed #94a3b8;border-radius:12px;background:#fff;touch-action:none;display:block}
+  #ttd-box .ttd-row{display:flex;gap:8px;margin-top:10px}
+  #ttd-box button{border:0;border-radius:12px;padding:12px 14px;font-weight:800;font-size:13px;cursor:pointer}
+  #ttd-hapus{background:#e2e8f0;color:#334155}
+  #ttd-kirim{background:#0f766e;color:#fff;flex:1}
+  #ttd-kirim[disabled]{opacity:.55;cursor:not-allowed}
+  #ttd-err{color:#b91c1c;font-size:12.5px;margin-top:8px;min-height:16px}
+  #ttd-box .ttd-pesan{font-size:14px;line-height:1.6;text-align:center;padding:14px 4px}
+</style>
+
+<script id="ttd-script">
+(function () {
+  var token = (new URLSearchParams(location.search).get('ttd') || '').trim().toLowerCase();
+  if (!/^[a-f0-9]{32}$/.test(token)) return;
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = String(s == null ? '' : s); return d.innerHTML; }
+  function run() { return window.google && window.google.script && window.google.script.run; }
+
+  var overlay = document.createElement('div');
+  overlay.id = 'ttd-overlay';
+  overlay.innerHTML = '<div id="ttd-box"><div class="ttd-pesan">Memuat halaman persetujuan…</div></div>';
+  document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
+  var box = overlay.firstChild;
+
+  function pesan(judul, teks, tombolTutup) {
+    box.innerHTML = '<h2>' + esc(judul) + '</h2><div class="ttd-pesan">' + esc(teks) + '</div>'
+      + (tombolTutup ? '<div class="ttd-row"><button id="ttd-tutup" style="flex:1;background:#0f766e;color:#fff">Tutup</button></div>' : '');
+    var t = document.getElementById('ttd-tutup');
+    if (t) t.onclick = function () { location.href = location.pathname; };
+  }
+
+  function render(info) {
+    if (!info || !info.ok) { pesan('Link tidak bisa dipakai', (info && info.pesan) || 'Link tidak valid.', true); return; }
+    if (info.status === 'disetujui') { pesan('Sudah ditandatangani', 'Persetujuan atas nama ' + info.nama + ' sudah diterima pada ' + info.tanggal + '. Terima kasih.', true); return; }
+
+    box.innerHTML =
+      '<h2>Persetujuan Layanan Pijat</h2><p class="ttd-sub">Program MOVE · mohon baca lalu tanda tangan di bawah</p>'
+      + '<div class="ttd-ring">'
+      + '<div><b>Nama:</b> ' + esc(info.nama) + '</div>'
+      + (info.tanggal ? '<div><b>Tanggal:</b> ' + esc(info.tanggal) + '</div>' : '')
+      + (info.keluhan ? '<div><b>Keluhan:</b> ' + esc(info.keluhan) + '</div>' : '')
+      + (info.area ? '<div><b>Area dipijat:</b> ' + esc(info.area) + '</div>' : '')
+      + (info.durasi ? '<div><b>Durasi:</b> ' + esc(info.durasi) + '</div>' : '')
+      + '</div>'
+      + '<div class="ttd-teks">' + esc(info.teks) + '</div>'
+      + '<label for="ttd-nama">Nama lengkap</label><input type="text" id="ttd-nama" maxlength="80" value="' + esc(info.nama).replace(/"/g, '&quot;') + '">'
+      + '<label class="ttd-cek" style="font-weight:600"><input type="checkbox" id="ttd-setuju"> <span>Saya sudah membaca dan menyetujui pernyataan di atas.</span></label>'
+      + '<label>Tanda tangan (gambar dengan jari / mouse)</label><canvas id="ttd-canvas" width="600" height="200"></canvas>'
+      + '<div class="ttd-row"><button type="button" id="ttd-hapus">Hapus</button><button type="button" id="ttd-kirim">Kirim Persetujuan</button></div>'
+      + '<div id="ttd-err"></div>';
+
+    var cv = document.getElementById('ttd-canvas'), ctx = cv.getContext('2d');
+    var gambar = false, ink = 0, last = null;
+    function bersih() { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height); ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ink = 0; last = null; }
+    function pos(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * cv.width / r.width, y: (e.clientY - r.top) * cv.height / r.height }; }
+    cv.addEventListener('pointerdown', function (e) { e.preventDefault(); gambar = true; last = pos(e); try { cv.setPointerCapture(e.pointerId); } catch (x) { } ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(last.x + .1, last.y + .1); ctx.stroke(); });
+    cv.addEventListener('pointermove', function (e) { if (!gambar) return; e.preventDefault(); var p = pos(e); ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); ink += Math.abs(p.x - last.x) + Math.abs(p.y - last.y); last = p; });
+    function selesai() { gambar = false; }
+    cv.addEventListener('pointerup', selesai); cv.addEventListener('pointercancel', selesai); cv.addEventListener('pointerleave', selesai);
+    bersih();
+    document.getElementById('ttd-hapus').onclick = bersih;
+
+    var err = document.getElementById('ttd-err'), btn = document.getElementById('ttd-kirim');
+    btn.onclick = function () {
+      var nama = document.getElementById('ttd-nama').value.trim();
+      err.textContent = '';
+      if (nama.length < 2) { err.textContent = 'Isi nama lengkap Anda.'; return; }
+      if (!document.getElementById('ttd-setuju').checked) { err.textContent = 'Centang pernyataan persetujuan dulu.'; return; }
+      if (ink < 80) { err.textContent = 'Tanda tangan masih kosong atau terlalu pendek.'; return; }
+      btn.disabled = true; btn.textContent = 'Mengirim…';
+      run().withSuccessHandler(function (res) {
+        if (res && res.ok) { pesan('Terima kasih', res.pesan || 'Persetujuan tersimpan.', true); }
+        else { btn.disabled = false; btn.textContent = 'Kirim Persetujuan'; err.textContent = (res && res.pesan) || 'Gagal menyimpan.'; }
+      }).withFailureHandler(function (e) {
+        btn.disabled = false; btn.textContent = 'Kirim Persetujuan'; err.textContent = (e && e.message) || 'Periksa koneksi lalu coba lagi.';
+      }).simpanPersetujuanTTD(token, cv.toDataURL('image/png'), nama);
+    };
+  }
+
+  run().withSuccessHandler(render).withFailureHandler(function (e) {
+    pesan('Gagal memuat', (e && e.message) || 'Periksa koneksi lalu muat ulang halaman.', false);
+  }).getInfoTTD(token);
+})();
+</script>
+
 </body>
 </html>

@@ -1187,6 +1187,18 @@ html.dark .an3-wrap{background:#151f32}
 html.dark .an3-info p,html.dark .an3-head p,html.dark .an3-note{color:#cbd5e1}
 html.dark .an3-head h4,html.dark .an3-info h5{color:#86efac}
 html.dark .an3-tip,html.dark .an3-chip{background:#0b3d24;color:#bbf7d0}
+.an3-stage{height:460px}
+.an3-ov{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.an3-ovs{position:absolute;inset:0;width:100%;height:100%}
+.an3-lab{position:absolute;background:rgba(255,255,255,.94);color:#14532d;border-radius:10px;padding:4px 9px;font-size:10.5px;line-height:1.3;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.25);max-width:44%;pointer-events:auto;cursor:pointer}
+.an3-lab b{display:block;font-style:italic;font-weight:800;font-size:11px;color:#9a3412}
+.an3-lab.on{background:#f59e0b;color:#052e1b}.an3-lab.on b{color:#052e1b}
+.an3-lat{font-style:italic;color:#9a3412!important;font-weight:700;margin:-2px 0 8px!important}
+.an3-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.an3-sl{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;color:#166534}
+.an3-sl input{width:110px;accent-color:#f59e0b}
+.an3-go{margin-top:10px;border:0;background:#0b8a43;color:#fff;font-weight:800;font-size:12px;padding:9px 16px;border-radius:999px;cursor:pointer}
+html.dark .an3-sl{color:#bbf7d0}
 </style>
 <style id="usu-move">
     /* ===== MOVE: banner gaya USU + deret tahapan gaya ikon SDG ===== */
@@ -4524,7 +4536,58 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 ['Kandung kemih',[0,.83,.04],[.03,.03,.03],0xfb7185,0,'Kantung otot yang menampung urine dari ginjal sebelum dibuang dari tubuh.','Cukup minum air putih dan jangan menahan buang air kecil terlalu lama.']
             ]
         };
-        let an3 = { view: 'svg', mode: 'otot', sel: -1, meshes: [] };
+        // ---- Latin organ + data baru: otot berserat, rangka, jantung per bagian ----
+        AN3_DATA.organ.forEach((e, i) => { e[7] = ['Encephalon', 'Pulmo', 'Cor', 'Hepar', 'Gaster', 'Intestinum', 'Ren', 'Glandula thyroidea', 'Pancreas', 'Vesica urinaria'][i]; });
+        // [nama, -, -, warna, kembar, penjelasan, tips, latin, bentuk]; bentuk: ['b',pusat,radius,rotZ,amp] | ['s',a,b,r,sx,sz,belly]
+        AN3_DATA.otot = [
+            ['Trapezius (leher–bahu)', [0, 0, 0], [0, 0, 0], 0xc2402f, 0, 'Otot lebar berbentuk layang-layang dari leher ke punggung tengah; menahan kepala serta menggerakkan bahu dan tulang belikat.', 'Sering tegang karena menunduk atau duduk lama; ubah posisi tiap 30–45 menit dan lakukan peregangan leher ringan.', 'Musculus trapezius', [['b', [0, 1.37, -.1], [.18, .15, .02], 0, .03]]],
+            ['Sternocleidomastoid (leher samping)', [0, 0, 0], [0, 0, 0], 0xd4503a, 1, 'Otot di sisi leher yang memutar dan menundukkan kepala.', 'Bisa pegal bila tidur dengan leher miring; bantal yang pas membantu.', 'Musculus sternocleidomastoideus', [['s', [.03, 1.46, .05], [.065, 1.575, 0], .014, 1, 1, 0]]],
+            ['Deltoid (bahu)', [0, 0, 0], [0, 0, 0], 0xd9532b, 1, 'Membentuk bulatan bahu dan mengangkat lengan ke depan, samping, serta belakang.', 'Pegal setelah mengangkat beban; hindari menekan keras pada nyeri tajam.', 'Musculus deltoideus', [['b', [.265, 1.395, 0], [.05, .075, .06], -.12, .03]]],
+            ['Pectoralis major (dada)', [0, 0, 0], [0, 0, 0], 0xc8352c, 1, 'Otot dada yang menggerakkan lengan ke depan dan ke dalam.', 'Dada yang terlalu tegang dapat membuat bahu tampak membungkuk; peregangan ringan di ambang pintu membantu.', 'Musculus pectoralis major', [['b', [.09, 1.29, .085], [.095, .065, .03], -.2, .04]]],
+            ['Serratus anterior (sisi iga)', [0, 0, 0], [0, 0, 0], 0xd4503a, 1, 'Otot bergerigi di sisi tulang rusuk yang menstabilkan tulang belikat saat lengan mendorong.', 'Aktif saat mendorong atau meninju; penting untuk postur bahu.', 'Musculus serratus anterior', [['b', [.168, 1.27, .04], [.02, .03, .02], 0, 0], ['b', [.17, 1.21, .04], [.02, .03, .02], 0, 0], ['b', [.17, 1.15, .04], [.02, .03, .02], 0, 0]]],
+            ['Rectus abdominis (perut)', [0, 0, 0], [0, 0, 0], 0xe0603a, 1, 'Otot perut berpetak yang menekuk badan dan menjaga postur.', 'Otot perut yang kuat membantu mengurangi beban pinggang.', 'Musculus rectus abdominis', [['b', [.032, 1.17, .105], [.03, .03, .016], 0, .03], ['b', [.032, 1.1, .108], [.03, .03, .016], 0, .03], ['b', [.032, 1.03, .108], [.03, .03, .016], 0, .03], ['b', [.032, .96, .1], [.028, .03, .016], 0, .03]]],
+            ['Obliques (perut samping)', [0, 0, 0], [0, 0, 0], 0xd9532b, 1, 'Otot perut samping yang memutar dan memiringkan badan.', 'Gerakan memutar mendadak tanpa pemanasan dapat membuatnya pegal.', 'Musculus obliquus externus abdominis', [['b', [.15, 1.07, .07], [.045, .11, .03], .15, .03]]],
+            ['Latissimus dorsi (punggung)', [0, 0, 0], [0, 0, 0], 0xb92f2a, 1, 'Otot terlebar di punggung; menarik lengan ke bawah dan ke belakang.', 'Duduk dengan punggung tegak mencegah pegal punggung.', 'Musculus latissimus dorsi', [['b', [.11, 1.18, -.095], [.1, .15, .022], -.3, .03]]],
+            ['Erector spinae (pinggang)', [0, 0, 0], [0, 0, 0], 0xd9532b, 1, 'Deretan otot di kanan-kiri tulang belakang yang menegakkan badan.', 'Pegal pinggang sering muncul karena duduk lama atau cara mengangkat yang keliru.', 'Musculus erector spinae', [['s', [.035, 1.33, -.1], [.035, .88, -.09], .022, 1, 1, 0]]],
+            ['Gluteus maximus (bokong)', [0, 0, 0], [0, 0, 0], 0xc8352c, 1, 'Otot terbesar di tubuh; meluruskan pinggul saat berdiri, naik tangga, dan berlari.', 'Duduk terlalu lama membuatnya kurang aktif; berdiri dan berjalan sesekali.', 'Musculus gluteus maximus', [['b', [.085, .84, -.085], [.085, .075, .055], 0, .04]]],
+            ['Biceps (lengan atas depan)', [0, 0, 0], [0, 0, 0], 0xd4503a, 1, 'Menekuk siku dan memutar lengan bawah.', 'Istirahatkan lengan bila pegal setelah aktivitas berat.', 'Musculus biceps brachii', [['s', [.27, 1.345, .035], [.325, 1.15, .04], .032, 1, 1, .3]]],
+            ['Triceps (lengan atas belakang)', [0, 0, 0], [0, 0, 0], 0xc2402f, 1, 'Meluruskan siku; otot besar di belakang lengan atas.', 'Peregangan ringan setelah olahraga mengurangi rasa kaku.', 'Musculus triceps brachii', [['s', [.285, 1.34, -.03], [.335, 1.15, -.035], .034, 1, 1, .3]]],
+            ['Fleksor lengan bawah', [0, 0, 0], [0, 0, 0], 0xd9532b, 1, 'Kelompok otot lengan bawah yang menekuk pergelangan dan jari untuk menggenggam.', 'Sering lelah karena mengetik atau memegang ponsel lama; istirahatkan tangan secara berkala.', 'Musculi flexores antebrachii', [['s', [.335, 1.13, .012], [.37, .9, 0], .03, 1, 1, .4]]],
+            ['Quadriceps (paha depan)', [0, 0, 0], [0, 0, 0], 0xc8352c, 1, 'Empat otot paha depan untuk meluruskan lutut, berjalan, dan melompat.', 'Peregangan ringan setelah olahraga mengurangi rasa kaku.', 'Musculus quadriceps femoris', [['s', [.095, .83, .05], [.1, .52, .045], .04, 1, .8, .2], ['s', [.14, .8, .03], [.125, .52, .03], .036, 1, .8, .3], ['s', [.065, .74, .04], [.085, .5, .04], .034, 1, .8, -.3]]],
+            ['Adduktor (paha dalam)', [0, 0, 0], [0, 0, 0], 0xd4503a, 1, 'Otot paha bagian dalam yang merapatkan kedua kaki dan menstabilkan panggul.', 'Pemanasan penting sebelum olahraga yang banyak gerak ke samping.', 'Musculi adductores femoris', [['s', [.055, .82, 0], [.075, .56, .005], .032, 1, .8, .4]]],
+            ['Hamstring (paha belakang)', [0, 0, 0], [0, 0, 0], 0xb92f2a, 1, 'Otot paha belakang yang menekuk lutut dan membantu meluruskan pinggul.', 'Otot yang kaku dapat menarik punggung bawah; peregangan perlahan membantu.', 'Musculi ischiocrurales', [['s', [.1, .82, -.05], [.105, .5, -.045], .042, 1, .8, .2]]],
+            ['Gastrocnemius (betis)', [0, 0, 0], [0, 0, 0], 0xd9532b, 1, 'Otot betis untuk berjinjit, berjalan, dan berlari.', 'Kram betis dapat dibantu peregangan pelan dan cukup minum air.', 'Musculus gastrocnemius', [['s', [.1, .44, -.035], [.095, .2, -.03], .04, 1, .9, .5]]],
+            ['Tibialis anterior (tulang kering)', [0, 0, 0], [0, 0, 0], 0xc2402f, 1, 'Otot di depan tulang kering yang mengangkat ujung kaki saat melangkah.', 'Sepatu yang pas dan pemanasan membantu mencegah nyeri tulang kering.', 'Musculus tibialis anterior', [['s', [.1, .43, .03], [.092, .12, .025], .027, 1, .9, .3]]]
+        ];
+        AN3_DATA.rangka = [
+            ['Tengkorak', [0, 0, 0], [0, 0, 0], 0xeee6d3, 0, 'Tulang kepala yang melindungi otak dan membentuk kerangka wajah.', 'Gunakan helm saat berkendara untuk melindungi kepala.', 'Cranium'],
+            ['Tulang belakang', [0, 0, 0], [0, 0, 0], 0xeee6d3, 0, 'Susunan ruas tulang yang menopang tubuh, melindungi sumsum tulang belakang, dan memungkinkan badan membungkuk serta memutar.', 'Duduk tegak dan sering bergerak membantu menjaga punggung nyaman.', 'Columna vertebralis'],
+            ['Tulang rusuk & dada', [0, 0, 0], [0, 0, 0], 0xeee6d3, 0, 'Sangkar tulang yang melindungi jantung dan paru-paru serta membantu gerak napas.', 'Napas dalam dan perlahan membuat rongga dada mengembang dengan baik.', 'Costae et sternum'],
+            ['Tulang selangka', [0, 0, 0], [0, 0, 0], 0xeee6d3, 1, 'Tulang tipis horizontal yang menghubungkan tulang dada dengan bahu.', 'Tulang ini sering cedera saat jatuh bertumpu pada bahu atau tangan.', 'Clavicula'],
+            ['Tulang lengan atas', [0, 0, 0], [0, 0, 0], 0xeee6d3, 1, 'Tulang tunggal lengan atas yang berhubungan dengan bahu di atas dan siku di bawah.', 'Angkat beban dengan teknik yang benar untuk melindungi bahu dan lengan.', 'Humerus'],
+            ['Tulang lengan bawah', [0, 0, 0], [0, 0, 0], 0xeee6d3, 1, 'Dua tulang sejajar yang memungkinkan telapak tangan berputar menghadap atas dan bawah.', 'Istirahatkan pergelangan bila terasa pegal setelah mengetik lama.', 'Radius dan ulna'],
+            ['Panggul', [0, 0, 0], [0, 0, 0], 0xeee6d3, 0, 'Cincin tulang yang menopang tubuh bagian atas dan menghubungkannya dengan kedua tungkai.', 'Posisi duduk yang seimbang membantu panggul menopang badan dengan baik.', 'Pelvis'],
+            ['Tulang paha', [0, 0, 0], [0, 0, 0], 0xeee6d3, 1, 'Tulang terpanjang dan terkuat di tubuh; menopang berat badan saat berdiri dan berjalan.', 'Asupan kalsium dan aktivitas fisik teratur membantu tulang tetap kuat.', 'Femur'],
+            ['Tulang kering & betis', [0, 0, 0], [0, 0, 0], 0xeee6d3, 1, 'Tibia menopang berat badan, fibula yang lebih kecil menstabilkan pergelangan kaki.', 'Gunakan alas kaki yang sesuai agar beban tersalur dengan baik.', 'Tibia dan fibula']
+        ];
+        // jantung per bagian: [nama, anchor label (koordinat lokal jantung), -, warna, -, penjelasan, tips, latin, dalam?]
+        AN3_DATA.jantung = [
+            ['Serambi kanan (Atrium kanan)', [-.44, .12, .08], 0, 0xd96a5f, 0, 'Menerima darah miskin oksigen dari seluruh tubuh lewat vena kava atas dan bawah, lalu mengalirkannya ke bilik kanan.', 'Di dinding serambi kanan terdapat simpul sinoatrial, “alat pacu” alami jantung.', 'Atrium dextrum', 0],
+            ['Telinga serambi kanan', [-.2, .44, .15], 0, 0xd96a5f, 0, 'Kantong kecil menyerupai telinga pada serambi kanan; dinding dalamnya bergerigi karena rigi-rigi otot kecil.', 'Menambah kapasitas serambi saat jantung terisi darah.', 'Auricula dextra', 0],
+            ['Serambi kiri (Atrium kiri)', [.42, .33, -.14], 0, 0xc9564f, 0, 'Menerima darah kaya oksigen dari paru-paru lewat vena paru, lalu mengalirkannya ke bilik kiri.', 'Letaknya paling belakang di antara ruang jantung, di dekat kerongkongan.', 'Atrium sinistrum', 0],
+            ['Bilik kanan (Ventrikel kanan)', [-.12, -.2, .31], 0, 0xcf4c42, 0, 'Memompa darah miskin oksigen ke paru-paru lewat truncus pulmonalis; dindingnya lebih tipis daripada bilik kiri.', 'Darah di paru-paru melepas karbon dioksida dan mengambil oksigen.', 'Ventriculus dexter', 0],
+            ['Bilik kiri (Ventrikel kiri)', [.3, -.25, .12], 0, 0xb8372f, 0, 'Ruang jantung paling berotot; memompa darah kaya oksigen ke seluruh tubuh lewat aorta.', 'Olahraga teratur membantu melatih otot jantung menjadi lebih kuat.', 'Ventriculus sinister', 0],
+            ['Aorta (lengkung aorta)', [.18, .8, -.08], 0, 0xd8392b, 0, 'Pembuluh nadi terbesar; membawa darah kaya oksigen dari bilik kiri, lengkungannya bercabang ke kepala dan lengan.', 'Tekanan darah yang terjaga membantu dinding pembuluh tetap sehat.', 'Aorta (Arcus aortae)', 0],
+            ['Arteri paru', [.14, .7, -.04], 0, 0x5b7fd1, 0, 'Membawa darah miskin oksigen dari bilik kanan lalu bercabang ke paru kanan dan kiri.', 'Satu-satunya arteri besar yang membawa darah miskin oksigen.', 'Truncus pulmonalis', 0],
+            ['Vena kava atas', [-.34, .62, -.07], 0, 0x4a67b8, 0, 'Vena besar yang membawa darah dari kepala, leher, dan lengan ke serambi kanan.', 'Terletak di sisi kanan lengkung aorta.', 'Vena cava superior', 0],
+            ['Vena kava bawah', [-.3, -.32, -.1], 0, 0x4a67b8, 0, 'Vena terbesar yang membawa darah dari perut dan tungkai ke serambi kanan.', 'Otot betis yang aktif membantu darah dari kaki kembali ke jantung.', 'Vena cava inferior', 0],
+            ['Vena paru', [.5, .37, -.27], 0, 0xe26a5c, 0, 'Biasanya empat pembuluh yang membawa darah kaya oksigen dari paru-paru ke serambi kiri.', 'Satu-satunya vena besar yang membawa darah kaya oksigen.', 'Venae pulmonales', 0],
+            ['Pembuluh koroner', [.1, -.2, .27], 0, 0xa11a1a, 0, 'Pembuluh yang menyuplai darah dan oksigen ke otot jantung itu sendiri.', 'Pola makan sehat dan tidak merokok membantu menjaga pembuluh jantung.', 'Arteriae coronariae', 0],
+            ['Cekungan sekat serambi (Fossa ovalis)', [-.17, .15, -.198], 0, 0xf6c3b8, 0, 'Cekungan pada sekat antar serambi, bekas lubang foramen ovale yang berfungsi pada janin dan menutup setelah bayi lahir.', 'Tepinya disebut limbus fossae ovalis. Bagian ini terlihat saat jantung dipotong.', 'Fossa ovalis', 1],
+            ['Rigi otot serambi kanan', [-.465, .22, -.15], 0, 0xb85a4e, 0, 'Crista terminalis adalah rigi otot yang memisahkan dinding halus dan dinding bergerigi serambi kanan; musculi pectinati adalah rigi-rigi otot kecil pada dinding bergerigi itu.', 'Terlihat saat jantung dipotong.', 'Crista terminalis & Musculi pectinati', 1],
+            ['Katup & muara vena jantung', [-.2, -.02, -.19], 0, 0xf3cfc4, 0, 'Valvula venae cavae inferioris adalah lipatan kecil di muara vena kava bawah; ostium sinus coronarii adalah muara vena-vena jantung ke serambi kanan.', 'Gambaran dibuat skematis untuk belajar; bentuk aslinya lebih bervariasi.', 'Valvula v. cavae inferioris & Ostium sinus coronarii', 1]
+        ];
+        let an3 = { view: 'svg', mode: 'otot', sel: -1, lastSel: -2, parts: [], focus: true, explode: 0, cut: false, labels: true, auto: true, rotT: null, camT: { y: 1, z: 3.3 }, ready: false };
         // Infografis organ dalam (SVG): [nama,,,,,penjelasan,tips] agar format sama dengan AN3_DATA
         const AN3_SVG = (function () {
             const o = i => AN3_DATA.organ[i], f = i => [o(i)[0], 0, 0, 0, 0, o(i)[5], o(i)[6]];
@@ -4570,7 +4633,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             an3.view = v; an3.sel = -1;
             document.querySelectorAll('.an3-vtab').forEach(b => b.classList.toggle('on', b.dataset.v === v));
             const s = (id, show) => { const e = document.getElementById(id); if (e) e.style.display = show ? '' : 'none'; };
-            s('an3-svgbox', v === 'svg'); s('an3-stage', v === '3d'); s('an3-sub', v === '3d');
+            s('an3-svgbox', v === 'svg'); s('an3-stage', v === '3d'); s('an3-sub', v === '3d'); s('an3-tools', v === '3d');
             const l = document.getElementById('an3-list'); if (l) l.innerHTML = an3ChipsHtml();
             an3Info(-1);
         }
@@ -4578,40 +4641,95 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             return '<div id="kg-sec-belajar" class="an3-wrap" style="scroll-margin-top:100px">'
                 + '<div class="an3-head"><span class="an3-badge"><i class="fas fa-graduation-cap"></i> Pembelajaran</span>'
                 + '<h4>Belajar Anatomi Tubuh</h4>'
-                + '<p>Ketuk organ pada gambar untuk mengenal fungsinya. Ini materi belajar, terpisah dari layanan booking di atas.</p></div>'
+                + '<p>Putar model 3D, ketuk satu bagian untuk mengenal fungsinya, lalu pisahkan bagian-bagiannya satu per satu. Ini materi belajar, terpisah dari layanan booking di atas.</p></div>'
                 + '<div class="an3-tabs"><button type="button" class="an3-vtab on" data-v="svg" onclick="an3View(\'svg\')">Gambar Organ Dalam</button>'
-                + '<button type="button" class="an3-vtab" data-v="3d" onclick="an3View(\'3d\')">Model 3D (Otot &amp; Organ)</button></div>'
-                + '<div class="an3-tabs" id="an3-sub" style="display:none"><button type="button" class="an3-tab on" data-m="otot" onclick="an3Mode(\'otot\')">Otot &amp; Area Pijat</button>'
-                + '<button type="button" class="an3-tab" data-m="organ" onclick="an3Mode(\'organ\')">Organ Dalam</button></div>'
+                + '<button type="button" class="an3-vtab" data-v="3d" onclick="an3View(\'3d\')">Model 3D</button></div>'
+                + '<div class="an3-tabs" id="an3-sub" style="display:none">'
+                + '<button type="button" class="an3-tab on" data-m="otot" onclick="an3Mode(\'otot\')">Otot &amp; Area Pijat</button>'
+                + '<button type="button" class="an3-tab" data-m="organ" onclick="an3Mode(\'organ\')">Organ Dalam</button>'
+                + '<button type="button" class="an3-tab" data-m="rangka" onclick="an3Mode(\'rangka\')">Rangka</button>'
+                + '<button type="button" class="an3-tab" data-m="jantung" onclick="an3Mode(\'jantung\')">Jantung (detail)</button></div>'
+                + '<div class="an3-tools" id="an3-tools" style="display:none">'
+                + '<button type="button" class="an3-chip an3-tg on" id="an3-focus" onclick="an3Toggle(\'focus\')"><i class="fas fa-bullseye"></i> Fokus bagian</button>'
+                + '<button type="button" class="an3-chip an3-tg an3-ho" id="an3-cut" style="display:none" onclick="an3Toggle(\'cut\')"><i class="fas fa-scissors"></i> Potong (lihat dalam)</button>'
+                + '<button type="button" class="an3-chip an3-tg an3-ho on" id="an3-lbl" style="display:none" onclick="an3Toggle(\'labels\')"><i class="fas fa-tags"></i> Label</button>'
+                + '<label class="an3-sl"><i class="fas fa-up-down-left-right"></i> Pisahkan <input type="range" id="an3-exp" min="0" max="100" value="0" oninput="an3Explode(this.value)"></label>'
+                + '<button type="button" class="an3-chip" onclick="an3Reset()"><i class="fas fa-rotate-left"></i> Reset</button></div>'
                 + '<div class="an3-grid"><div><div class="an3-svgbox" id="an3-svgbox">' + an3SvgHtml() + '</div>'
                 + '<div class="an3-stage" id="an3-stage" style="display:none"><button type="button" class="an3-start" onclick="an3Start()"><i class="fas fa-cube"></i> Mulai Belajar 3D</button></div></div>'
                 + '<div class="an3-info"><div id="an3-info-body"><h5>Pilih bagian tubuh</h5><p>Ketuk organ pada gambar atau pilih dari daftar di bawah.</p></div><div class="an3-chips" id="an3-list">' + an3ChipsHtml() + '</div></div></div>'
-                + '<p class="an3-note">Materi edukasi umum, bukan pengganti pemeriksaan atau saran tenaga kesehatan.</p></div>';
+                + '<p class="an3-note">Model dibuat skematis untuk belajar. Materi edukasi umum, bukan pengganti pemeriksaan atau saran tenaga kesehatan.</p></div>';
         }
         function an3ChipsHtml() {
-            return (an3.view === 'svg' ? AN3_SVG : AN3_DATA[an3.mode]).map((e, i) => '<button type="button" class="an3-chip' + (i === an3.sel ? ' on' : '') + '" data-i="' + i + '" onclick="an3Info(' + i + ')">' + e[0].split(' (')[0] + '</button>').join('');
+            return (an3.view === 'svg' ? AN3_SVG : AN3_DATA[an3.mode]).map((e, i) => '<button type="button" class="an3-chip' + (i === an3.sel ? ' on' : '') + '" data-i="' + i + '" onclick="an3Info(' + i + ')">' + e[0].split(' (')[0] + (an3.view !== 'svg' && an3.mode === 'jantung' && e[8] ? ' · dalam' : '') + '</button>').join('');
         }
         function an3Mode(m) {
-            an3.mode = m; an3.sel = -1;
+            an3.mode = m; an3.sel = -1; an3.lastSel = -2;
             document.querySelectorAll('.an3-tab').forEach(b => b.classList.toggle('on', b.dataset.m === m));
             const l = document.getElementById('an3-list'); if (l) l.innerHTML = an3ChipsHtml();
-            an3Info(-1); an3Apply();
+            if (m === 'jantung') an3.rotT = 0;
+            an3Info(-1);
+        }
+        function an3Toggle(k) {
+            an3[k] = !an3[k];
+            const b = document.getElementById({ focus: 'an3-focus', cut: 'an3-cut', labels: 'an3-lbl' }[k]); if (b) b.classList.toggle('on', an3[k]);
+            if (k === 'cut' && an3.cut) an3.rotT = 0;
+            an3Apply();
+        }
+        function an3Explode(v) { an3.explode = (+v) / 100; an3Apply(); }
+        function an3Reset() {
+            an3.explode = 0; an3.cut = false; an3.rotT = 0; an3.auto = true;
+            const sl = document.getElementById('an3-exp'); if (sl) sl.value = 0;
+            const c = document.getElementById('an3-cut'); if (c) c.classList.remove('on');
+            if (an3.ready) an3.root.rotation.x = 0;
+            an3Info(-1);
         }
         function an3Info(i) {
             an3.sel = i;
             const e = (an3.view === 'svg' ? AN3_SVG : AN3_DATA[an3.mode])[i], a = document.getElementById('an3-info-body');
-            if (a) a.innerHTML = e ? '<h5>' + e[0] + '</h5><p>' + e[5] + '</p><p class="an3-tip"><i class="fas fa-lightbulb"></i> ' + e[6] + '</p>' : '<h5>Pilih bagian tubuh</h5><p>Ketuk bagian pada model 3D atau pilih dari daftar di bawah.</p>';
-            document.querySelectorAll('.an3-chip').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+            if (e && an3.view === '3d' && an3.mode === 'jantung' && e[8] && !an3.cut) { an3.cut = true; const c = document.getElementById('an3-cut'); if (c) c.classList.add('on'); }
+            if (a) a.innerHTML = e ? '<h5>' + e[0] + '</h5>' + (e[7] ? '<p class="an3-lat">' + e[7] + '</p>' : '') + '<p>' + e[5] + '</p><p class="an3-tip"><i class="fas fa-lightbulb"></i> ' + e[6] + '</p>'
+                + (an3.view === '3d' && an3.mode === 'organ' && i === 2 ? '<button type="button" class="an3-go" onclick="an3Mode(\'jantung\')">Lihat detail jantung per bagian →</button>' : '')
+                : '<h5>Pilih bagian tubuh</h5><p>Ketuk bagian pada model 3D atau pilih dari daftar di bawah.</p>';
+            document.querySelectorAll('.an3-chip[data-i]').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
             an3Apply();
         }
         function an3Apply() {
             document.querySelectorAll('[data-k]').forEach(n => n.classList.toggle('an3-sel', an3.view === 'svg' && +n.dataset.k === an3.sel));
+            const m = an3.mode, sel = an3.sel;
+            document.querySelectorAll('.an3-ho').forEach(b => { b.style.display = m === 'jantung' ? '' : 'none'; });
+            const lb = document.getElementById('an3-lbl'); if (lb) lb.classList.toggle('on', an3.labels);
             if (!an3.ready) return;
-            an3.meshes.forEach(m => {
-                m.visible = m.userData.mode === an3.mode;
-                m.material.emissive.setHex(m.visible && m.userData.i === an3.sel ? 0x777777 : 0);
+            const T = THREE;
+            an3.body.visible = m !== 'jantung'; an3.hd.visible = m === 'jantung';
+            an3.skinMat.opacity = m === 'otot' ? .13 : .09;
+            an3.clipL.constant = an3.cut ? -.02 : 100;
+            const hint = document.getElementById('an3-hint');
+            if (hint) hint.textContent = m === 'jantung' ? 'Geser untuk memutar • scroll untuk zoom • ketuk bagian • “Potong” untuk melihat dalam' : 'Geser untuk memutar • scroll untuk zoom • ketuk bagian tubuh';
+            an3.parts.forEach(p => {
+                let vis, ghost = false;
+                if (m === 'jantung') vis = p.mode === 'jantung' && (!p.interior || an3.cut);
+                else { vis = p.mode === m; if (m === 'organ' && p.mode === 'rangka') { vis = true; ghost = true; } }
+                p.group.visible = vis; p.ghost = ghost;
+                if (!vis) return;
+                const isSel = p.mode === m && p.i === sel;
+                let op = 1;
+                if (ghost) op = .15; else if (sel >= 0 && an3.focus && !isSel) op = .17;
+                p.meshes.forEach(o => { const mt = o.material; mt.transparent = op < 1; mt.opacity = op; mt.depthWrite = op >= .99; if (mt.emissive) mt.emissive.setHex(isSel ? 0x7a4a00 : 0); });
+                p.group.position.copy(p.base).addScaledVector(p.dir, an3.explode * (m === 'jantung' ? .6 : .5));
             });
-            an3.bodyMat.opacity = an3.mode === 'otot' ? 0.2 : 0.1;
+            let tY = 1.0, tZ = 3.3;
+            if (m === 'jantung') { tY = 0.05; tZ = 3.0; }
+            else if (sel >= 0 && an3.focus) {
+                const p = an3.parts.find(q => q.group.visible && !q.ghost && q.mode === m && q.i === sel);
+                if (p) {
+                    p.group.updateWorldMatrix(true, true);
+                    const b = new T.Box3().setFromObject(p.group), c = an3.body.worldToLocal(b.getCenter(new T.Vector3())), sz = b.getSize(new T.Vector3());
+                    tY = Math.max(.5, Math.min(1.5, c.y)); tZ = Math.max(1.7, Math.min(3.3, 1.4 + Math.max(sz.x, sz.y) * 2.2));
+                    if (sel !== an3.lastSel) an3.rotT = c.z < -.03 ? Math.PI : 0;
+                }
+            }
+            an3.lastSel = sel; an3.camT = { y: tY, z: tZ };
         }
         function an3Start() {
             const st = document.getElementById('an3-stage'); if (!st) return;
@@ -4671,7 +4789,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 (s, c) => { const g = G(); g.add(blob(.03, .03, .03, c, .02, 8)); return g; }
             ];
             const parts = [];
-            ['otot', 'organ'].forEach(mode => AN3_DATA[mode].forEach((e, i) => {
+            ['organ'].forEach(mode => AN3_DATA[mode].forEach((e, i) => {
                 (e[4] ? [1, -1] : [1]).forEach(s => {
                     const g = (mode === 'otot' ? OT : OR)[i](s, e[3]);
                     g.position.set(e[1][0] * s, e[1][1], e[1][2]);
@@ -4692,35 +4810,203 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             bones.add(at(new T.Mesh(new T.SphereGeometry(.118, 24, 18), M(0xe9e0cf, { transparent: true, opacity: 0.2, depthWrite: false, clearcoat: 0 })), 0, 1.68, 0));
             return { parts: parts, bones: bones };
         }
+        // ---------- pembantu bentuk 3D (semua geometri dibakar ke koordinat grup) ----------
+        const AN3_TEX = {};
+        function an3Tex(T, kind) {
+            if (AN3_TEX[kind]) return AN3_TEX[kind];
+            const c = document.createElement('canvas'); c.width = c.height = 256;
+            const x = c.getContext('2d'); x.fillStyle = '#ecd6cf'; x.fillRect(0, 0, 256, 256);
+            if (kind === 'm') {
+                for (let i = 0; i < 170; i++) {
+                    const px = Math.random() * 256;
+                    x.strokeStyle = 'rgba(' + (110 + Math.random() * 100 | 0) + ',45,40,' + (.12 + Math.random() * .28) + ')';
+                    x.lineWidth = 1 + Math.random() * 2.6; x.beginPath(); x.moveTo(px, 0); x.bezierCurveTo(px + 8, 85, px - 8, 170, px, 256); x.stroke();
+                }
+            } else {
+                for (let i = 0; i < 700; i++) { x.fillStyle = 'rgba(' + (150 + Math.random() * 80 | 0) + ',70,60,' + (.05 + Math.random() * .1) + ')'; x.beginPath(); x.arc(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 3, 0, 6.3); x.fill(); }
+            }
+            const t = new T.CanvasTexture(c); t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(kind === 'm' ? 3 : 2, kind === 'm' ? 1 : 2);
+            return (AN3_TEX[kind] = t);
+        }
+        function an3Mat(T, color, kind) {
+            const tx = an3Tex(T, kind);
+            return new T.MeshStandardMaterial({ color: color, map: tx, bumpMap: tx, bumpScale: kind === 'm' ? 1.6 : .6, roughness: kind === 'm' ? .5 : .45, metalness: .04 });
+        }
+        function an3BlobGeo(T, c, rd, rz, tp, amp) {
+            const g = new T.SphereGeometry(1, 36, 26), p = g.attributes.position;
+            for (let i = 0; i < p.count; i++) {
+                let x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+                if (tp && y < 0) { const k = 1 + y * tp; x *= k; z *= k; }
+                if (amp) { const d = 1 + amp * Math.sin(8 * x + 1.3) * Math.sin(8 * y + .7) * Math.sin(8 * z + 2.1); x *= d; y *= d; z *= d; }
+                p.setXYZ(i, x * rd[0], y * rd[1], z * rd[2]);
+            }
+            if (rz) g.rotateZ(rz);
+            g.translate(c[0], c[1], c[2]); g.computeVertexNormals(); return g;
+        }
+        function an3SpindleGeo(T, a, b, r, sx, sz, belly) {
+            const A = new T.Vector3(a[0], a[1], a[2]), B = new T.Vector3(b[0], b[1], b[2]), L = A.distanceTo(B), e = Math.exp(-belly), pts = [];
+            for (let k = 0; k <= 16; k++) { const u = k / 16; pts.push(new T.Vector2(r * Math.pow(Math.max(Math.sin(Math.PI * Math.pow(u, e)), 0), .75) + .002, (u - .5) * L)); }
+            const g = new T.LatheGeometry(pts, 24); g.scale(sx, 1, sz);
+            g.applyQuaternion(new T.Quaternion().setFromUnitVectors(new T.Vector3(0, 1, 0), B.clone().sub(A).normalize()));
+            g.translate((A.x + B.x) / 2, (A.y + B.y) / 2, (A.z + B.z) / 2); return g;
+        }
+        function an3Cyl(T, mat, a, b, r1, r2) {
+            const A = new T.Vector3(a[0], a[1], a[2]), B = new T.Vector3(b[0], b[1], b[2]);
+            const g = new T.CylinderGeometry(r2, r1, A.distanceTo(B), 12, 1);
+            g.applyQuaternion(new T.Quaternion().setFromUnitVectors(new T.Vector3(0, 1, 0), B.clone().sub(A).normalize()));
+            g.translate((A.x + B.x) / 2, (A.y + B.y) / 2, (A.z + B.z) / 2); return new T.Mesh(g, mat);
+        }
+        function an3Skin(T) {
+            const g = new T.Group(), m = new T.MeshPhongMaterial({ color: 0xffd9c4, transparent: true, opacity: .13, depthWrite: false, shininess: 40 });
+            const bl = (c, rd) => g.add(new T.Mesh(an3BlobGeo(T, c, rd, 0, 0, 0), m));
+            bl([0, 1.69, 0], [.105, .125, .11]);
+            g.add(an3Cyl(T, m, [0, 1.52, 0], [0, 1.6, 0], .05, .05));
+            const pr = [[.15, .78], [.17, .86], [.15, .98], [.17, 1.1], [.2, 1.22], [.215, 1.33], [.2, 1.42], [.1, 1.48], [.05, 1.5]].map(p => new T.Vector2(p[0], p[1]));
+            const tg = new T.LatheGeometry(pr, 28); tg.scale(1, 1, .55); g.add(new T.Mesh(tg, m));
+            [1, -1].forEach(s => {
+                const L = (a, b, r1, r2) => g.add(an3Cyl(T, m, [a[0] * s, a[1], a[2]], [b[0] * s, b[1], b[2]], r1, r2));
+                const J = (c, r) => bl([c[0] * s, c[1], c[2]], [r, r, r]);
+                L([.25, 1.4, 0], [.325, 1.15, 0], .055, .042); J([.25, 1.4, 0], .055); J([.325, 1.15, 0], .042);
+                L([.325, 1.15, 0], [.37, .92, 0], .042, .03); bl([.378 * s, .86, 0], [.032, .06, .02]);
+                L([.095, .88, 0], [.105, .48, 0], .09, .062); J([.105, .48, 0], .062);
+                L([.105, .48, 0], [.09, .08, 0], .058, .036); bl([.09 * s, .04, .05], [.04, .03, .09]);
+            });
+            return { group: g, mat: m };
+        }
+        function an3Skeleton(T, i, s) {
+            const g = new T.Group(), mk = () => new T.MeshStandardMaterial({ color: 0xeee6d3, roughness: .62, metalness: 0 });
+            const ball = (x, y, z, r, sx, sy, sz) => { const m = new T.Mesh(new T.SphereGeometry(r, 14, 10), mk()); m.position.set(x, y, z); m.scale.set(sx || 1, sy || 1, sz || 1); g.add(m); return m; };
+            const bone = (a, b, r) => { g.add(an3Cyl(T, mk(), [a[0] * s, a[1], a[2]], [b[0] * s, b[1], b[2]], r, r)); ball(a[0] * s, a[1], a[2], r * 1.7); ball(b[0] * s, b[1], b[2], r * 1.7); };
+            if (i === 0) {
+                ball(0, 1.69, 0, .1, 1, 1.15, 1.1); ball(0, 1.6, .05, .055, 1.1, .6, .9);
+                [-.038, .038].forEach(x => ball(x, 1.69, .09, .02, 1, 1, 1).material.color.setHex(0x5b4a38));
+            } else if (i === 1) {
+                const c = new T.CatmullRomCurve3([new T.Vector3(0, 1.54, -.07), new T.Vector3(0, 1.4, -.1), new T.Vector3(0, 1.2, -.09), new T.Vector3(0, 1.0, -.1), new T.Vector3(0, .88, -.08)]);
+                for (let k = 0; k < 24; k++) { const q = c.getPoint(k / 23); ball(q.x, q.y, q.z, .016 + .012 * k / 23, 1.4, .55, 1.1); }
+                ball(0, .84, -.075, .045, 1, 1.3, .5);
+            } else if (i === 2) {
+                for (let k = 0; k < 10; k++) {
+                    const geo = new T.TorusGeometry(.17 - Math.abs(k - 3) * .004, .006, 8, 36, Math.PI * 1.75);
+                    geo.rotateZ(Math.PI * .625); geo.scale(1, .72, 1); geo.rotateX(Math.PI / 2); geo.translate(0, 1.44 - k * .05, -.005);
+                    g.add(new T.Mesh(geo, mk()));
+                }
+                const st = new T.Mesh(new T.BoxGeometry(.035, .28, .012), mk()); st.position.set(0, 1.32, .13); g.add(st);
+            } else if (i === 3) {
+                g.add(new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3([new T.Vector3(0, 1.46, .07), new T.Vector3(s * .15, 1.47, .03), new T.Vector3(s * .26, 1.44, 0)]), 16, .008, 6, false), mk()));
+            } else if (i === 4) bone([.27, 1.38, 0], [.325, 1.15, 0], .016);
+            else if (i === 5) { bone([.325, 1.15, .01], [.365, .92, .015], .011); bone([.33, 1.15, -.01], [.37, .92, -.012], .011); }
+            else if (i === 6) {
+                [1, -1].forEach(k => g.add(new T.Mesh(an3BlobGeo(T, [k * .105, .9, -.005], [.1, .075, .04], k * .35, 0, 0), mk())));
+                g.add(new T.Mesh(an3BlobGeo(T, [0, .84, -.07], [.05, .07, .03], 0, 0, 0), mk()));
+                const t = new T.Mesh(new T.TorusGeometry(.07, .012, 8, 24, Math.PI), mk()); t.rotation.z = Math.PI; t.position.set(0, .8, .05); g.add(t);
+            } else if (i === 7) { bone([.095, .88, 0], [.107, .5, .01], .019); ball(s * .055, .91, 0, .03); bone([.055, .91, 0], [.095, .86, 0], .012); }
+            else if (i === 8) { bone([.105, .47, .01], [.092, .09, .005], .016); bone([.125, .46, -.005], [.108, .1, -.01], .009); ball(s * .104, .485, .045, .022); }
+            return g;
+        }
+        function an3Heart(T, detail) {
+            const root = new T.Group(), subs = [], clip = detail ? [an3.clip] : [];
+            const M = (c, side) => new T.MeshStandardMaterial({ color: c, map: an3Tex(T, 'o'), bumpMap: an3Tex(T, 'o'), bumpScale: .5, roughness: .4, metalness: .03, side: side || T.FrontSide, clippingPlanes: clip });
+            const add = (k, geos, c, inner) => {
+                const g = new T.Group();
+                geos.forEach(geo => { g.add(new T.Mesh(geo, M(c))); if (inner !== null) g.add(new T.Mesh(geo, M(inner || 0xf1a79c, T.BackSide))); });
+                root.add(g); subs.push({ k: k, group: g, interior: false }); return g;
+            };
+            const tube = (pts, r) => new T.TubeGeometry(new T.CatmullRomCurve3(pts.map(a => new T.Vector3(a[0], a[1], a[2]))), 40, r, 14, false);
+            const bg = (c, rd, rz, tp, amp) => an3BlobGeo(T, c, rd, rz, tp, amp);
+            add(0, [bg([-.3, .2, -.06], [.2, .25, .2], 0, 0, .03)], 0xd96a5f);
+            add(1, [bg([-.2, .4, .12], [.11, .075, .085], .5, 0, 0)], 0xd96a5f);
+            add(2, [bg([.2, .3, -.2], [.25, .16, .16], 0, 0, .02)], 0xc9564f);
+            add(3, [bg([-.12, -.12, .12], [.27, .42, .22], 0, .55, .02)], 0xcf4c42);
+            add(4, [bg([.12, -.12, -.04], [.3, .46, .3], 0, .6, .02)], 0xb8372f);
+            add(5, [tube([[.04, .2, -.02], [0, .5, 0], [.08, .78, -.04], [.28, .8, -.12], [.34, .55, -.18], [.33, .28, -.22]], .07)], 0xd8392b);
+            add(6, [tube([[-.1, .15, .22], [-.1, .45, .17], [0, .66, .04], [.28, .74, -.12]], .055), tube([[0, .66, .04], [-.2, .72, -.1], [-.4, .7, -.16]], .05)], 0x5b7fd1, 0x9db4e8);
+            add(7, [tube([[-.34, .8, -.08], [-.34, .55, -.07], [-.32, .32, -.06]], .06)], 0x4a67b8, 0x8fa5e0);
+            add(8, [tube([[-.3, -.5, -.1], [-.3, -.15, -.09], [-.3, .05, -.07]], .065)], 0x4a67b8, 0x8fa5e0);
+            add(9, [tube([[.58, .4, -.3], [.4, .34, -.24]], .03), tube([[.56, .2, -.34], [.38, .26, -.26]], .03), tube([[-.1, .4, -.5], [0, .34, -.3]], .03)], 0xe26a5c);
+            add(10, [tube([[.04, .28, .27], [.06, .05, .33], [.1, -.2, .27], [.14, -.42, .15]], .016), tube([[-.06, .3, .2], [-.25, .15, .2], [-.42, 0, .15], [-.4, -.2, .08]], .016)], 0xa11a1a, null);
+            if (detail) {
+                const mi = c => new T.MeshStandardMaterial({ color: c, roughness: .5, side: T.DoubleSide, clippingPlanes: clip });
+                const reg = (k, g) => { root.add(g); subs.push({ k: k, group: g, interior: true }); };
+                const g11 = new T.Group();
+                g11.add(new T.Mesh(bg([-.17, .15, -.198], [.055, .07, .012], 0, 0, 0), mi(0xf6c3b8)));
+                const tor = new T.Mesh(new T.TorusGeometry(.065, .01, 8, 28), mi(0xe58f82)); tor.scale.y = 1.15; tor.position.set(-.17, .15, -.195); g11.add(tor); reg(11, g11);
+                const g12 = new T.Group();
+                g12.add(new T.Mesh(tube([[-.42, .4, -.13], [-.465, .22, -.15], [-.44, .03, -.15]], .014), mi(0xb85a4e)));
+                [.36, .29, .22, .15, .08].forEach(y => g12.add(new T.Mesh(tube([[-.465, y, -.14], [-.475, y - .01, -.08], [-.47, y - .015, -.02]], .011), mi(0xb85a4e)))); reg(12, g12);
+                const g13 = new T.Group();
+                g13.add(new T.Mesh(bg([-.3, -.02, -.17], [.07, .018, .03], 0, 0, 0), mi(0xf3cfc4)));
+                const ot = new T.Mesh(new T.TorusGeometry(.03, .008, 8, 20), mi(0x7a2a25)); ot.position.set(-.13, 0, -.2); g13.add(ot);
+                g13.add(new T.Mesh(bg([-.13, 0, -.2], [.026, .026, .006], 0, 0, 0), mi(0x3a1210))); reg(13, g13);
+            }
+            root.rotation.z = .22;
+            return { root: root, subs: subs };
+        }
         function an3Init(st) {
             const T = THREE; st.innerHTML = '';
-            const W = st.clientWidth || 600, H = st.clientHeight || 400;
+            const W = st.clientWidth || 600, H = st.clientHeight || 460;
             const r = new T.WebGLRenderer({ antialias: true, alpha: true });
+            r.localClippingEnabled = true;
             r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); r.setSize(W, H); st.appendChild(r.domElement);
             const sc = new T.Scene(), cam = new T.PerspectiveCamera(38, W / H, 0.1, 50);
-            cam.position.set(0, 1.0, 3.2); cam.lookAt(0, 0.95, 0);
-            sc.add(new T.AmbientLight(0xffffff, 0.45)); sc.add(new T.HemisphereLight(0xffffff, 0x6b8f71, 0.65));
-            const dl = new T.DirectionalLight(0xffffff, 0.8); dl.position.set(2, 3, 4); sc.add(dl);
+            cam.position.set(0, 1.0, 3.3);
+            sc.add(new T.AmbientLight(0xffffff, 0.5)); sc.add(new T.HemisphereLight(0xffffff, 0x6b8f71, 0.6));
+            const key = new T.DirectionalLight(0xffffff, 0.85); key.position.set(2, 3, 4); sc.add(key);
+            const fill = new T.DirectionalLight(0xbfd8ff, 0.35); fill.position.set(-3, 1, 2); sc.add(fill);
+            const rim = new T.DirectionalLight(0xffe2c4, 0.4); rim.position.set(0, 2, -4); sc.add(rim);
+            an3.clipL = new T.Plane(new T.Vector3(0, 0, -1), 100); an3.clip = new T.Plane(new T.Vector3(0, 0, -1), 100);
             const g = new T.Group(); sc.add(g);
-            const bm = new T.MeshPhongMaterial({ color: 0xe2f5e8, transparent: true, opacity: 0.2, depthWrite: false });
-            const add = (geo, x, y, z, rz) => { const m = new T.Mesh(geo, bm); m.position.set(x, y, z); if (rz) m.rotation.z = rz; g.add(m); };
-            add(new T.SphereGeometry(.12, 20, 16), 0, 1.68, 0);
-            add(new T.CylinderGeometry(.05, .05, .1, 12), 0, 1.56, 0);
-            add(new T.CylinderGeometry(.2, .16, .62, 18), 0, 1.16, 0);
-            add(new T.CylinderGeometry(.17, .15, .2, 18), 0, .78, 0);
-            [-1, 1].forEach(s => {
-                add(new T.CylinderGeometry(.045, .04, .55, 12), s * .33, 1.2, 0, s * .1);
-                add(new T.CylinderGeometry(.075, .055, .8, 14), s * .1, .4, 0);
+            const body = new T.Group(), hd = new T.Group(); g.add(body); g.add(hd);
+            an3.parts = [];
+            const reg = (mode, i, group, extra) => {
+                const meshes = []; group.traverse(o => { if (o.isMesh) { o.userData = { mode: mode, i: i }; meshes.push(o); } });
+                an3.parts.push(Object.assign({ mode: mode, i: i, group: group, meshes: meshes, ghost: false }, extra || {}));
+            };
+            const sk = an3Skin(T); body.add(sk.group); an3.skinMat = sk.mat;
+            const tmat = () => new T.MeshStandardMaterial({ color: 0xf0e4cf, roughness: .55 });
+            AN3_DATA.otot.forEach((e, i) => {
+                (e[4] ? [1, -1] : [1]).forEach(s => {
+                    const grp = new T.Group(), mat = an3Mat(T, e[3], 'm');
+                    e[8].forEach(pr => {
+                        if (pr[0] === 'b') grp.add(new T.Mesh(an3BlobGeo(T, [pr[1][0] * s, pr[1][1], pr[1][2]], pr[2], pr[3] * s, 0, pr[4]), mat));
+                        else {
+                            const A = [pr[1][0] * s, pr[1][1], pr[1][2]], B = [pr[2][0] * s, pr[2][1], pr[2][2]];
+                            grp.add(new T.Mesh(an3SpindleGeo(T, A, B, pr[3], pr[4], pr[5], pr[6]), mat));
+                            [A, B].forEach(q => { const cp = new T.Mesh(new T.SphereGeometry(pr[3] * .4, 10, 8), tmat()); cp.position.set(q[0], q[1], q[2]); grp.add(cp); });
+                        }
+                    });
+                    body.add(grp); reg('otot', i, grp);
+                });
             });
-            an3.meshes = [];
             const B = an3Build(T);
-            B.parts.forEach(pt => { pt.group.traverse(o => { if (o.isMesh) { o.userData = { mode: pt.mode, i: pt.i }; an3.meshes.push(o); } }); g.add(pt.group); });
-            g.add(B.bones);
-            an3.bodyMat = bm; an3.ready = true; an3Apply();
-            const hint = document.createElement('div'); hint.className = 'an3-hint'; hint.textContent = 'Geser untuk memutar • scroll untuk zoom • ketuk bagian tubuh'; st.appendChild(hint);
+            B.parts.forEach(pt => { if (pt.i === 2) return; body.add(pt.group); reg('organ', pt.i, pt.group); });
+            const hb = an3Heart(T, false); hb.root.scale.setScalar(.12); hb.root.position.set(.03, 1.27, .05); body.add(hb.root); reg('organ', 2, hb.root);
+            AN3_DATA.rangka.forEach((e, i) => { (e[4] ? [1, -1] : [1]).forEach(s => { const grp = an3Skeleton(T, i, s); body.add(grp); reg('rangka', i, grp); }); });
+            const hh = an3Heart(T, true); hh.root.scale.setScalar(1.15); hh.root.position.y = -.2; hd.add(hh.root);
+            hh.subs.forEach(sp => reg('jantung', sp.k, sp.group, { interior: sp.interior }));
+            hd.visible = false;
+            sc.updateMatrixWorld(true);
+            const bc = new T.Vector3(0, 1, 0);
+            an3.parts.forEach(p => {
+                p.base = p.group.position.clone();
+                const c = new T.Box3().setFromObject(p.group).getCenter(new T.Vector3());
+                const d = p.mode === 'jantung' ? hh.root.worldToLocal(c).sub(new T.Vector3(0, .1, 0)) : c.sub(bc);
+                if (d.length() < .02) d.set(0, 0, 1);
+                p.dir = d.normalize();
+            });
+            an3.root = g; an3.body = body; an3.hd = hd; an3.camT = { y: 1, z: 3.3 };
+            // label penunjuk (jantung detail)
+            const ov = document.createElement('div'); ov.className = 'an3-ov';
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'an3-ovs'); ov.appendChild(svg);
+            const labs = AN3_DATA.jantung.map((e, i) => {
+                const d = document.createElement('div'); d.className = 'an3-lab'; d.style.display = 'none';
+                d.innerHTML = '<b>' + e[7] + '</b>' + e[0].split(' (')[0]; d.addEventListener('click', () => an3Info(i)); ov.appendChild(d); return d;
+            });
+            st.appendChild(ov);
+            const hint = document.createElement('div'); hint.className = 'an3-hint'; hint.id = 'an3-hint'; st.appendChild(hint);
+            an3.ready = true; an3Apply();
             const el = r.domElement, ray = new T.Raycaster(), v = new T.Vector2();
-            let drag = false, moved = 0, lx = 0, ly = 0, auto = true;
-            el.addEventListener('pointerdown', e => { drag = true; moved = 0; lx = e.clientX; ly = e.clientY; auto = false; el.setPointerCapture(e.pointerId); });
+            let drag = false, moved = 0, lx = 0, ly = 0, lw = W, lh = H;
+            el.addEventListener('pointerdown', e => { drag = true; moved = 0; lx = e.clientX; ly = e.clientY; an3.auto = false; an3.rotT = null; el.setPointerCapture(e.pointerId); });
             el.addEventListener('pointermove', e => {
                 if (!drag) return;
                 const dx = e.clientX - lx, dy = e.clientY - ly; moved += Math.abs(dx) + Math.abs(dy); lx = e.clientX; ly = e.clientY;
@@ -4732,13 +5018,45 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 const b = el.getBoundingClientRect();
                 v.set(((e.clientX - b.left) / b.width) * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1);
                 ray.setFromCamera(v, cam);
-                const hit = ray.intersectObjects(an3.meshes.filter(m => m.visible))[0];
+                const pick = []; an3.parts.forEach(p => { if (p.group.visible && !p.ghost) p.meshes.forEach(o => pick.push(o)); });
+                const hit = ray.intersectObjects(pick, false)[0];
                 an3Info(hit ? hit.object.userData.i : -1);
             });
-            el.addEventListener('wheel', e => { e.preventDefault(); cam.position.z = Math.max(1.6, Math.min(4.2, cam.position.z + e.deltaY * 0.002)); }, { passive: false });
+            el.addEventListener('wheel', e => { e.preventDefault(); an3.camT.z = Math.max(1.3, Math.min(4.2, an3.camT.z + e.deltaY * 0.002)); }, { passive: false });
+            const place = () => {
+                const show = an3.mode === 'jantung' && an3.labels, w = st.clientWidth, h = st.clientHeight, narrow = w < 520;
+                const items = []; hh.root.updateMatrixWorld(true);
+                AN3_DATA.jantung.forEach((e, i) => {
+                    const lab = labs[i], vis = show && (!e[8] || an3.cut) && (!narrow || i === an3.sel);
+                    lab.classList.toggle('on', i === an3.sel);
+                    if (!vis) { lab.style.display = 'none'; return; }
+                    lab.style.display = 'block';
+                    const q = new T.Vector3(e[1][0], e[1][1], e[1][2]).applyMatrix4(hh.root.matrixWorld).project(cam);
+                    items.push({ i: i, px: (q.x + 1) / 2 * w, py: (1 - q.y) / 2 * h });
+                });
+                let lines = '';
+                [true, false].forEach(left => {
+                    const col = items.filter(o => (o.px < w / 2) === left).sort((a, b) => a.py - b.py); let prev = -99;
+                    col.forEach(o => {
+                        const lab = labs[o.i], lh2 = lab.offsetHeight || 30;
+                        let ly2 = Math.max(o.py - lh2 / 2, prev + 4, 6); ly2 = Math.min(ly2, h - lh2 - 6); prev = ly2 + lh2;
+                        if (left) { lab.style.left = '8px'; lab.style.right = 'auto'; } else { lab.style.right = '8px'; lab.style.left = 'auto'; }
+                        lab.style.top = ly2 + 'px';
+                        const ex = left ? 8 + lab.offsetWidth : w - 8 - lab.offsetWidth;
+                        lines += '<line x1="' + ex + '" y1="' + (ly2 + lh2 / 2) + '" x2="' + o.px + '" y2="' + o.py + '" stroke="#fde68a" stroke-width="1.2"/><circle cx="' + o.px + '" cy="' + o.py + '" r="3" fill="#f59e0b"/>';
+                    });
+                });
+                svg.innerHTML = lines;
+            };
             (function tick() {
                 if (!document.body.contains(el)) { an3.ready = false; r.dispose(); return; }
-                if (auto) g.rotation.y += 0.004;
+                const w = st.clientWidth, h = st.clientHeight;
+                if (w && h && (w !== lw || h !== lh)) { lw = w; lh = h; r.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+                if (an3.rotT != null) { let d = an3.rotT - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * .12; if (Math.abs(d) < .01) an3.rotT = null; }
+                else if (an3.auto && an3.mode !== 'jantung' && an3.sel < 0) g.rotation.y += 0.004;
+                cam.position.y += (an3.camT.y - cam.position.y) * .08; cam.position.z += (an3.camT.z - cam.position.z) * .08; cam.lookAt(0, cam.position.y, 0);
+                hh.root.updateMatrixWorld(true); an3.clip.copy(an3.clipL).applyMatrix4(hh.root.matrixWorld);
+                if (w && h) place();
                 r.render(sc, cam); requestAnimationFrame(tick);
             })();
         }

@@ -1152,7 +1152,35 @@ html.dark .mv-label{color:#94a3b8}
     html.dark #home-terbaru-container>div>div:first-child{border-bottom-color:#24324d}
     @media(max-width:640px){#home-terbaru-container .space-y-3{grid-template-columns:1fr}#home-terbaru-container .space-y-3>button:first-child{grid-column:auto;min-height:320px}#home-terbaru-container .space-y-3>button{min-height:230px}}
     </style>
-    <style id="usu-move">
+    <style id="anat3d-style">
+/* ===== MOVE: Pembelajaran Anatomi 3D (ditambahkan, terpisah dari Booking) ===== */
+.an3-wrap{background:#fff;border-radius:2rem;border-top:5px solid #f59e0b;box-shadow:0 12px 32px rgba(5,90,42,.1);padding:24px;margin-bottom:2rem}
+.an3-badge{display:inline-flex;align-items:center;gap:8px;background:#fff7ed;color:#c2410c;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:999px}
+.an3-head h4{font-size:1.5rem;font-weight:900;color:#0a6b34;margin:10px 0 4px}
+.an3-head p{font-size:13px;color:#475569;margin:0 0 14px;line-height:1.6}
+.an3-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.an3-tab{border:2px solid #bbf7d0;background:#fff;color:#166534;font-weight:800;font-size:12px;padding:8px 16px;border-radius:999px;cursor:pointer}
+.an3-tab.on{background:linear-gradient(90deg,#055a2a,#0b8a43);border-color:transparent;color:#fff}
+.an3-grid{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:900px){.an3-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}}
+.an3-stage{position:relative;height:400px;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#04361c,#0a6b34 60%,#2f9e44);display:flex;align-items:center;justify-content:center}
+.an3-stage canvas{display:block;width:100%!important;height:100%!important;touch-action:none;cursor:grab}
+.an3-start,.an3-load{color:#fff;font-weight:800;font-size:13px}
+.an3-start{background:#f59e0b;color:#052e1b;border:0;padding:14px 24px;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.an3-hint{position:absolute;left:12px;bottom:10px;color:rgba(255,255,255,.8);font-size:11px;font-weight:600;pointer-events:none}
+.an3-info h5{font-size:1.15rem;font-weight:900;color:#0a6b34;margin:0 0 6px}
+.an3-info p{font-size:13px;line-height:1.7;color:#334155;margin:0 0 8px}
+.an3-tip{background:#f0fdf4;border-left:4px solid #f59e0b;padding:10px 12px;border-radius:8px}
+.an3-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.an3-chip{border:1px solid #bbf7d0;background:#f0fdf4;color:#166534;font-weight:700;font-size:11px;padding:6px 12px;border-radius:999px;cursor:pointer}
+.an3-chip.on{background:#f59e0b;border-color:#f59e0b;color:#052e1b}
+.an3-note{font-size:11px;color:#64748b;margin:14px 0 0}
+html.dark .an3-wrap{background:#151f32}
+html.dark .an3-info p,html.dark .an3-head p,html.dark .an3-note{color:#cbd5e1}
+html.dark .an3-head h4,html.dark .an3-info h5{color:#86efac}
+html.dark .an3-tip,html.dark .an3-chip{background:#0b3d24;color:#bbf7d0}
+</style>
+<style id="usu-move">
     /* ===== MOVE: banner gaya USU + deret tahapan gaya ikon SDG ===== */
     .mp-banner{border-radius:30px!important;padding:44px 34px!important;min-height:300px;box-shadow:0 22px 50px rgba(15,47,107,.28)!important}
     @media(min-width:768px){.mp-banner{padding:58px 64px!important;min-height:340px}.mp-title{font-size:2.5rem!important}}
@@ -4461,9 +4489,136 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
         // ================== END BERKAS PERSIAPAN MOVE ==================
 
+        // ================== PEMBELAJARAN ANATOMI 3D (MOVE) ==================
+        // [nama, posisi, skala, warna, kembar(kiri-kanan), penjelasan, tips]
+        const AN3_DATA = {
+            otot: [
+                ['Trapezius (leher–bahu)',[0,1.47,-0.06],[.22,.07,.06],0xf59e0b,0,'Otot lebar dari leher ke punggung atas; menahan kepala dan menggerakkan bahu.','Sering kaku karena menunduk lama; peregangan leher ringan dan pijat lembut bisa membantu.'],
+                ['Deltoid (bahu)',[.28,1.42,0],[.08,.08,.08],0xf97316,1,'Membentuk bulatan bahu dan mengangkat lengan ke berbagai arah.','Pegal setelah mengangkat beban; hindari menekan keras pada nyeri tajam.'],
+                ['Pectoralis (dada)',[0,1.32,.1],[.17,.09,.05],0xef4444,0,'Menggerakkan lengan ke depan dan ke dalam.','Dada yang terlalu tegang dapat membuat bahu terlihat membungkuk.'],
+                ['Abdominal (perut)',[0,1.08,.11],[.12,.14,.04],0xfb923c,0,'Menjaga postur, melindungi organ perut, dan membantu membungkuk serta bernapas.','Otot perut yang kuat membantu mengurangi beban pinggang.'],
+                ['Latissimus (punggung atas)',[0,1.25,-.1],[.19,.14,.05],0xdc2626,0,'Otot terlebar di punggung; menarik lengan ke bawah dan ke belakang.','Duduk dengan punggung tegak mencegah pegal punggung.'],
+                ['Erector spinae (pinggang)',[0,.98,-.1],[.15,.09,.05],0xf59e0b,0,'Deretan otot sepanjang tulang belakang yang menegakkan badan.','Pegal pinggang sering muncul karena duduk lama atau cara mengangkat yang keliru.'],
+                ['Lengan atas (biceps/triceps)',[.33,1.22,0],[.05,.14,.05],0xf97316,1,'Menekuk dan meluruskan siku.','Istirahatkan lengan bila pegal setelah aktivitas berat.'],
+                ['Quadriceps (paha)',[.1,.62,.02],[.075,.2,.075],0xef4444,1,'Empat otot paha depan untuk meluruskan lutut, berjalan, dan melompat.','Peregangan ringan setelah olahraga mengurangi rasa kaku.'],
+                ['Gastrocnemius (betis)',[.1,.28,-.03],[.055,.14,.055],0xfb923c,1,'Otot betis untuk berjinjit, berjalan, dan berlari.','Kram betis dapat dibantu peregangan pelan dan cukup minum air.']
+            ],
+            organ: [
+                ['Otak',[0,1.7,0],[.1,.07,.09],0xf9a8d4,0,'Pusat kendali tubuh: berpikir, mengingat, dan mengatur gerak.','Terlindung tengkorak; selalu pakai helm saat berkendara.'],
+                ['Paru-paru',[.08,1.3,.02],[.07,.11,.06],0x93c5fd,1,'Mengambil oksigen dan membuang karbon dioksida saat bernapas.','Udara bersih dan tidak merokok menjaga paru-paru sehat.'],
+                ['Jantung',[.03,1.27,.05],[.045,.05,.045],0xdc2626,0,'Memompa darah ke seluruh tubuh, sekitar seratus ribu kali per hari.','Olahraga teratur membuat jantung lebih kuat.'],
+                ['Hati',[-.07,1.12,.03],[.09,.05,.05],0x92400e,0,'Organ dalam terbesar: menyaring racun, mengolah nutrisi, membantu pencernaan.','Pola makan seimbang membantu menjaga hati.'],
+                ['Lambung',[.07,1.1,.04],[.06,.05,.05],0xfdba74,0,'Kantung otot yang mencerna makanan dengan asam dan enzim.','Makan teratur membantu lambung tetap nyaman.'],
+                ['Usus',[0,.92,.04],[.12,.07,.06],0xfcd34d,0,'Menyerap nutrisi dan air dari makanan.','Serat dan air putih membantu pencernaan lancar.'],
+                ['Ginjal',[.07,1.02,-.06],[.03,.045,.03],0xb91c1c,1,'Dua organ penyaring darah yang membentuk urine dan menjaga cairan tubuh.','Cukup minum air putih membantu ginjal bekerja baik.']
+            ]
+        };
+        let an3 = { mode: 'otot', sel: -1, meshes: [] };
+        function buildAnatomi3DHtml() {
+            return '<div id="kg-sec-belajar" class="an3-wrap" style="scroll-margin-top:100px">'
+                + '<div class="an3-head"><span class="an3-badge"><i class="fas fa-graduation-cap"></i> Pembelajaran</span>'
+                + '<h4>Belajar Anatomi Tubuh 3D</h4>'
+                + '<p>Putar model, perbesar, lalu ketuk bagian tubuh untuk mengenal fungsinya. Ini materi belajar, terpisah dari layanan booking di atas.</p></div>'
+                + '<div class="an3-tabs"><button type="button" class="an3-tab on" data-m="otot" onclick="an3Mode(\'otot\')">Otot &amp; Area Pijat</button>'
+                + '<button type="button" class="an3-tab" data-m="organ" onclick="an3Mode(\'organ\')">Organ Dalam</button></div>'
+                + '<div class="an3-grid"><div class="an3-stage" id="an3-stage"><button type="button" class="an3-start" onclick="an3Start()"><i class="fas fa-cube"></i> Mulai Belajar 3D</button></div>'
+                + '<div class="an3-info"><div id="an3-info-body"><h5>Pilih bagian tubuh</h5><p>Ketuk bagian pada model 3D atau pilih dari daftar di bawah.</p></div><div class="an3-chips" id="an3-list">' + an3ChipsHtml() + '</div></div></div>'
+                + '<p class="an3-note">Materi edukasi umum, bukan pengganti pemeriksaan atau saran tenaga kesehatan.</p></div>';
+        }
+        function an3ChipsHtml() {
+            return AN3_DATA[an3.mode].map((e, i) => '<button type="button" class="an3-chip' + (i === an3.sel ? ' on' : '') + '" data-i="' + i + '" onclick="an3Info(' + i + ')">' + e[0].split(' (')[0] + '</button>').join('');
+        }
+        function an3Mode(m) {
+            an3.mode = m; an3.sel = -1;
+            document.querySelectorAll('.an3-tab').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+            const l = document.getElementById('an3-list'); if (l) l.innerHTML = an3ChipsHtml();
+            an3Info(-1); an3Apply();
+        }
+        function an3Info(i) {
+            an3.sel = i;
+            const e = AN3_DATA[an3.mode][i], a = document.getElementById('an3-info-body');
+            if (a) a.innerHTML = e ? '<h5>' + e[0] + '</h5><p>' + e[5] + '</p><p class="an3-tip"><i class="fas fa-lightbulb"></i> ' + e[6] + '</p>' : '<h5>Pilih bagian tubuh</h5><p>Ketuk bagian pada model 3D atau pilih dari daftar di bawah.</p>';
+            document.querySelectorAll('.an3-chip').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+            an3Apply();
+        }
+        function an3Apply() {
+            if (!an3.ready) return;
+            an3.meshes.forEach(m => {
+                m.visible = m.userData.mode === an3.mode;
+                m.material.emissive.setHex(m.visible && m.userData.i === an3.sel ? 0x777777 : 0);
+            });
+            an3.bodyMat.opacity = an3.mode === 'otot' ? 0.2 : 0.1;
+        }
+        function an3Start() {
+            const st = document.getElementById('an3-stage'); if (!st) return;
+            st.innerHTML = '<div class="an3-load">Memuat model 3D…</div>';
+            if (window.THREE) return an3Init(st);
+            const s = document.createElement('script');
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+            s.onload = () => an3Init(st);
+            s.onerror = () => { st.innerHTML = '<button type="button" class="an3-start" onclick="an3Start()">Gagal memuat. Coba lagi</button>'; };
+            document.head.appendChild(s);
+        }
+        function an3Init(st) {
+            const T = THREE; st.innerHTML = '';
+            const W = st.clientWidth || 600, H = st.clientHeight || 400;
+            const r = new T.WebGLRenderer({ antialias: true, alpha: true });
+            r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); r.setSize(W, H); st.appendChild(r.domElement);
+            const sc = new T.Scene(), cam = new T.PerspectiveCamera(38, W / H, 0.1, 50);
+            cam.position.set(0, 1.0, 3.2); cam.lookAt(0, 0.95, 0);
+            sc.add(new T.AmbientLight(0xffffff, 0.75));
+            const dl = new T.DirectionalLight(0xffffff, 0.8); dl.position.set(2, 3, 4); sc.add(dl);
+            const g = new T.Group(); sc.add(g);
+            const bm = new T.MeshPhongMaterial({ color: 0xe2f5e8, transparent: true, opacity: 0.2, depthWrite: false });
+            const add = (geo, x, y, z, rz) => { const m = new T.Mesh(geo, bm); m.position.set(x, y, z); if (rz) m.rotation.z = rz; g.add(m); };
+            add(new T.SphereGeometry(.12, 20, 16), 0, 1.68, 0);
+            add(new T.CylinderGeometry(.05, .05, .1, 12), 0, 1.56, 0);
+            add(new T.CylinderGeometry(.2, .16, .62, 18), 0, 1.16, 0);
+            add(new T.CylinderGeometry(.17, .15, .2, 18), 0, .78, 0);
+            [-1, 1].forEach(s => {
+                add(new T.CylinderGeometry(.045, .04, .55, 12), s * .33, 1.2, 0, s * .1);
+                add(new T.CylinderGeometry(.075, .055, .8, 14), s * .1, .4, 0);
+            });
+            an3.meshes = [];
+            Object.keys(AN3_DATA).forEach(mode => AN3_DATA[mode].forEach((e, i) => {
+                (e[4] ? [1, -1] : [1]).forEach(s => {
+                    const m = new T.Mesh(new T.SphereGeometry(1, 20, 16), new T.MeshPhongMaterial({ color: e[3], shininess: 40 }));
+                    m.position.set(e[1][0] * s, e[1][1], e[1][2]); m.scale.set(e[2][0], e[2][1], e[2][2]);
+                    m.userData = { mode: mode, i: i }; g.add(m); an3.meshes.push(m);
+                });
+            }));
+            an3.bodyMat = bm; an3.ready = true; an3Apply();
+            const hint = document.createElement('div'); hint.className = 'an3-hint'; hint.textContent = 'Geser untuk memutar • scroll untuk zoom • ketuk bagian tubuh'; st.appendChild(hint);
+            const el = r.domElement, ray = new T.Raycaster(), v = new T.Vector2();
+            let drag = false, moved = 0, lx = 0, ly = 0, auto = true;
+            el.addEventListener('pointerdown', e => { drag = true; moved = 0; lx = e.clientX; ly = e.clientY; auto = false; el.setPointerCapture(e.pointerId); });
+            el.addEventListener('pointermove', e => {
+                if (!drag) return;
+                const dx = e.clientX - lx, dy = e.clientY - ly; moved += Math.abs(dx) + Math.abs(dy); lx = e.clientX; ly = e.clientY;
+                g.rotation.y += dx * 0.01; g.rotation.x = Math.max(-0.6, Math.min(0.6, g.rotation.x + dy * 0.005));
+            });
+            el.addEventListener('pointerup', e => {
+                drag = false;
+                if (moved > 6) return;
+                const b = el.getBoundingClientRect();
+                v.set(((e.clientX - b.left) / b.width) * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1);
+                ray.setFromCamera(v, cam);
+                const hit = ray.intersectObjects(an3.meshes.filter(m => m.visible))[0];
+                an3Info(hit ? hit.object.userData.i : -1);
+            });
+            el.addEventListener('wheel', e => { e.preventDefault(); cam.position.z = Math.max(1.6, Math.min(4.2, cam.position.z + e.deltaY * 0.002)); }, { passive: false });
+            (function tick() {
+                if (!document.body.contains(el)) { an3.ready = false; r.dispose(); return; }
+                if (auto) g.rotation.y += 0.004;
+                r.render(sc, cam); requestAnimationFrame(tick);
+            })();
+        }
+        // ================== END PEMBELAJARAN ANATOMI 3D ==================
+
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
+            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-graduation-cap"></i> Belajar Anatomi 3D</button>';
             if (bmSorted(true).length) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-berkas\')"><i class="fas fa-file-arrow-down"></i> Berkas</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-statistik\')"><i class="fas fa-chart-simple"></i> Statistik</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-riwayat\')"><i class="fas fa-clipboard-list"></i> Riwayat Kegiatan</button>';
@@ -4905,6 +5060,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                           + '<button onclick="openPijatModal()" class="relative z-10 flex-shrink-0 bg-white text-teal-700 hover:bg-teal-50 px-8 py-4 rounded-[1rem] font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 flex items-center gap-2"><i class="fas fa-hand-holding-medical"></i> Daftar / Booking</button>'
                           + '</div>'
                           + '<div id="pijat-inline-host" style="scroll-margin-top:100px"></div>';
+                    html += buildAnatomi3DHtml();
 
                     if (kegiatanItems.length > 0) {
                         let itemsDesc = kegiatanItems.slice().reverse();

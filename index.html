@@ -4756,6 +4756,318 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
         // ================== END ATLAS ==================
 
+        // ================== DETAIL ORGAN 3D (klik organ di "Gambar Organ Dalam" -> model 3D berlabel, seperti jantung) ==================
+        const AN3_SVG_KEY = ['tiroid', 'hati', 'lambung', 'pankreas', 'usus', 'otak', 'paru', 'jantung', 'ginjal', 'kandung'];
+        function an3DetHasInt() { const D = AN3_DET[an3.det]; return !!D && D.parts.some(p => p[8]); }
+        function an3OpenDetail(k) {
+            const key = AN3_SVG_KEY[k]; if (!key) return;
+            an3.pend = key; an3View('3d');
+            if (an3.ready) an3Detail(key); else an3Start();
+        }
+        function an3Detail(key) {
+            an3.pend = null;
+            if (key === 'jantung') { an3Mode('jantung'); an3.back = true; an3Apply(); return; }
+            const D = AN3_DET[key]; if (!D) return;
+            an3.back = true; an3.det = key; an3.mode = 'detail'; an3.sel = -1; an3.lastSel = -2; an3.cut = false; an3.explode = 0; an3.rotT = 0;
+            AN3_DATA.detail = D.parts;
+            if (an3.clipDL) an3.clipDL.normal.set(D.cutN[0], D.cutN[1], D.cutN[2]);
+            const sl = document.getElementById('an3-exp'); if (sl) sl.value = 0;
+            const c = document.getElementById('an3-cut'); if (c) c.classList.remove('on');
+            document.querySelectorAll('.an3-tab').forEach(b => b.classList.remove('on'));
+            const l = document.getElementById('an3-list'); if (l) l.innerHTML = an3ChipsHtml();
+            an3Info(-1);
+        }
+        function an3Back() {
+            an3.back = false; an3.cut = false; an3.explode = 0; an3.mode = 'atlas';
+            const sl = document.getElementById('an3-exp'); if (sl) sl.value = 0;
+            const c = document.getElementById('an3-cut'); if (c) c.classList.remove('on');
+            document.querySelectorAll('.an3-tab').forEach(b => b.classList.toggle('on', b.dataset.m === 'atlas'));
+            an3View('svg');
+        }
+        // alat bantu pembuat bentuk untuk model detail (semua bahan ikut bidang potong an3.clipD)
+        function an3DetKit(T) {
+            const clip = [an3.clipD], tex = an3Tex(T, 'o');
+            const light = c => new T.Color(c).lerp(new T.Color(0xffffff), .4).getHex();
+            const mat = (c, side) => new T.MeshStandardMaterial({ color: c, map: tex, bumpMap: tex, bumpScale: .5, roughness: .45, metalness: .03, side: side || T.FrontSide, clippingPlanes: clip });
+            const V = a => new T.Vector3(a[0], a[1], a[2]);
+            const curve = pts => new T.CatmullRomCurve3(pts.map(V));
+            const K = { T: T };
+            K.grp = function () { const g = new T.Group(); for (let i = 0; i < arguments.length; i++) g.add(arguments[i]); return g; };
+            K.geoBlob = (c, rd, o) => {
+                o = o || {};
+                const g = new T.SphereGeometry(1, 36, 26), p = g.attributes.position, fq = o.fq || 8;
+                for (let i = 0; i < p.count; i++) {
+                    let x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+                    if (o.fn) { const r = o.fn(x, y, z); x = r[0]; y = r[1]; z = r[2]; }
+                    if (o.tp && y < 0) { const k = 1 + y * o.tp; x *= k; z *= k; }
+                    if (o.amp) { const d = 1 + o.amp * Math.sin(fq * x + 1.3) * Math.sin(fq * y + .7) * Math.sin(fq * z + 2.1); x *= d; y *= d; z *= d; }
+                    p.setXYZ(i, x * rd[0], y * rd[1], z * rd[2]);
+                }
+                if (o.rz) g.rotateZ(o.rz); if (o.rx) g.rotateX(o.rx); if (o.ry) g.rotateY(o.ry);
+                g.translate(c[0], c[1], c[2]); g.computeVertexNormals(); return g;
+            };
+            K.sh = (geo, c, inner) => { const g = new T.Group(); g.add(new T.Mesh(geo, mat(c))); g.add(new T.Mesh(geo, mat(inner || light(c), T.BackSide))); return g; };
+            K.blob = (c, rd, col, o) => K.sh(K.geoBlob(c, rd, o), col, o && o.inner);
+            K.spin = (a, b, r, sx, sz, bel, col) => K.sh(an3SpindleGeo(T, a, b, r, sx, sz, bel), col);
+            K.tube = (pts, r, col, seg) => new T.Mesh(new T.TubeGeometry(curve(pts), seg || 40, r, 12, false), mat(col, T.DoubleSide));
+            K.sph = (c, r, col) => { const m = new T.Mesh(new T.SphereGeometry(r, 14, 10), mat(col)); m.position.set(c[0], c[1], c[2]); return m; };
+            K.beads = (pts, n, rad, col, sy) => { const c = curve(pts), g = new T.Group(), geo = new T.SphereGeometry(rad, 14, 10), m = mat(col); for (let k = 0; k <= n; k++) { const s = new T.Mesh(geo, m); s.position.copy(c.getPoint(k / n)); s.scale.set(1, sy || .9, 1); g.add(s); } return g; };
+            K.rings = (pts, n, R, r, col) => { const c = curve(pts), g = new T.Group(), geo = new T.TorusGeometry(R, r, 8, 20), m = mat(col), z = new T.Vector3(0, 0, 1); for (let k = 0; k <= n; k++) { const t = new T.Mesh(geo, m); t.position.copy(c.getPoint(k / n)); t.quaternion.setFromUnitVectors(z, c.getTangent(k / n)); g.add(t); } return g; };
+            K.torus = (c, R, r, col, horiz) => { const t = new T.Mesh(new T.TorusGeometry(R, r, 10, 24), mat(col)); t.position.set(c[0], c[1], c[2]); if (horiz) t.rotation.x = Math.PI / 2; return t; };
+            K.cone = (p, d, r, h, col) => { const m = new T.Mesh(new T.ConeGeometry(r, h, 16), mat(col)); m.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), V(d).normalize()); m.position.set(p[0], p[1], p[2]); return m; };
+            K.tri = (a, b, c, col) => { const g = new T.BufferGeometry(); g.setAttribute('position', new T.Float32BufferAttribute([].concat(a, b, c), 3)); g.computeVertexNormals(); return new T.Mesh(g, mat(col, T.DoubleSide)); };
+            return K;
+        }
+        // [nama, titik label, -, warna, -, penjelasan, tips, latin, dalam?]
+        const AN3_DET = {
+            otak: {
+                cutN: [-1, 0, 0], sc: .62, rot: [0, -Math.PI / 2],
+                parts: [
+                    ['Lobus frontal', [.5, .22, .5], 0, 0xf4a6b6, 0, 'Bagian depan otak: pusat berpikir, merencanakan, mengambil keputusan, berbicara, dan mengatur gerak sadar.', 'Tidur cukup dan sarapan bergizi membantu fokus belajar.', 'Lobus frontalis'],
+                    ['Lobus parietal', [.5, .42, -.05], 0, 0xf7c27a, 0, 'Mengolah rasa sentuhan, suhu, nyeri, serta posisi tubuh dan orientasi ruang.', 'Aktivitas fisik rutin membantu otak tetap bugar.', 'Lobus parietalis'],
+                    ['Lobus temporal', [.52, -.12, .15], 0, 0x8fcaf0, 0, 'Berperan dalam pendengaran, ingatan, dan memahami bahasa.', 'Jaga volume suara headset agar pendengaran terlindungi.', 'Lobus temporalis'],
+                    ['Lobus oksipital', [.45, .05, -.62], 0, 0xa6d9a0, 0, 'Bagian belakang otak yang mengolah penglihatan.', 'Istirahatkan mata dari layar secara berkala.', 'Lobus occipitalis'],
+                    ['Otak kecil', [.2, -.32, -.55], 0, 0xc79bd6, 0, 'Mengoordinasikan gerak serta menjaga keseimbangan dan postur tubuh.', 'Latihan keseimbangan sederhana, seperti berdiri satu kaki, baik untuk koordinasi.', 'Cerebellum'],
+                    ['Batang otak', [.07, -.55, -.15], 0, 0xe4c9a3, 0, 'Menghubungkan otak dengan sumsum tulang belakang dan mengatur fungsi vital: napas, denyut jantung, dan kesadaran.', 'Gunakan helm dan sabuk pengaman untuk melindungi kepala dan leher.', 'Truncus encephali'],
+                    ['Korpus kalosum', [0, .17, 0], 0, 0xf3efe8, 0, 'Berkas serat saraf tebal yang menghubungkan belahan otak kiri dan kanan agar bekerja sama.', 'Aktivitas yang memakai kedua tangan, seperti bermain musik, melibatkan kedua belahan otak.', 'Corpus callosum', 1],
+                    ['Talamus', [0, -.04, .05], 0, 0xd4a373, 0, 'Stasiun relai yang meneruskan sinyal dari indra ke bagian otak yang sesuai.', 'Rutinitas tidur yang teratur membantu otak memproses informasi.', 'Thalamus', 1],
+                    ['Hipofisis', [0, -.24, .24], 0, 0xf0b04a, 0, 'Kelenjar kecil di dasar otak yang mengatur banyak kelenjar hormon lain, bekerja bersama hipotalamus.', 'Pola hidup teratur membantu keseimbangan hormon.', 'Hypophysis (glandula pituitaria)', 1]
+                ],
+                build: K => {
+                    const pair = fn => { const g = K.grp(); [1, -1].forEach(s => g.add(fn(s))); return g; };
+                    const lobe = (c, rd, col) => pair(s => K.blob([c[0] * s, c[1], c[2]], rd, col, { amp: .07, fq: 10 }));
+                    return [
+                        lobe([.26, .14, .4], [.27, .3, .31], 0xf4a6b6), lobe([.27, .3, -.05], [.28, .25, .3], 0xf7c27a),
+                        lobe([.34, -.1, .12], [.2, .14, .36], 0x8fcaf0), lobe([.24, .02, -.46], [.25, .24, .22], 0xa6d9a0),
+                        K.blob([0, -.33, -.5], [.36, .17, .22], 0xc79bd6, { amp: .08, fq: 22 }),
+                        K.grp(K.tube([[0, -.05, -.02], [0, -.45, -.14], [0, -.78, -.2]], .075, 0xe4c9a3, 24), K.blob([0, -.22, 0], [.11, .09, .1], 0xe4c9a3)),
+                        K.tube([[0, .02, .34], [0, .12, .2], [0, .16, 0], [0, .12, -.2], [0, 0, -.34]], .035, 0xf3efe8, 30),
+                        K.blob([0, -.04, 0], [.07, .05, .09], 0xd4a373),
+                        K.blob([0, -.24, .24], [.035, .035, .035], 0xf0b04a)
+                    ];
+                }
+            },
+            paru: {
+                cutN: [0, 0, -1], sc: .6, rot: [0, 0],
+                parts: [
+                    ['Trakea', [0, .78, .05], 0, 0xe9c7b0, 0, 'Pipa napas dengan cincin tulang rawan berbentuk C yang menjaga saluran tetap terbuka.', 'Hindari asap rokok dan debu; pakai masker bila udara berdebu.', 'Trachea'],
+                    ['Bronkus utama', [-.15, .34, .08], 0, 0xe9c7b0, 0, 'Percabangan trakea ke paru kanan dan kiri; bronkus kanan lebih lebar dan lebih tegak.', 'Napas dalam membantu udara mencapai bagian bawah paru.', 'Bronchus principalis'],
+                    ['Lobus atas kanan', [-.55, .55, .2], 0, 0xe86a6a, 0, 'Paru kanan memiliki tiga lobus: atas, tengah, dan bawah.', 'Postur tegak membantu paru mengembang dengan baik.', 'Lobus superior dexter'],
+                    ['Lobus tengah kanan', [-.6, 0, .22], 0, 0xf4a259, 0, 'Lobus terkecil paru kanan, dipisahkan celah (fisura) dari lobus lainnya.', 'Olahraga aerobik teratur membantu kapasitas paru.', 'Lobus medius dexter'],
+                    ['Lobus bawah kanan', [-.55, -.5, .2], 0, 0x6fb1d8, 0, 'Lobus terbesar paru kanan, bersandar pada diafragma.', 'Napas perut membantu bagian bawah paru ikut terpakai.', 'Lobus inferior dexter'],
+                    ['Lobus atas kiri', [.55, .5, .2], 0, 0xe86a6a, 0, 'Paru kiri hanya dua lobus karena sebagian ruangnya ditempati jantung; tepinya memiliki cekungan jantung.', 'Tidak merokok menjaga paru tetap bersih.', 'Lobus superior sinister'],
+                    ['Lobus bawah kiri', [.55, -.5, .2], 0, 0x6fb1d8, 0, 'Lobus bawah paru kiri, tepat di atas diafragma.', 'Batuk berkepanjangan sebaiknya diperiksakan ke tenaga kesehatan.', 'Lobus inferior sinister'],
+                    ['Percabangan bronkiolus', [.38, .2, .05], 0, 0xf0d9c6, 0, 'Bronkus terus bercabang menjadi saluran makin kecil (bronkiolus) seperti pohon terbalik.', 'Udara bersih membantu saluran napas tetap nyaman.', 'Bronchioli', 1],
+                    ['Alveoli', [.44, -.2, .05], 0, 0xf7b3c2, 0, 'Kantong udara mikroskopis tempat oksigen masuk ke darah dan karbon dioksida keluar; jumlahnya ratusan juta. Digambarkan skematis.', 'Aktif bergerak membuat pertukaran gas lebih efisien.', 'Alveoli pulmonis', 1],
+                    ['Diafragma', [0, -.9, .2], 0, 0xd6a287, 0, 'Otot berbentuk kubah di bawah paru; saat berkontraksi ia turun dan menarik udara masuk.', 'Latihan napas perut melatih otot ini.', 'Diaphragma']
+                ],
+                build: K => {
+                    const stem = s => [[[.27, .24, .05], [.36, .45, .03], [.42, .65, 0]], [[.27, .24, .05], [.4, .08, .05], [.47, -.1, .04]], [[.3, .1, .05], [.37, -.28, .03], [.43, -.6, 0]]].map(p => p.map(q => [q[0] * s, q[1], q[2]]));
+                    const tree = K.grp(), alv = K.grp(), off = [[0, 0, 0], [.04, .03, 0], [-.04, .03, .02], [.02, -.04, .03], [-.03, -.03, -.02], [.03, 0, -.04]];
+                    [1, -1].forEach(s => stem(s).forEach(pts => {
+                        tree.add(K.tube(pts, .02, 0xf0d9c6, 20));
+                        const e = pts[2];
+                        [[.09, .07], [-.08, .09]].forEach(o => {
+                            const f = [e[0] + o[0] * s, e[1] + o[1], e[2] + .03];
+                            tree.add(K.tube([e, f], .01, 0xf0d9c6, 6));
+                            off.forEach(c => alv.add(K.sph([f[0] + c[0], f[1] + c[1], f[2] + c[2]], .03, 0xf7b3c2)));
+                        });
+                    }));
+                    const lob = (c, rd, col, o) => K.blob(c, rd, col, Object.assign({ amp: .03 }, o));
+                    return [
+                        K.grp(K.tube([[0, .92, 0], [0, .4, 0]], .055, 0xe9c7b0, 16), K.rings([[0, .9, 0], [0, .42, 0]], 9, .06, .013, 0xf4e9dc)),
+                        K.grp(K.tube([[0, .4, 0], [-.14, .33, .02], [-.27, .24, .05]], .045, 0xe9c7b0, 16), K.tube([[0, .4, 0], [.14, .33, .02], [.3, .2, .05]], .042, 0xe9c7b0, 16)),
+                        lob([-.46, .4, 0], [.28, .28, .22], 0xe86a6a), lob([-.5, 0, .06], [.26, .16, .2], 0xf4a259), lob([-.46, -.4, -.02], [.29, .3, .22], 0x6fb1d8, { tp: .1 }),
+                        lob([.46, .35, 0], [.26, .34, .22], 0xe86a6a), lob([.46, -.4, -.02], [.27, .3, .22], 0x6fb1d8, { tp: .1 }),
+                        tree, alv,
+                        K.blob([0, -.84, 0], [.86, .13, .3], 0xd6a287)
+                    ];
+                }
+            },
+            hati: {
+                cutN: [0, 0, -1], sc: .62, rot: [-.55, 0],
+                parts: [
+                    ['Lobus kanan', [-.7, .1, .2], 0, 0xa8473d, 0, 'Lobus terbesar hati, terletak di kanan atas perut di bawah tulang rusuk (tampak di sisi kiri gambar).', 'Pola makan seimbang dan membatasi alkohol membantu menjaga hati.', 'Lobus hepatis dexter'],
+                    ['Lobus kiri', [.7, .1, .2], 0, 0xb9534a, 0, 'Lobus yang lebih kecil, memanjang ke kiri di atas lambung.', 'Cukup minum air putih membantu kerja hati dan ginjal.', 'Lobus hepatis sinister'],
+                    ['Lobus kuadratus', [.02, -.38, .15], 0, 0xc9685a, 0, 'Bagian di permukaan bawah hati, di antara kantung empedu dan ligamen bulat.', 'Hindari obat-obatan tanpa anjuran karena hati ikut mengolahnya.', 'Lobus quadratus'],
+                    ['Lobus kaudatus', [.12, -.15, -.25], 0, 0xc56d55, 0, 'Bagian di permukaan belakang hati, dekat vena kava inferior.', 'Vaksinasi hepatitis melindungi hati dari infeksi virus.', 'Lobus caudatus'],
+                    ['Kantung empedu', [-.35, -.62, .12], 0, 0x6aa84f, 0, 'Kantung hijau kecil yang menyimpan dan memekatkan empedu, lalu mengeluarkannya saat makan berlemak.', 'Makanan sangat berlemak dalam jumlah besar dapat membuat kantung empedu nyeri.', 'Vesica biliaris (fellea)'],
+                    ['Saluran empedu', [-.12, -.35, .1], 0, 0x7cc06a, 0, 'Pipa kecil yang mengalirkan empedu dari hati dan kantung empedu menuju usus dua belas jari.', 'Serat dan air putih membantu pencernaan lancar.', 'Ductus biliares'],
+                    ['Vena porta & arteri hepatika', [.03, -.6, .02], 0, 0x5b6fc0, 0, 'Vena porta membawa darah kaya nutrisi dari usus ke hati; arteri hepatika membawa darah kaya oksigen.', 'Makanan bergizi seimbang memberi hati bahan olahan yang baik.', 'Vena portae et arteria hepatica'],
+                    ['Vena kava inferior', [.3, .3, -.4], 0, 0x3f5bb0, 0, 'Vena besar di belakang hati yang membawa darah dari tubuh bagian bawah kembali ke jantung.', 'Bergerak teratur membantu darah dari kaki kembali ke jantung.', 'Vena cava inferior'],
+                    ['Ligamen falsiformis', [.1, .45, .38], 0, 0xf1e3c8, 0, 'Lipatan jaringan tipis yang menggantung hati pada dinding perut dan menjadi batas lobus kanan dan kiri.', 'Ligamen ini terbentuk dari lipatan selaput perut (peritoneum).', 'Ligamentum falciforme']
+                ],
+                build: K => [
+                    K.blob([-.4, 0, 0], [.6, .36, .4], 0xa8473d, { amp: .02 }),
+                    K.blob([.48, .06, .05], [.42, .22, .28], 0xb9534a, { rz: .15, amp: .02 }),
+                    K.blob([.02, -.28, .1], [.14, .14, .16], 0xc9685a),
+                    K.blob([.12, -.2, -.22], [.14, .14, .14], 0xc56d55),
+                    K.grp(K.blob([-.28, -.5, .1], [.1, .2, .1], 0x6aa84f, { rz: .35 }), K.tube([[-.22, -.36, .1], [-.1, -.42, .08], [-.02, -.5, .06]], .02, 0x6aa84f, 12)),
+                    K.grp(K.tube([[-.3, -.1, .08], [-.15, -.25, .06], [-.05, -.45, .06]], .02, 0x7cc06a, 14), K.tube([[.3, -.05, .08], [.1, -.25, .07], [-.04, -.45, .06]], .02, 0x7cc06a, 14), K.tube([[-.04, -.45, .06], [0, -.75, .04]], .028, 0x7cc06a, 10)),
+                    K.grp(K.tube([[.04, -.78, 0], [.02, -.5, .02], [0, -.35, 0]], .045, 0x5b6fc0, 14), K.tube([[0, -.35, 0], [-.2, -.25, 0], [-.35, -.2, 0]], .035, 0x5b6fc0, 12), K.tube([[0, -.35, 0], [.2, -.25, 0], [.35, -.15, 0]], .035, 0x5b6fc0, 12), K.tube([[.07, -.78, .03], [.05, -.5, .05], [.03, -.36, .04]], .015, 0xd8392b, 14)),
+                    K.tube([[.3, .62, -.42], [.3, 0, -.44], [.3, -.75, -.42]], .065, 0x3f5bb0, 24),
+                    K.blob([.1, .2, .36], [.012, .3, .1], 0xf1e3c8)
+                ]
+            },
+            lambung: {
+                cutN: [0, 0, -1], sc: .5, rot: [0, 0], off: [.1, .0, 0],
+                parts: [
+                    ['Esofagus', [-.15, .9, 0], 0, 0xe9a39a, 0, 'Kerongkongan yang mengantar makanan dari mulut ke lambung lewat gerak menelan (peristaltik).', 'Makan perlahan dan kunyah baik-baik.', 'Oesophagus'],
+                    ['Fundus', [.45, .55, .1], 0, 0xf0a5a0, 0, 'Bagian kubah di atas lambung; menampung makanan dan gas.', 'Hindari langsung berbaring setelah makan banyak.', 'Fundus gastricus'],
+                    ['Korpus', [.4, -.1, .2], 0, 0xe88b8b, 0, 'Badan lambung tempat makanan diaduk dengan asam lambung dan enzim.', 'Makan teratur membantu lambung tetap nyaman.', 'Corpus gastricum'],
+                    ['Antrum', [-.15, -.6, .2], 0, 0xde7a86, 0, 'Bagian bawah yang menggiling makanan menjadi bubur (kimus).', 'Batasi makanan sangat pedas dan asam bila lambung mudah perih.', 'Antrum pyloricum'],
+                    ['Pilorus', [-.55, -.45, .1], 0, 0xb94a5a, 0, 'Katup otot yang mengatur pelepasan kimus sedikit demi sedikit ke usus dua belas jari.', 'Makan dalam porsi wajar membantu pengosongan lambung berjalan baik.', 'Pylorus'],
+                    ['Duodenum', [-.85, -.8, .05], 0, 0xf3b27a, 0, 'Bagian pertama usus halus berbentuk C; menerima empedu dan enzim dari pankreas.', 'Serat dan air putih membantu pencernaan lanjutan.', 'Duodenum'],
+                    ['Rugae', [.1, -.1, -.15], 0, 0xffa8a0, 0, 'Lipatan dinding dalam lambung yang memungkinkannya mengembang saat terisi dan memperluas permukaan.', 'Lambung bisa meregang; makan berlebihan sekaligus membuatnya tidak nyaman.', 'Rugae gastricae', 1]
+                ],
+                build: K => [
+                    K.grp(K.tube([[-.12, 1.0, -.02], [-.1, .75, 0], [-.04, .58, .02]], .06, 0xe9a39a, 16), K.rings([[-.12, .98, -.02], [-.1, .75, 0], [-.05, .62, .02]], 6, .065, .01, 0xf6d5cf)),
+                    K.blob([.22, .42, -.02], [.3, .28, .25], 0xf0a5a0),
+                    K.blob([.15, -.05, 0], [.36, .48, .28], 0xe88b8b, { rz: -.25 }),
+                    K.blob([-.18, -.5, .02], [.3, .18, .2], 0xde7a86, { rz: .35 }),
+                    K.grp(K.blob([-.52, -.55, 0], [.1, .1, .1], 0xb94a5a), K.torus([-.52, -.55, 0], .1, .03, 0x8e2f3d, false)),
+                    K.tube([[-.62, -.55, 0], [-.8, -.45, 0], [-.88, -.7, 0], [-.7, -.95, 0], [-.4, -1.0, 0]], .08, 0xf3b27a, 40),
+                    K.grp.apply(null, [-1, 0, 1, 2].map(k => K.tube([[-.1 + .12 * k, .35, -.17], [0 + .12 * k, .1, -.2], [.05 + .12 * k, -.2, -.2], [-.05 + .12 * k, -.45, -.15]], .025, 0xffa8a0, 20)))
+                ]
+            },
+            pankreas: {
+                cutN: [0, 0, -1], sc: .62, rot: [0, 0], off: [.05, 0, 0],
+                parts: [
+                    ['Kepala', [-.55, -.15, .12], 0, 0xf2c14e, 0, 'Bagian terlebar pankreas yang berada di lengkung usus dua belas jari.', 'Pola makan seimbang membantu pankreas tidak bekerja berlebihan.', 'Caput pancreatis'],
+                    ['Leher', [-.27, .12, .1], 0, 0xf6cf6e, 0, 'Bagian sempit penghubung kepala dan badan pankreas.', 'Cukup minum air putih mendukung pencernaan.', 'Collum pancreatis'],
+                    ['Badan', [.1, .2, .1], 0, 0xf0b84a, 0, 'Bagian tengah pankreas yang membentang di belakang lambung.', 'Batasi makanan dan minuman terlalu manis.', 'Corpus pancreatis'],
+                    ['Ekor', [.62, .38, .08], 0, 0xe8a838, 0, 'Ujung pankreas yang mengarah ke limpa.', 'Pemeriksaan kesehatan berkala membantu memantau gula darah.', 'Cauda pancreatis'],
+                    ['Duktus pankreas', [.3, .2, 0], 0, 0xfff3d6, 0, 'Saluran yang mengumpulkan dan mengalirkan enzim pencernaan ke usus dua belas jari.', 'Alkohol berlebihan dapat mengganggu pankreas.', 'Ductus pancreaticus', 1],
+                    ['Duodenum', [-.85, -.2, .05], 0, 0xf3b0a0, 0, 'Lengkung C usus dua belas jari yang memeluk kepala pankreas.', 'Serat dan air putih membantu pencernaan lancar.', 'Duodenum'],
+                    ['Duktus empedu', [-.5, .35, -.05], 0, 0x6aa84f, 0, 'Saluran empedu yang bersatu dengan saluran pankreas sebelum bermuara ke duodenum.', 'Makan berlemak berlebihan membebani saluran empedu.', 'Ductus choledochus'],
+                    ['Pulau Langerhans', [.5, .3, 0], 0, 0xff6fa8, 0, 'Kelompok sel kecil penghasil insulin dan glukagon yang mengatur gula darah. Digambarkan skematis; ukuran sebenarnya mikroskopis.', 'Aktif bergerak membantu tubuh memakai insulin dengan baik.', 'Insulae pancreaticae', 1]
+                ],
+                build: K => {
+                    const isl = K.grp(); [[.0, .13], [.12, .17], [.22, .21], [.32, .24], [.42, .3], [.5, .33], [.58, .36], [.66, .4], [.28, .2], [.46, .31], [.55, .35], [.05, .11]].forEach((p, k) => isl.add(K.sph([p[0], p[1] + (k % 2 ? .02 : -.02), 0], .02, 0xff6fa8)));
+                    return [
+                        K.blob([-.5, -.1, 0], [.22, .28, .12], 0xf2c14e),
+                        K.blob([-.27, .04, 0], [.11, .12, .1], 0xf6cf6e),
+                        K.spin([-.2, .05, 0], [.35, .2, 0], .1, 1, .8, .5, 0xf0b84a),
+                        K.spin([.3, .18, 0], [.72, .38, 0], .075, 1, .8, .8, 0xe8a838),
+                        K.tube([[.66, .37, 0], [.3, .2, 0], [-.25, .05, 0], [-.5, -.15, 0]], .02, 0xfff3d6, 30),
+                        K.tube([[-.2, .45, .02], [-.65, .4, .02], [-.82, .1, .02], [-.78, -.25, .02], [-.52, -.5, .02], [-.1, -.5, .02]], .075, 0xf3b0a0, 40),
+                        K.tube([[-.52, .42, -.08], [-.5, .1, -.06], [-.46, -.2, -.05]], .028, 0x6aa84f, 20),
+                        isl
+                    ];
+                }
+            },
+            usus: {
+                cutN: [0, 0, -1], sc: .5, rot: [0, 0], off: [0, .17, 0],
+                parts: [
+                    ['Duodenum', [-.45, .22, .05], 0, 0xf3a04f, 0, 'Bagian pertama usus halus (sekitar 25 cm), menerima makanan dari lambung serta empedu dan enzim pankreas.', 'Makan teratur membantu pencernaan lanjutan berjalan baik.', 'Duodenum'],
+                    ['Jejunum', [.5, -.05, .1], 0, 0xe9798a, 0, 'Bagian tengah usus halus; di sinilah sebagian besar nutrisi diserap oleh jonjot (vili) pada dindingnya.', 'Serat dan air putih membantu pencernaan lancar.', 'Jejunum'],
+                    ['Ileum', [.2, -.5, .1], 0, 0xf4a6b6, 0, 'Bagian akhir usus halus; menyerap vitamin B12 dan garam empedu, lalu bermuara ke usus besar.', 'Makanan bergizi seimbang menjaga penyerapan optimal.', 'Ileum'],
+                    ['Sekum', [-.8, -.74, .1], 0, 0xd9707a, 0, 'Kantung pertama usus besar, tempat ileum bermuara lewat katup ileosekal.', 'Minum cukup air membantu feses lunak dan mudah keluar.', 'Caecum'],
+                    ['Apendiks', [-.5, -1.0, .05], 0, 0xc98a8a, 0, 'Tonjolan kecil seperti cacing pada sekum. Peradangannya (apendisitis) perlu penanganan medis segera.', 'Nyeri perut kanan bawah yang makin berat perlu diperiksakan ke tenaga kesehatan.', 'Appendix vermiformis'],
+                    ['Kolon asenden', [-.8, -.1, .1], 0, 0xe8837f, 0, 'Bagian usus besar yang naik di sisi kanan perut.', 'Makanan berserat membantu gerak usus.', 'Colon ascendens'],
+                    ['Kolon transversum', [-.1, .55, .1], 0, 0xf0b060, 0, 'Bagian usus besar yang melintang di atas usus halus, dari kanan ke kiri.', 'Cukup bergerak membantu usus bekerja teratur.', 'Colon transversum'],
+                    ['Kolon desenden', [.82, -.1, .1], 0, 0x7fc4a0, 0, 'Bagian usus besar yang turun di sisi kiri perut; menyimpan tinja sementara.', 'Jangan menahan keinginan buang air besar terlalu lama.', 'Colon descendens'],
+                    ['Kolon sigmoid', [.4, -.75, .1], 0, 0xb59ad6, 0, 'Bagian berbentuk huruf S sebelum rektum.', 'Konsumsi sayur dan buah setiap hari.', 'Colon sigmoideum'],
+                    ['Rektum & anus', [.07, -1.05, .05], 0, 0xe06a6a, 0, 'Rektum menampung tinja sebelum dibuang lewat anus yang dikendalikan otot sfingter.', 'Buang air besar teratur tanpa mengejan berlebihan.', 'Rectum et anus']
+                ],
+                build: K => {
+                    const coil = (y0, rows, dy, xa, r, col, endPt) => { const pts = []; for (let q = 0; q < rows; q++) { const y = y0 - q * dy, d = q % 2 ? -1 : 1; for (let k = 0; k <= 6; k++) { const u = k / 6; pts.push([d * (-xa + 2 * xa * u), y + .02 * Math.sin(k * 2.1 + q), .02 * Math.sin(k * 1.7 + q * 1.3)]); } } if (endPt) pts.push(endPt); return K.tube(pts, r, col, 320); };
+                    return [
+                        K.tube([[-.3, .34, 0], [-.45, .28, 0], [-.46, .14, 0], [-.52, .04, 0]], .045, 0xf3a04f, 24),
+                        coil(0, 4, .08, .55, .04, 0xe9798a),
+                        coil(-.32, 4, .08, .45, .04, 0xf4a6b6, [-.62, -.64, 0]),
+                        K.blob([-.7, -.74, 0], [.11, .1, .1], 0xd9707a),
+                        K.tube([[-.7, -.82, 0], [-.66, -.95, .03], [-.55, -.98, .04], [-.5, -.9, .04]], .018, 0xc98a8a, 20),
+                        K.beads([[-.72, -.62, 0], [-.77, -.1, 0], [-.74, .45, 0]], 12, .07, 0xe8837f),
+                        K.beads([[-.74, .45, 0], [-.45, .6, 0], [-.1, .48, 0], [.25, .58, 0], [.6, .62, 0], [.74, .5, 0]], 18, .07, 0xf0b060),
+                        K.beads([[.74, .5, 0], [.79, -.05, 0], [.72, -.55, 0]], 12, .07, 0x7fc4a0),
+                        K.beads([[.72, -.55, 0], [.52, -.77, 0], [.32, -.64, 0], [.1, -.8, 0], [0, -.74, 0]], 10, .065, 0xb59ad6),
+                        K.grp(K.tube([[0, -.8, 0], [0, -1.12, .02]], .07, 0xe06a6a, 10), K.torus([0, -1.14, .02], .07, .02, 0xa93226, true))
+                    ];
+                }
+            },
+            ginjal: {
+                cutN: [0, 0, -1], sc: .5, rot: [0, 0], off: [.2, 0, 0],
+                parts: [
+                    ['Korteks ginjal', [.4, .4, .2], 0, 0xc9524a, 0, 'Lapisan luar ginjal yang berisi jutaan unit penyaring (nefron) tempat darah pertama kali disaring.', 'Cukup minum air putih membantu ginjal bekerja baik.', 'Cortex renalis'],
+                    ['Medula (piramida ginjal)', [.1, .1, 0], 0, 0x9c2f2a, 0, 'Struktur berbentuk piramida yang mengumpulkan urine dari nefron dan mengalirkannya ke kaliks.', 'Batasi garam berlebih untuk membantu menjaga tekanan darah dan ginjal.', 'Medulla renalis (pyramides renales)', 1],
+                    ['Kaliks', [-.25, .12, 0], 0, 0xf0c24a, 0, 'Cawan-cawan kecil yang menampung urine dari ujung piramida lalu menyatu ke pelvis ginjal.', 'Jangan menahan buang air kecil terlalu lama.', 'Calices renales', 1],
+                    ['Pelvis ginjal', [-.38, -.02, .1], 0, 0xf2cf5b, 0, 'Corong tempat urine berkumpul sebelum mengalir ke ureter.', 'Minum cukup air membantu mencegah endapan di saluran kemih.', 'Pelvis renalis'],
+                    ['Ureter', [-.57, -.7, 0], 0, 0xf2cf5b, 0, 'Pipa otot yang mengalirkan urine dari ginjal ke kandung kemih dengan gerak peristaltik.', 'Kebiasaan minum cukup air membantu saluran kemih tetap bersih.', 'Ureter'],
+                    ['Arteri ginjal', [-.85, .14, -.03], 0, 0xd8392b, 0, 'Pembuluh nadi yang membawa darah dari aorta ke ginjal untuk disaring; ginjal menerima sekitar seperempat curah jantung.', 'Tekanan darah yang terkontrol melindungi pembuluh ginjal.', 'Arteria renalis'],
+                    ['Vena ginjal', [-.85, -.14, .05], 0, 0x4a67b8, 0, 'Membawa darah yang sudah disaring dari ginjal menuju vena kava inferior.', 'Aktif bergerak membantu peredaran darah.', 'Vena renalis'],
+                    ['Kelenjar adrenal', [.15, .95, 0], 0, 0xf2c14e, 0, 'Kelenjar di atas ginjal yang menghasilkan hormon stres seperti adrenalin dan kortisol.', 'Tidur cukup dan mengelola stres membantu keseimbangan hormon.', 'Glandula suprarenalis']
+                ],
+                build: K => {
+                    const med = K.grp(), cal = K.grp(), c0 = [-.2, 0, 0];
+                    for (let k = 0; k < 9; k++) {
+                        const a = (-110 + 27.5 * k) * Math.PI / 180, p = [-.12 + .34 * Math.cos(a), .6 * Math.sin(a), 0];
+                        const dx = c0[0] - p[0], dy = c0[1] - p[1], L = Math.sqrt(dx * dx + dy * dy), d = [dx / L, dy / L, 0];
+                        med.add(K.cone(p, d, .15, .4, 0x9c2f2a));
+                        cal.add(K.tube([[p[0] + d[0] * .2, p[1] + d[1] * .2, 0], [-.34, 0, 0]], .025, 0xf0c24a, 6));
+                    }
+                    return [
+                        K.blob([0, 0, 0], [.5, .8, .34], 0xc9524a, { inner: 0xa33a34, fn: (x, y, z) => x < 0 ? [x * (1 - .6 * Math.exp(-y * y * 10)), y, z] : [x, y, z] }),
+                        med, cal,
+                        K.blob([-.36, 0, 0], [.13, .2, .1], 0xf2cf5b),
+                        K.tube([[-.4, -.12, 0], [-.55, -.4, 0], [-.58, -.9, 0], [-.55, -1.2, 0]], .035, 0xf2cf5b, 30),
+                        K.grp(K.tube([[-1.1, .1, -.1], [-.7, .08, -.04], [-.4, .06, 0]], .035, 0xd8392b, 20), K.tube([[-1.12, .9, -.12], [-1.12, 0, -.12], [-1.12, -.9, -.12]], .06, 0xd8392b, 20)),
+                        K.grp(K.tube([[-1.1, -.12, .1], [-.7, -.1, .06], [-.42, -.06, .02]], .05, 0x4a67b8, 20), K.tube([[-1.12, .9, .12], [-1.12, 0, .12], [-1.12, -.9, .12]], .07, 0x4a67b8, 20)),
+                        K.blob([-.05, .88, -.04], [.27, .1, .16], 0xf2c14e)
+                    ];
+                }
+            },
+            tiroid: {
+                cutN: [0, 0, -1], sc: .58, rot: [0, 0], off: [0, -.03, 0],
+                parts: [
+                    ['Tulang hioid', [.38, .97, .05], 0, 0xf3ead2, 0, 'Tulang kecil berbentuk U di atas laring; tidak bersendi dengan tulang lain dan menjadi tempat melekat otot lidah.', 'Menelan dan berbicara melibatkan gerak tulang ini.', 'Os hyoideum'],
+                    ['Tulang rawan tiroid & krikoid', [.2, .7, .15], 0, 0xe9d9c0, 0, 'Tulang rawan tiroid membentuk benjolan jakun; di bawahnya, tulang rawan krikoid berbentuk cincin menopang pangkal trakea.', 'Jaga suara dengan cukup minum dan tidak berteriak berlebihan.', 'Cartilago thyroidea et cricoidea'],
+                    ['Lobus tiroid', [.35, 0, .15], 0, 0xe0773a, 0, 'Dua sayap kelenjar tiroid di kanan dan kiri trakea; menghasilkan hormon pengatur metabolisme dan energi tubuh.', 'Asupan yodium yang cukup membantu kerja tiroid.', 'Lobus dexter et sinister'],
+                    ['Isthmus', [0, .12, .2], 0, 0xee8a4a, 0, 'Jembatan jaringan tiroid yang menghubungkan kedua lobus di depan trakea.', 'Benjolan di leher yang menetap perlu diperiksakan ke tenaga kesehatan.', 'Isthmus glandulae thyroideae'],
+                    ['Paratiroid', [.3, .2, -.08], 0, 0xc98a2e, 0, 'Empat kelenjar sangat kecil di belakang tiroid yang mengatur kadar kalsium darah.', 'Kalsium dan vitamin D yang cukup menjaga tulang kuat.', 'Glandulae parathyroideae', 1],
+                    ['Trakea', [.15, -.55, .1], 0, 0xe7c9b8, 0, 'Pipa napas bercincin tulang rawan yang berada tepat di belakang tiroid.', 'Hindari asap rokok dan debu untuk melindungi saluran napas.', 'Trachea'],
+                    ['Arteri tiroid', [.4, .45, 0], 0, 0xd8392b, 0, 'Pembuluh nadi atas dan bawah yang membawa banyak darah ke tiroid; kelenjar ini sangat kaya aliran darah.', 'Tekanan darah yang terjaga menjaga pembuluh tetap sehat.', 'Arteriae thyroideae']
+                ],
+                build: K => {
+                    const pair = fn => { const g = K.grp(); [1, -1].forEach(s => g.add(fn(s))); return g; };
+                    const lobeFn = (x, y, z) => { const k = y > 0 ? 1 - .45 * y : 1; return [x * k, y, z * k]; };
+                    return [
+                        K.tube([[-.45, .95, -.08], [-.35, .98, 0], [-.18, 1, .1], [0, 1, .13], [.18, 1, .1], [.35, .98, 0], [.45, .95, -.08]], .035, 0xf3ead2, 30),
+                        K.grp(pair(s => K.blob([s * .12, .68, .1], [.14, .2, .035], 0xe9d9c0, { ry: s * .6 })), K.torus([0, .4, 0], .15, .045, 0xeadfc8, true)),
+                        pair(s => K.blob([s * .26, .05, .09], [.1, .27, .085], 0xe0773a, { fn: lobeFn })),
+                        K.blob([0, .12, .15], [.16, .045, .05], 0xee8a4a),
+                        pair(s => K.grp(K.blob([s * .26, .2, -.06], [.045, .03, .025], 0xc98a2e), K.blob([s * .26, -.08, -.06], [.04, .03, .025], 0xc98a2e))),
+                        K.grp(K.tube([[0, .35, 0], [0, -.9, 0]], .13, 0xe7c9b8, 24), K.rings([[0, .28, 0], [0, -.85, 0]], 11, .135, .018, 0xf1e6d6)),
+                        pair(s => K.grp(K.tube([[s * .42, .7, -.02], [s * .36, .4, 0], [s * .28, .28, .1]], .02, 0xd8392b, 14), K.tube([[s * .4, -.5, -.02], [s * .34, -.2, 0], [s * .28, -.05, 0]], .02, 0xd8392b, 14)))
+                    ];
+                }
+            },
+            kandung: {
+                cutN: [0, 0, -1], sc: .62, rot: [0, 0], off: [0, .1, 0],
+                parts: [
+                    ['Otot detrusor (dinding)', [.5, .4, .2], 0, 0xf4796f, 0, 'Dinding otot polos kandung kemih; meregang saat terisi dan berkontraksi untuk mengeluarkan urine.', 'Jangan menahan buang air kecil terlalu lama.', 'Musculus detrusor vesicae'],
+                    ['Ureter', [.7, .6, -.1], 0, 0xf3c76a, 0, 'Dua pipa yang mengalirkan urine dari ginjal ke kandung kemih; menembus dinding dengan arah miring sehingga urine tidak mengalir balik.', 'Minum cukup air membantu saluran kemih tetap bersih.', 'Ureter'],
+                    ['Trigonum', [0, -.1, -.2], 0, 0xf7d0c0, 0, 'Daerah segitiga halus di dasar kandung kemih antara dua muara ureter dan pangkal uretra.', 'Nyeri atau panas saat buang air kecil perlu diperiksakan ke tenaga kesehatan.', 'Trigonum vesicae', 1],
+                    ['Leher & sfingter internal', [0, -.3, .1], 0, 0xc0392b, 0, 'Cincin otot di pangkal kandung kemih yang membantu menahan urine.', 'Latihan otot dasar panggul membantu kontrol berkemih.', 'Collum vesicae et sphincter internus'],
+                    ['Uretra & sfingter eksternal', [0, -.85, .1], 0, 0xf0a090, 0, 'Saluran pembuang urine ke luar tubuh; sfingter eksternal dikendalikan secara sadar.', 'Jaga kebersihan area kemaluan untuk mencegah infeksi.', 'Urethra et sphincter externus'],
+                    ['Mukosa & rugae', [-.3, .3, -.3], 0, 0xffb3a7, 0, 'Lapisan dalam yang berlipat-lipat saat kandung kemih kosong dan merata saat terisi.', 'Kandung kemih dewasa dapat menampung kira-kira 400 sampai 500 ml.', 'Tunica mucosa (rugae)', 1]
+                ],
+                build: K => {
+                    const rug = K.grp();
+                    for (let k = 0; k < 7; k++) { const x = -.36 + .12 * k, pts = []; for (let j = 0; j < 5; j++) { const y = .55 - j * .17, q = 1 - (x / .5) * (x / .5) - ((y - .2) / .45) * ((y - .2) / .45); pts.push([x, y, -.36 * Math.sqrt(Math.max(q, .05)) + .02]); } rug.add(K.tube(pts, .02, 0xffb3a7, 16)); }
+                    return [
+                        K.blob([0, .2, 0], [.55, .5, .48], 0xf4796f, { tp: .3, inner: 0xf7b0a0 }),
+                        K.grp.apply(null, [1, -1].map(s => K.tube([[s * .7, .75, -.1], [s * .66, .45, -.15], [s * .5, .1, -.25], [s * .3, -.05, -.2]], .035, 0xf3c76a, 24))),
+                        K.grp(K.tri([.3, -.05, -.2], [-.3, -.05, -.2], [0, -.28, -.08], 0xf7d0c0), K.sph([.3, -.05, -.2], .025, 0x7a2a25), K.sph([-.3, -.05, -.2], .025, 0x7a2a25)),
+                        K.torus([0, -.3, 0], .1, .045, 0xc0392b, true),
+                        K.grp(K.tube([[0, -.3, 0], [0, -.6, 0], [0, -.95, .04]], .05, 0xf0a090, 20), K.torus([0, -.7, 0], .07, .03, 0xa93226, true)),
+                        rug
+                    ];
+                }
+            }
+        };
+        // ================== END DETAIL ORGAN 3D ==================
+
         let an3 = { view: 'svg', mode: 'atlas', sel: -1, lastSel: -2, parts: [], focus: true, explode: 0, cut: false, labels: true, auto: true, rotT: null, camT: { y: 1, z: 3.3 }, ready: false };
         // Infografis organ dalam (SVG): [nama,,,,,penjelasan,tips] agar format sama dengan AN3_DATA
         const AN3_SVG = (function () {
@@ -4820,6 +5132,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 + '<button type="button" class="an3-tab" data-m="rangka" onclick="an3Mode(\'rangka\')">Rangka</button>'
                 + '<button type="button" class="an3-tab" data-m="jantung" onclick="an3Mode(\'jantung\')">Jantung (detail)</button></div>'
                 + '<div class="an3-tools" id="an3-tools" style="display:none">'
+                + '<button type="button" class="an3-chip on" id="an3-back" style="display:none" onclick="an3Back()"><i class="fas fa-arrow-left"></i> Gambar Organ</button>'
                 + '<button type="button" class="an3-chip an3-tg on" id="an3-focus" onclick="an3Toggle(\'focus\')"><i class="fas fa-bullseye"></i> Fokus bagian</button>'
                 + '<button type="button" class="an3-chip an3-tg an3-ho" id="an3-cut" style="display:none" onclick="an3Toggle(\'cut\')"><i class="fas fa-scissors"></i> Potong (lihat dalam)</button>'
                 + '<button type="button" class="an3-chip an3-tg an3-ho on" id="an3-lbl" style="display:none" onclick="an3Toggle(\'labels\')"><i class="fas fa-tags"></i> Label</button>'
@@ -4827,14 +5140,14 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 + '<button type="button" class="an3-chip" onclick="an3Reset()"><i class="fas fa-rotate-left"></i> Reset</button></div>'
                 + '<div class="an3-grid"><div><div class="an3-svgbox" id="an3-svgbox">' + an3SvgHtml() + '</div>'
                 + '<div class="an3-stage" id="an3-stage" style="display:none"><button type="button" class="an3-start" onclick="an3Start()"><i class="fas fa-cube"></i> Mulai Belajar 3D</button></div></div>'
-                + '<div class="an3-info"><div id="an3-info-body"><h5>Pilih bagian tubuh</h5><p>Ketuk organ pada gambar atau pilih dari daftar di bawah.</p></div><div class="an3-chips" id="an3-list">' + an3ChipsHtml() + '</div></div></div>'
+                + '<div class="an3-info"><div id="an3-info-body"><h5>Pilih bagian tubuh</h5><p>Ketuk salah satu organ pada gambar atau daftar di bawah untuk membuka model 3D detailnya, lengkap dengan label bagian-bagiannya.</p></div><div class="an3-chips" id="an3-list">' + an3ChipsHtml() + '</div></div></div>'
                 + '<p class="an3-note">Model dibuat skematis untuk belajar. Materi edukasi umum, bukan pengganti pemeriksaan atau saran tenaga kesehatan.</p></div>';
         }
         function an3ChipsHtml() {
-            return (an3.view === 'svg' ? AN3_SVG : AN3_DATA[an3.mode]).map((e, i) => '<button type="button" class="an3-chip' + (i === an3.sel ? ' on' : '') + '" data-i="' + i + '" onclick="an3Info(' + i + ')">' + e[0].split(' (')[0] + (an3.view !== 'svg' && an3.mode === 'jantung' && e[8] ? ' · dalam' : '') + '</button>').join('');
+            return (an3.view === 'svg' ? AN3_SVG : AN3_DATA[an3.mode]).map((e, i) => '<button type="button" class="an3-chip' + (i === an3.sel ? ' on' : '') + '" data-i="' + i + '" onclick="an3Info(' + i + ')">' + e[0].split(' (')[0] + (an3.view !== 'svg' && (an3.mode === 'jantung' || an3.mode === 'detail') && e[8] ? ' · dalam' : '') + '</button>').join('');
         }
         function an3Mode(m) {
-            an3.mode = m; an3.sel = -1; an3.lastSel = -2;
+            an3.mode = m; an3.sel = -1; an3.lastSel = -2; an3.back = false; an3.cut = false; { const cb = document.getElementById('an3-cut'); if (cb) cb.classList.remove('on'); }
             document.querySelectorAll('.an3-tab').forEach(b => b.classList.toggle('on', b.dataset.m === m));
             const l = document.getElementById('an3-list'); if (l) l.innerHTML = an3ChipsHtml();
             if (m === 'jantung' || m === 'atlas') an3.rotT = 0;
@@ -4855,9 +5168,10 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             an3Info(-1);
         }
         function an3Info(i) {
+            if (an3.view === 'svg' && i >= 0) return an3OpenDetail(i);
             an3.sel = i;
             const e = (an3.view === 'svg' ? AN3_SVG : AN3_DATA[an3.mode])[i], a = document.getElementById('an3-info-body');
-            if (e && an3.view === '3d' && an3.mode === 'jantung' && e[8] && !an3.cut) { an3.cut = true; const c = document.getElementById('an3-cut'); if (c) c.classList.add('on'); }
+            if (e && an3.view === '3d' && (an3.mode === 'jantung' || an3.mode === 'detail') && e[8] && !an3.cut) { an3.cut = true; const c = document.getElementById('an3-cut'); if (c) c.classList.add('on'); }
             if (a) a.innerHTML = e ? '<h5>' + e[0] + '</h5>' + (e[7] ? '<p class="an3-lat">' + e[7] + '</p>' : '') + '<p>' + e[5] + '</p><p class="an3-tip"><i class="fas fa-lightbulb"></i> ' + e[6] + '</p>'
                 + (an3.view === '3d' && ((an3.mode === 'organ' && i === 2) || (an3.mode === 'atlas' && i === 8)) ? '<button type="button" class="an3-go" onclick="an3Mode(\'jantung\')">Lihat detail jantung per bagian →</button>' : '')
                 : '<h5>Pilih bagian tubuh</h5><p>Ketuk bagian pada model 3D atau pilih dari daftar di bawah.</p>';
@@ -4867,18 +5181,20 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         function an3Apply() {
             document.querySelectorAll('[data-k]').forEach(n => n.classList.toggle('an3-sel', an3.view === 'svg' && +n.dataset.k === an3.sel));
             const m = an3.mode, sel = an3.sel;
-            document.querySelectorAll('.an3-ho').forEach(b => { b.style.display = m === 'jantung' ? '' : 'none'; });
+            document.querySelectorAll('.an3-ho').forEach(b => { b.style.display = (b.id === 'an3-cut' ? (m === 'jantung' || (m === 'detail' && an3DetHasInt())) : (m === 'jantung' || m === 'detail' || m === 'atlas')) ? '' : 'none'; });
+            const bk = document.getElementById('an3-back'); if (bk) bk.style.display = (an3.back && an3.view === '3d') ? '' : 'none';
             const lb = document.getElementById('an3-lbl'); if (lb) lb.classList.toggle('on', an3.labels);
             if (!an3.ready) return;
             const T = THREE;
-            an3.body.visible = m !== 'jantung'; an3.hd.visible = m === 'jantung';
+            an3.body.visible = m !== 'jantung' && m !== 'detail'; an3.hd.visible = m === 'jantung'; if (an3.od) an3.od.visible = m === 'detail';
             an3.skinMat.opacity = m === 'otot' ? .13 : .09;
-            an3.clipL.constant = an3.cut ? -.02 : 100;
+            an3.clipL.constant = an3.cut ? -.02 : 100; if (an3.clipDL) an3.clipDL.constant = an3.cut ? 0 : 100;
             const hint = document.getElementById('an3-hint');
-            if (hint) hint.textContent = m === 'jantung' ? 'Geser untuk memutar • scroll untuk zoom • ketuk bagian • “Potong” untuk melihat dalam' : 'Geser untuk memutar • scroll untuk zoom • ketuk bagian tubuh';
+            if (hint) hint.textContent = (m === 'jantung' || (m === 'detail' && an3DetHasInt())) ? 'Geser untuk memutar • scroll untuk zoom • ketuk bagian • “Potong” untuk melihat dalam' : 'Geser untuk memutar • scroll untuk zoom • ketuk bagian tubuh';
             an3.parts.forEach(p => {
                 let vis, ghost = false;
                 if (m === 'jantung') vis = p.mode === 'jantung' && (!p.interior || an3.cut);
+                else if (m === 'detail') vis = p.mode === 'detail' && p.det === an3.det && (!p.interior || an3.cut);
                 else { vis = p.mode === m; if (m === 'organ' && p.mode === 'rangka') { vis = true; ghost = true; } }
                 p.group.visible = vis; p.ghost = ghost;
                 if (!vis) return;
@@ -4886,10 +5202,11 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 let op = 1;
                 if (ghost) op = .15; else if (sel >= 0 && an3.focus && !isSel) op = .17;
                 p.meshes.forEach(o => { const mt = o.material; mt.transparent = op < 1; mt.opacity = op; mt.depthWrite = op >= .99; if (mt.emissive) mt.emissive.setHex(isSel ? 0x7a4a00 : 0); });
-                p.group.position.copy(p.base).addScaledVector(p.dir, an3.explode * (m === 'jantung' ? .6 : .5));
+                p.group.position.copy(p.base).addScaledVector(p.dir, an3.explode * (m === 'jantung' || m === 'detail' ? .6 : .5));
             });
             let tY = 1.0, tZ = (m === 'atlas' ? 3.5 : 3.3);
             if (m === 'jantung') { tY = 0.05; tZ = 3.0; }
+            else if (m === 'detail') { tY = 0.02; tZ = 3.0; }
             else if (sel >= 0 && an3.focus) {
                 const p = an3.parts.find(q => q.group.visible && !q.ghost && q.mode === m && q.i === sel);
                 if (p) {
@@ -5130,8 +5447,9 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             const fill = new T.DirectionalLight(0xbfd8ff, 0.35); fill.position.set(-3, 1, 2); sc.add(fill);
             const rim = new T.DirectionalLight(0xffe2c4, 0.4); rim.position.set(0, 2, -4); sc.add(rim);
             an3.clipL = new T.Plane(new T.Vector3(0, 0, -1), 100); an3.clip = new T.Plane(new T.Vector3(0, 0, -1), 100);
+            an3.clipD = new T.Plane(new T.Vector3(0, 0, -1), 100); an3.clipDL = new T.Plane(new T.Vector3(0, 0, -1), 100);
             const g = new T.Group(); sc.add(g);
-            const body = new T.Group(), hd = new T.Group(); g.add(body); g.add(hd);
+            const body = new T.Group(), hd = new T.Group(), od = new T.Group(); g.add(body); g.add(hd); g.add(od);
             an3.parts = [];
             const reg = (mode, i, group, extra) => {
                 const meshes = []; group.traverse(o => { if (o.isMesh) { o.userData = { mode: mode, i: i }; meshes.push(o); } });
@@ -5161,12 +5479,20 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             const hh = an3Heart(T, true); hh.root.scale.setScalar(1.15); hh.root.position.y = -.2; hd.add(hh.root);
             hh.subs.forEach(sp => reg('jantung', sp.k, sp.group, { interior: sp.interior }));
             hd.visible = false;
+            an3.od = od; od.visible = false; an3.dets = {};
+            Object.keys(AN3_DET).forEach(key => {
+                const D = AN3_DET[key], K = an3DetKit(T), root = new T.Group(), gs = D.build(K);
+                gs.forEach((gr, i) => { root.add(gr); reg('detail', i, gr, { det: key, interior: !!D.parts[i][8] }); });
+                root.scale.setScalar(D.sc || .6); if (D.off) root.position.set(D.off[0], D.off[1], D.off[2]);
+                if (D.rot) root.rotation.set(D.rot[0], D.rot[1], 0);
+                od.add(root); an3.dets[key] = root;
+            });
             sc.updateMatrixWorld(true);
             const bc = new T.Vector3(0, 1, 0);
             an3.parts.forEach(p => {
                 p.base = p.group.position.clone();
                 const c = new T.Box3().setFromObject(p.group).getCenter(new T.Vector3());
-                const d = p.mode === 'jantung' ? hh.root.worldToLocal(c).sub(new T.Vector3(0, .1, 0)) : c.sub(bc);
+                const d = p.mode === 'jantung' ? hh.root.worldToLocal(c).sub(new T.Vector3(0, .1, 0)) : p.mode === 'detail' ? an3.dets[p.det].worldToLocal(c) : c.sub(bc);
                 if (d.length() < .02) d.set(0, 0, 1);
                 p.dir = d.normalize();
             });
@@ -5216,9 +5542,46 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 });
                 svg2.innerHTML = lines;
             }
+            // label penunjuk untuk model detail organ
+            const svg3 = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg3.setAttribute('class', 'an3-ovs'); ov.appendChild(svg3);
+            const labsD = {}; Object.keys(AN3_DET).forEach(key => {
+                labsD[key] = AN3_DET[key].parts.map((e, i) => {
+                    const d = document.createElement('div'); d.className = 'an3-lab an3-lab2'; d.style.display = 'none';
+                    d.innerHTML = '<b>' + e[7] + '</b>' + e[0]; d.addEventListener('click', () => an3Info(i)); ov.appendChild(d); return d;
+                });
+            });
+            let detOn = null;
+            function placeDetail() {
+                const w = st.clientWidth, h = st.clientHeight, narrow = w < 520, on = an3.mode === 'detail' && an3.labels && an3.dets[an3.det];
+                if (detOn && (!on || detOn !== an3.det)) { labsD[detOn].forEach(l => { l.style.display = 'none'; }); svg3.innerHTML = ''; detOn = null; }
+                if (!on) return;
+                detOn = an3.det; const root = an3.dets[an3.det], D = AN3_DET[an3.det], labs = labsD[an3.det]; root.updateMatrixWorld(true);
+                const items = [];
+                D.parts.forEach((e, i) => {
+                    const lab = labs[i], pt = an3.parts.find(p => p.mode === 'detail' && p.det === an3.det && p.i === i);
+                    lab.classList.toggle('on', i === an3.sel);
+                    if (!(pt && pt.group.visible && (!narrow || i === an3.sel))) { lab.style.display = 'none'; return; }
+                    lab.style.display = 'block';
+                    const q = new T.Vector3(e[1][0], e[1][1], e[1][2]).add(pt.group.position).sub(pt.base).applyMatrix4(root.matrixWorld).project(cam);
+                    items.push({ i: i, px: (q.x + 1) / 2 * w, py: (1 - q.y) / 2 * h });
+                });
+                let lines = '';
+                [true, false].forEach(left => {
+                    const col = items.filter(o => (o.px < w / 2) === left).sort((a, b) => a.py - b.py); let prev = -99;
+                    col.forEach(o => {
+                        const lab = labs[o.i], lh2 = lab.offsetHeight || 30;
+                        let ly2 = Math.max(o.py - lh2 / 2, prev + 4, 6); ly2 = Math.min(ly2, h - lh2 - 6); prev = ly2 + lh2;
+                        if (left) { lab.style.left = '8px'; lab.style.right = 'auto'; } else { lab.style.right = '8px'; lab.style.left = 'auto'; }
+                        lab.style.top = ly2 + 'px';
+                        const ex = left ? 8 + lab.offsetWidth : w - 8 - lab.offsetWidth;
+                        lines += '<line x1="' + ex + '" y1="' + (ly2 + lh2 / 2) + '" x2="' + o.px + '" y2="' + o.py + '" stroke="#fde68a" stroke-width="1.2"/><circle cx="' + o.px + '" cy="' + o.py + '" r="3" fill="#f59e0b"/>';
+                    });
+                });
+                svg3.innerHTML = lines;
+            }
             st.appendChild(ov);
             const hint = document.createElement('div'); hint.className = 'an3-hint'; hint.id = 'an3-hint'; st.appendChild(hint);
-            an3.ready = true; an3Apply();
+            an3.ready = true; an3Apply(); if (an3.pend) an3Detail(an3.pend);
             const el = r.domElement, ray = new T.Raycaster(), v = new T.Vector2();
             let drag = false, moved = 0, lx = 0, ly = 0, lw = W, lh = H;
             el.addEventListener('pointerdown', e => { drag = true; moved = 0; lx = e.clientX; ly = e.clientY; an3.auto = false; an3.rotT = null; el.setPointerCapture(e.pointerId); });
@@ -5234,7 +5597,8 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 v.set(((e.clientX - b.left) / b.width) * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1);
                 ray.setFromCamera(v, cam);
                 const pick = []; an3.parts.forEach(p => { if (p.group.visible && !p.ghost) p.meshes.forEach(o => pick.push(o)); });
-                const hit = ray.intersectObjects(pick, false)[0];
+                const hits = ray.intersectObjects(pick, false), cp = an3.mode === 'detail' ? an3.clipD : an3.mode === 'jantung' ? an3.clip : null;
+                const hit = (cp && an3.cut) ? hits.find(h2 => cp.distanceToPoint(h2.point) >= 0) : hits[0];
                 an3Info(hit ? hit.object.userData.i : -1);
             });
             el.addEventListener('wheel', e => { e.preventDefault(); an3.camT.z = Math.max(1.3, Math.min(4.2, an3.camT.z + e.deltaY * 0.002)); }, { passive: false });
@@ -5269,10 +5633,11 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 if (w && h && (w !== lw || h !== lh)) { lw = w; lh = h; r.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix(); }
                 if (an3.rotT != null) { let d = an3.rotT - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * .12; if (Math.abs(d) < .01) an3.rotT = null; }
                 else if (an3.auto && an3.mode === 'atlas' && an3.sel < 0) g.rotation.y = Math.sin(Date.now() / 2200) * .45;
-                else if (an3.auto && an3.mode !== 'jantung' && an3.mode !== 'atlas' && an3.sel < 0) g.rotation.y += 0.004;
+                else if (an3.auto && an3.mode !== 'jantung' && an3.mode !== 'atlas' && an3.mode !== 'detail' && an3.sel < 0) g.rotation.y += 0.004;
                 cam.position.y += (an3.camT.y - cam.position.y) * .08; cam.position.z += (an3.camT.z - cam.position.z) * .08; cam.lookAt(0, cam.position.y, 0);
                 hh.root.updateMatrixWorld(true); an3.clip.copy(an3.clipL).applyMatrix4(hh.root.matrixWorld);
-                if (w && h) { place(); placeAtlas(); }
+                if (an3.mode === 'detail' && an3.dets[an3.det]) { an3.dets[an3.det].updateMatrixWorld(true); an3.clipD.copy(an3.clipDL).applyMatrix4(an3.dets[an3.det].matrixWorld); }
+                if (w && h) { place(); placeAtlas(); placeDetail(); }
                 r.render(sc, cam); requestAnimationFrame(tick);
             })();
         }

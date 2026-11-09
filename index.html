@@ -4942,6 +4942,12 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             return { root: root, subs: subs };
         }
         function an3Init(st) {
+            // Perbaikan: three.js r128 belum punya BufferGeometry.applyQuaternion (dipakai an3SpindleGeo & an3Cyl)
+            if (!THREE.BufferGeometry.prototype.applyQuaternion) {
+                THREE.BufferGeometry.prototype.applyQuaternion = function (q) {
+                    return this.applyMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(q));
+                };
+            }
             const T = THREE; st.innerHTML = '';
             const W = st.clientWidth || 600, H = st.clientHeight || 460;
             const r = new T.WebGLRenderer({ antialias: true, alpha: true });

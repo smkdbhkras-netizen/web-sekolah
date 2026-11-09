@@ -1159,8 +1159,8 @@ html.dark .mv-label{color:#94a3b8}
 .an3-head h4{font-size:1.5rem;font-weight:900;color:#0a6b34;margin:10px 0 4px}
 .an3-head p{font-size:13px;color:#475569;margin:0 0 14px;line-height:1.6}
 .an3-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.an3-tab{border:2px solid #bbf7d0;background:#fff;color:#166534;font-weight:800;font-size:12px;padding:8px 16px;border-radius:999px;cursor:pointer}
-.an3-tab.on{background:linear-gradient(90deg,#055a2a,#0b8a43);border-color:transparent;color:#fff}
+.an3-tab,.an3-vtab{border:2px solid #bbf7d0;background:#fff;color:#166534;font-weight:800;font-size:12px;padding:8px 16px;border-radius:999px;cursor:pointer}
+.an3-tab.on,.an3-vtab.on{background:linear-gradient(90deg,#055a2a,#0b8a43);border-color:transparent;color:#fff}
 .an3-grid{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
 @media(min-width:900px){.an3-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}}
 .an3-stage{position:relative;height:400px;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#04361c,#0a6b34 60%,#2f9e44);display:flex;align-items:center;justify-content:center}
@@ -1175,6 +1175,14 @@ html.dark .mv-label{color:#94a3b8}
 .an3-chip{border:1px solid #bbf7d0;background:#f0fdf4;color:#166534;font-weight:700;font-size:11px;padding:6px 12px;border-radius:999px;cursor:pointer}
 .an3-chip.on{background:#f59e0b;border-color:#f59e0b;color:#052e1b}
 .an3-note{font-size:11px;color:#64748b;margin:14px 0 0}
+.an3-svgbox{background:#fffaf5;border-radius:20px;padding:6px}
+.an3-svgbox svg{display:block;width:100%;height:auto}
+.an3-hit{cursor:pointer;transition:opacity .2s}
+.an3-hit:hover{opacity:.85}
+.an3-sel{filter:drop-shadow(0 0 6px #f59e0b)}
+.an3-ring{fill:#fff;stroke:#e2e8f0;stroke-width:4}
+.an3-sel .an3-ring{stroke:#f59e0b}
+.an3-lbl{font:800 16px "Segoe UI",Arial,sans-serif;fill:#0a6b34;pointer-events:none}
 html.dark .an3-wrap{background:#151f32}
 html.dark .an3-info p,html.dark .an3-head p,html.dark .an3-note{color:#cbd5e1}
 html.dark .an3-head h4,html.dark .an3-info h5{color:#86efac}
@@ -4513,20 +4521,72 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 ['Ginjal',[.07,1.02,-.06],[.03,.045,.03],0xb91c1c,1,'Dua organ penyaring darah yang membentuk urine dan menjaga cairan tubuh.','Cukup minum air putih membantu ginjal bekerja baik.']
             ]
         };
-        let an3 = { mode: 'otot', sel: -1, meshes: [] };
+        let an3 = { view: 'svg', mode: 'otot', sel: -1, meshes: [] };
+        // Infografis organ dalam (SVG): [nama,,,,,penjelasan,tips] agar format sama dengan AN3_DATA
+        const AN3_SVG = (function () {
+            const o = i => AN3_DATA.organ[i], f = i => [o(i)[0], 0, 0, 0, 0, o(i)[5], o(i)[6]];
+            return [
+                ['Tiroid', 0, 0, 0, 0, 'Kelenjar kecil berbentuk kupu-kupu di leher yang menghasilkan hormon pengatur metabolisme dan energi tubuh.', 'Asupan yodium yang cukup membantu kerja tiroid.'],
+                f(3), f(4),
+                ['Pankreas', 0, 0, 0, 0, 'Kelenjar di belakang lambung yang menghasilkan enzim pencernaan dan hormon insulin pengatur gula darah.', 'Membatasi makanan dan minuman terlalu manis membantu menjaga gula darah.'],
+                f(5), f(0), f(1), f(2), f(6),
+                ['Kandung kemih', 0, 0, 0, 0, 'Kantung otot yang menampung urine dari ginjal sebelum dibuang dari tubuh.', 'Cukup minum air putih dan jangan menahan buang air kecil terlalu lama.']
+            ];
+        })();
+        function an3SvgHtml() {
+            // [gambar organ, viewBox zoom, sisi, y lingkaran, titik tujuan garis x, y]
+            const O = [
+                ['<ellipse cx="311" cy="172" rx="9" ry="13" transform="rotate(-15 311 172)" fill="#fb923c"/><ellipse cx="329" cy="172" rx="9" ry="13" transform="rotate(15 329 172)" fill="#fb923c"/>', '298 150 44 44', 'L', 175, 320, 172],
+                ['<path d="M262,352 C285,336 338,342 348,362 C342,386 300,394 274,386 C260,378 256,362 262,352 Z" fill="#9b3b3b"/><path d="M300,350 C312,352 322,362 326,376" stroke="#7f2d2d" stroke-width="2" fill="none"/>', '252 318 100 100', 'L', 295, 290, 368],
+                ['<path d="M336,344 C376,338 398,366 382,396 C370,416 334,408 340,386 C352,382 360,372 354,363 C348,357 338,356 336,344 Z" fill="#f472b6"/><path d="M345,350 C372,348 386,368 372,392" stroke="#ec4899" stroke-width="2" fill="none"/>', '324 333 84 84', 'L', 415, 362, 385],
+                ['<ellipse cx="335" cy="420" rx="42" ry="10" transform="rotate(-6 335 420)" fill="#fbbf24"/><g fill="#f59e0b"><circle cx="310" cy="419" r="2.5"/><circle cx="330" cy="417" r="2.5"/><circle cx="350" cy="420" r="2.5"/></g>', '287 372 96 96', 'L', 535, 335, 420],
+                ['<path d="M268,545 V452 Q268,440 280,440 H388 Q400,440 400,452 V545" fill="none" stroke="#fb923c" stroke-width="11" stroke-linecap="round"/><path d="M282,458 H376 Q388,458 388,470 Q388,482 376,482 H292 Q280,482 280,494 Q280,506 292,506 H376 Q388,506 388,518 Q388,530 376,530 H300" fill="none" stroke="#f9a8d4" stroke-width="13" stroke-linecap="round"/>', '254 412 160 160', 'L', 655, 285, 490],
+                ['<ellipse cx="320" cy="84" rx="27" ry="21" fill="#f9a8d4"/><path d="M320,64 V104 M300,78 Q310,84 305,94 M340,78 Q330,84 335,94 M308,70 Q316,76 312,82 M332,70 Q324,76 328,82" stroke="#ec7fb0" stroke-width="2" fill="none"/>', '285 49 70 70', 'R', 55, 338, 80],
+                ['<rect x="316" y="148" width="8" height="64" rx="4" fill="#fca5a5"/><path d="M314,198 C290,190 254,214 250,270 C246,322 256,352 286,352 C312,352 314,332 314,300 Z" fill="#dc2626"/><path d="M326,198 C350,190 386,214 390,270 C394,322 384,352 354,352 C328,352 326,332 326,300 Z" fill="#dc2626"/><path d="M316,212 L290,250 M290,250 L272,270 M290,250 L292,290 M324,212 L350,250 M350,250 L368,270 M350,250 L348,290" stroke="#fca5a5" stroke-width="3" fill="none" stroke-linecap="round"/>', '235 185 170 170', 'R', 175, 385, 260],
+                ['<path d="M336,306 C302,282 306,246 328,248 C338,250 342,256 344,262 C350,250 372,248 374,270 C376,290 356,298 336,306 Z" fill="#b91c1c"/><path d="M338,256 C340,268 342,280 338,296" stroke="#991b1b" stroke-width="2" fill="none"/>', '303 242 70 70', 'R', 295, 352, 272],
+                ['<path d="M296,408 C282,404 274,420 276,434 C278,448 292,452 298,444 C292,436 292,426 298,420 C300,414 300,410 296,408 Z" fill="#b91c1c"/><path d="M376,408 C390,404 398,420 396,434 C394,448 380,452 374,444 C380,436 380,426 374,420 C372,414 372,410 376,408 Z" fill="#b91c1c"/>', '272 366 124 124', 'R', 415, 385, 428],
+                ['<path d="M294,446 Q300,520 326,572 M378,446 Q372,520 336,572" stroke="#fb7185" stroke-width="3" fill="none"/><circle cx="331" cy="585" r="17" fill="#fb7185"/>', '301 555 60 60', 'R', 535, 338, 585]
+            ];
+            const sil = '<g fill="#fde4d3"><circle cx="320" cy="90" r="42"/><rect x="302" y="120" width="36" height="46"/>'
+                + '<path d="M232,168 Q320,142 408,168 Q428,200 428,262 L424,430 Q414,520 398,604 L242,604 Q226,520 216,430 L212,262 Q212,200 232,168 Z"/>'
+                + '<path d="M212,190 Q166,330 140,470 L170,480 Q198,350 232,236 Z"/><path d="M428,190 Q474,330 500,470 L470,480 Q442,350 408,236 Z"/>'
+                + '<path d="M245,600 L318,600 L312,720 L258,720 Z"/><path d="M322,600 L395,600 L382,720 L328,720 Z"/></g>';
+            let defs = '', lines = '', uses = '', calls = '';
+            O.forEach((o, k) => {
+                const L = o[2] === 'L', cx = L ? 70 : 570;
+                defs += '<g id="an3o' + k + '">' + o[0] + '</g>';
+                lines += '<line x1="' + (L ? 110 : 530) + '" y1="' + o[3] + '" x2="' + o[4] + '" y2="' + o[5] + '" stroke="#475569" stroke-width="1.3"/>';
+                calls += '<g class="an3-hit" data-k="' + k + '" onclick="an3Info(' + k + ')" transform="translate(' + cx + ',' + o[3] + ')"><circle class="an3-ring" r="40"/>'
+                    + '<g clip-path="url(#an3cp)"><svg x="-38" y="-38" width="76" height="76" viewBox="' + o[1] + '"><use href="#an3o' + k + '"/></svg></g>'
+                    + '<text class="an3-lbl" y="64" text-anchor="middle">' + AN3_SVG[k][0] + '</text></g>';
+            });
+            [9, 8, 4, 1, 2, 3, 6, 7, 0, 5].forEach(k => { uses += '<use href="#an3o' + k + '" class="an3-hit" data-k="' + k + '" onclick="an3Info(' + k + ')"/>'; });
+            return '<svg viewBox="0 0 640 760" role="img" aria-label="Infografis organ dalam tubuh manusia"><defs>' + defs + '<clipPath id="an3cp"><circle r="38"/></clipPath></defs>' + sil + lines + uses + calls + '</svg>';
+        }
+        function an3View(v) {
+            an3.view = v; an3.sel = -1;
+            document.querySelectorAll('.an3-vtab').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+            const s = (id, show) => { const e = document.getElementById(id); if (e) e.style.display = show ? '' : 'none'; };
+            s('an3-svgbox', v === 'svg'); s('an3-stage', v === '3d'); s('an3-sub', v === '3d');
+            const l = document.getElementById('an3-list'); if (l) l.innerHTML = an3ChipsHtml();
+            an3Info(-1);
+        }
         function buildAnatomi3DHtml() {
             return '<div id="kg-sec-belajar" class="an3-wrap" style="scroll-margin-top:100px">'
                 + '<div class="an3-head"><span class="an3-badge"><i class="fas fa-graduation-cap"></i> Pembelajaran</span>'
-                + '<h4>Belajar Anatomi Tubuh 3D</h4>'
-                + '<p>Putar model, perbesar, lalu ketuk bagian tubuh untuk mengenal fungsinya. Ini materi belajar, terpisah dari layanan booking di atas.</p></div>'
-                + '<div class="an3-tabs"><button type="button" class="an3-tab on" data-m="otot" onclick="an3Mode(\'otot\')">Otot &amp; Area Pijat</button>'
+                + '<h4>Belajar Anatomi Tubuh</h4>'
+                + '<p>Ketuk organ pada gambar untuk mengenal fungsinya. Ini materi belajar, terpisah dari layanan booking di atas.</p></div>'
+                + '<div class="an3-tabs"><button type="button" class="an3-vtab on" data-v="svg" onclick="an3View(\'svg\')">Gambar Organ Dalam</button>'
+                + '<button type="button" class="an3-vtab" data-v="3d" onclick="an3View(\'3d\')">Model 3D (Otot &amp; Organ)</button></div>'
+                + '<div class="an3-tabs" id="an3-sub" style="display:none"><button type="button" class="an3-tab on" data-m="otot" onclick="an3Mode(\'otot\')">Otot &amp; Area Pijat</button>'
                 + '<button type="button" class="an3-tab" data-m="organ" onclick="an3Mode(\'organ\')">Organ Dalam</button></div>'
-                + '<div class="an3-grid"><div class="an3-stage" id="an3-stage"><button type="button" class="an3-start" onclick="an3Start()"><i class="fas fa-cube"></i> Mulai Belajar 3D</button></div>'
-                + '<div class="an3-info"><div id="an3-info-body"><h5>Pilih bagian tubuh</h5><p>Ketuk bagian pada model 3D atau pilih dari daftar di bawah.</p></div><div class="an3-chips" id="an3-list">' + an3ChipsHtml() + '</div></div></div>'
+                + '<div class="an3-grid"><div><div class="an3-svgbox" id="an3-svgbox">' + an3SvgHtml() + '</div>'
+                + '<div class="an3-stage" id="an3-stage" style="display:none"><button type="button" class="an3-start" onclick="an3Start()"><i class="fas fa-cube"></i> Mulai Belajar 3D</button></div></div>'
+                + '<div class="an3-info"><div id="an3-info-body"><h5>Pilih bagian tubuh</h5><p>Ketuk organ pada gambar atau pilih dari daftar di bawah.</p></div><div class="an3-chips" id="an3-list">' + an3ChipsHtml() + '</div></div></div>'
                 + '<p class="an3-note">Materi edukasi umum, bukan pengganti pemeriksaan atau saran tenaga kesehatan.</p></div>';
         }
         function an3ChipsHtml() {
-            return AN3_DATA[an3.mode].map((e, i) => '<button type="button" class="an3-chip' + (i === an3.sel ? ' on' : '') + '" data-i="' + i + '" onclick="an3Info(' + i + ')">' + e[0].split(' (')[0] + '</button>').join('');
+            return (an3.view === 'svg' ? AN3_SVG : AN3_DATA[an3.mode]).map((e, i) => '<button type="button" class="an3-chip' + (i === an3.sel ? ' on' : '') + '" data-i="' + i + '" onclick="an3Info(' + i + ')">' + e[0].split(' (')[0] + '</button>').join('');
         }
         function an3Mode(m) {
             an3.mode = m; an3.sel = -1;
@@ -4536,12 +4596,13 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
         function an3Info(i) {
             an3.sel = i;
-            const e = AN3_DATA[an3.mode][i], a = document.getElementById('an3-info-body');
+            const e = (an3.view === 'svg' ? AN3_SVG : AN3_DATA[an3.mode])[i], a = document.getElementById('an3-info-body');
             if (a) a.innerHTML = e ? '<h5>' + e[0] + '</h5><p>' + e[5] + '</p><p class="an3-tip"><i class="fas fa-lightbulb"></i> ' + e[6] + '</p>' : '<h5>Pilih bagian tubuh</h5><p>Ketuk bagian pada model 3D atau pilih dari daftar di bawah.</p>';
             document.querySelectorAll('.an3-chip').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
             an3Apply();
         }
         function an3Apply() {
+            document.querySelectorAll('[data-k]').forEach(n => n.classList.toggle('an3-sel', an3.view === 'svg' && +n.dataset.k === an3.sel));
             if (!an3.ready) return;
             an3.meshes.forEach(m => {
                 m.visible = m.userData.mode === an3.mode;

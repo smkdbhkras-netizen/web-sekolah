@@ -4518,7 +4518,10 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 ['Hati',[-.07,1.12,.03],[.09,.05,.05],0x92400e,0,'Organ dalam terbesar: menyaring racun, mengolah nutrisi, membantu pencernaan.','Pola makan seimbang membantu menjaga hati.'],
                 ['Lambung',[.07,1.1,.04],[.06,.05,.05],0xfdba74,0,'Kantung otot yang mencerna makanan dengan asam dan enzim.','Makan teratur membantu lambung tetap nyaman.'],
                 ['Usus',[0,.92,.04],[.12,.07,.06],0xfcd34d,0,'Menyerap nutrisi dan air dari makanan.','Serat dan air putih membantu pencernaan lancar.'],
-                ['Ginjal',[.07,1.02,-.06],[.03,.045,.03],0xb91c1c,1,'Dua organ penyaring darah yang membentuk urine dan menjaga cairan tubuh.','Cukup minum air putih membantu ginjal bekerja baik.']
+                ['Ginjal',[.07,1.02,-.06],[.03,.045,.03],0xb91c1c,1,'Dua organ penyaring darah yang membentuk urine dan menjaga cairan tubuh.','Cukup minum air putih membantu ginjal bekerja baik.'],
+                ['Tiroid',[0,1.52,.04],[.03,.02,.02],0xfb923c,0,'Kelenjar kecil berbentuk kupu-kupu di leher yang menghasilkan hormon pengatur metabolisme dan energi tubuh.','Asupan yodium yang cukup membantu kerja tiroid.'],
+                ['Pankreas',[0,1.04,.02],[.07,.014,.02],0xf6c244,0,'Kelenjar di belakang lambung yang menghasilkan enzim pencernaan dan hormon insulin pengatur gula darah.','Membatasi makanan dan minuman terlalu manis membantu menjaga gula darah.'],
+                ['Kandung kemih',[0,.83,.04],[.03,.03,.03],0xfb7185,0,'Kantung otot yang menampung urine dari ginjal sebelum dibuang dari tubuh.','Cukup minum air putih dan jangan menahan buang air kecil terlalu lama.']
             ]
         };
         let an3 = { view: 'svg', mode: 'otot', sel: -1, meshes: [] };
@@ -4620,6 +4623,75 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             s.onerror = () => { st.innerHTML = '<button type="button" class="an3-start" onclick="an3Start()">Gagal memuat. Coba lagi</button>'; };
             document.head.appendChild(s);
         }
+        // Pembuat bentuk 3D prosedural: organ & otot detail + kerangka (dites tanpa tampilan)
+        function an3Build(T) {
+            const M = (c, o) => new T.MeshPhysicalMaterial(Object.assign({ color: c, roughness: 0.45, clearcoat: 0.45, clearcoatRoughness: 0.4 }, o || {}));
+            const G = () => new T.Group();
+            const at = (o, x, y, z) => { o.position.set(x, y, z); return o; };
+            const blob = (rx, ry, rz, c, amp, fq, fn) => {
+                const g = new T.SphereGeometry(1, 40, 28), p = g.attributes.position;
+                for (let i = 0; i < p.count; i++) {
+                    let x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+                    if (amp) { const d = 1 + amp * Math.sin(fq * x + 1.3) * Math.sin(fq * y + 0.7) * Math.sin(fq * z + 2.1); x *= d; y *= d; z *= d; }
+                    if (fn) { const r = fn(x, y, z); x = r[0]; y = r[1]; z = r[2]; }
+                    p.setXYZ(i, x * rx, y * ry, z * rz);
+                }
+                g.computeVertexNormals();
+                return new T.Mesh(g, M(c));
+            };
+            const tube = (pts, r, c, seg) => new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts.map(a => new T.Vector3(a[0], a[1], a[2]))), seg || 48, r, 8, false), M(c));
+            const spin = (L, R, c, bu) => {
+                const pts = [];
+                for (let k = 0; k <= 14; k++) { const u = k / 14; pts.push(new T.Vector2(R * Math.pow(Math.sin(Math.PI * Math.pow(u, bu || 1)), 0.8) + 0.003, (u - 0.5) * L)); }
+                const m = new T.Mesh(new T.LatheGeometry(pts, 20), M(c, { roughness: 0.6, clearcoat: 0.15 }));
+                m.add(new T.LineSegments(new T.WireframeGeometry(new T.LatheGeometry(pts, 10)), new T.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.18 })));
+                return m;
+            };
+            const OT = [
+                (s, c) => { const g = G(); g.add(at(blob(.21, .1, .03, c, .05, 9), 0, 0, -.05)); return g; },
+                (s, c) => { const g = G(); g.add(blob(.065, .085, .07, c, .06, 10)); return g; },
+                (s, c) => { const g = G(); [1, -1].forEach(k => { const m = blob(.095, .07, .03, c, .05, 10); m.rotation.z = -k * .35; g.add(at(m, k * .09, 0, 0)); }); return g; },
+                (s, c) => { const g = G(); for (let r = 0; r < 3; r++) [1, -1].forEach(k => g.add(at(blob(.045, .032, .02, c, .04, 12), k * .05, .08 - r * .075, 0))); return g; },
+                (s, c) => { const g = G(); g.add(blob(.15, .15, .025, c, .04, 8, (x, y, z) => [x * (.65 + .35 * (y + 1) / 2), y, z])); return g; },
+                (s, c) => { const g = G(); [1, -1].forEach(k => g.add(at(spin(.3, .028, c), k * .04, 0, 0))); return g; },
+                (s, c) => { const m = spin(.26, .04, c); m.rotation.z = s * .08; const g = G(); g.add(m); return g; },
+                (s, c) => { const g = G(); g.add(spin(.42, .075, c, .85)); return g; },
+                (s, c) => { const g = G(); g.add(spin(.3, .05, c, 1.5)); return g; }
+            ];
+            const OR = [
+                (s, c) => { const g = G(); g.add(blob(.095, .068, .085, c, .09, 14, (x, y, z) => [x, y > 0 ? y * (1 - .25 * Math.exp(-x * x * 60)) : y, z])); g.add(at(blob(.04, .03, .04, 0xd98aa0, .06, 16), 0, -.05, -.06)); g.add(tube([[0, -.05, -.02], [0, -.1, -.01]], .012, 0xe8b4be)); return g; },
+                (s, c) => { const g = G(); g.add(blob(.065, .115, .06, c, .035, 11)); g.add(tube([[-s * .06, .1, 0], [-s * .02, .05, 0], [0, 0, 0]], .007, 0xf3a6a0)); if (s === 1) g.add(at(tube([[0, -.07, 0], [0, .1, 0]], .012, 0xf5b7b1), -.08, .13, 0)); return g; },
+                (s, c) => { const g = G(); const h = blob(.05, .06, .045, c, .03, 12, (x, y, z) => { const k = y < 0 ? 1 + y * .55 : 1; return [x * k - (y < 0 ? y * .2 : 0), y, z * k]; }); h.rotation.z = .45; g.add(h); g.add(tube([[-.015, .05, 0], [-.01, .1, 0], [.02, .13, -.01], [.055, .1, -.01]], .014, 0xd6454e)); g.add(tube([[-.035, .04, 0], [-.035, .16, 0]], .011, 0x4a6fd8)); g.add(tube([[.01, .05, .02], [.03, .1, .02]], .011, 0x7c8cf0)); return g; },
+                (s, c) => { const g = G(); g.add(blob(.1, .055, .06, c, .03, 9, (x, y, z) => [x, y * (x > 0 ? 1 - .5 * x : 1), z])); g.add(at(blob(.014, .02, .014, 0x4ade80, 0), -.03, -.05, .04)); return g; },
+                (s, c) => { const g = G(); const m = blob(.05, .065, .04, c, .02, 8, (x, y, z) => [x + .25 * y * y, y, z]); m.rotation.z = -.5; g.add(m); g.add(tube([[-.03, .06, 0], [-.045, .13, -.01], [-.05, .2, -.01]], .009, 0xf3b7c7)); return g; },
+                (s, c) => { const g = G(); g.add(tube([[-.1, -.07, 0], [-.1, .06, 0], [-.06, .09, 0], [.06, .09, 0], [.1, .06, 0], [.1, -.07, 0]], .019, 0xf59e4a, 60)); const p = []; for (let r = 0; r < 5; r++) { const y = .06 - r * .03, a = r % 2 ? [.07, -.07] : [-.07, .07]; p.push([a[0], y, .012 * Math.sin(r)], [a[1], y, -.012 * Math.sin(r)]); } g.add(tube(p, .013, 0xf4b2c6, 80)); return g; },
+                (s, c) => { const g = G(); g.add(blob(.03, .05, .025, c, .02, 9, (x, y, z) => [(x * s < -.3) ? x + s * .35 * (1 - Math.min(1, Math.abs(y) * 1.6)) : x, y, z])); g.add(at(blob(.02, .012, .02, 0xfbbf24, 0), 0, .06, 0)); g.add(tube([[-s * .012, -.04, 0], [-s * .02, -.15, 0]], .004, 0xfda4af)); return g; },
+                (s, c) => { const g = G(); [1, -1].forEach(k => g.add(at(blob(.016, .022, .012, c, .03, 10), k * .017, 0, 0))); g.add(blob(.012, .005, .008, c, 0)); return g; },
+                (s, c) => { const g = G(); const m = blob(.07, .014, .02, c, .18, 26); m.rotation.z = .1; g.add(m); return g; },
+                (s, c) => { const g = G(); g.add(blob(.03, .03, .03, c, .02, 8)); return g; }
+            ];
+            const parts = [];
+            ['otot', 'organ'].forEach(mode => AN3_DATA[mode].forEach((e, i) => {
+                (e[4] ? [1, -1] : [1]).forEach(s => {
+                    const g = (mode === 'otot' ? OT : OR)[i](s, e[3]);
+                    g.position.set(e[1][0] * s, e[1][1], e[1][2]);
+                    parts.push({ mode: mode, i: i, group: g });
+                });
+            }));
+            const bones = G(), bm = M(0xe9e0cf, { transparent: true, opacity: 0.5, roughness: 0.7, clearcoat: 0, depthWrite: false });
+            for (let i = 0; i < 10; i++) {
+                const geo = new T.TorusGeometry(.17 - Math.abs(i - 3) * .004, .0055, 8, 36, Math.PI * 1.75);
+                geo.rotateZ(Math.PI * .625);
+                const m = new T.Mesh(geo, bm); m.rotation.x = Math.PI / 2; m.scale.y = .72; m.position.set(0, 1.44 - i * .05, -.005); bones.add(m);
+            }
+            const sp = new T.CatmullRomCurve3([new T.Vector3(0, 1.52, -.09), new T.Vector3(0, 1.3, -.1), new T.Vector3(0, 1.1, -.095), new T.Vector3(0, .88, -.08)]);
+            bones.add(new T.Mesh(new T.TubeGeometry(sp, 30, .008, 6, false), bm));
+            for (let k = 0; k < 16; k++) { const v = new T.Mesh(new T.SphereGeometry(.017, 10, 8), bm), q = sp.getPoint(k / 15); v.position.copy(q); v.scale.set(1.2, .7, 1); bones.add(v); }
+            bones.add(at(new T.Mesh(new T.BoxGeometry(.035, .28, .012), bm), 0, 1.32, .13));
+            [1, -1].forEach(k => bones.add(new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3([new T.Vector3(0, 1.46, .07), new T.Vector3(k * .15, 1.47, .03), new T.Vector3(k * .26, 1.44, 0)]), 16, .007, 6, false), bm)));
+            bones.add(at(new T.Mesh(new T.SphereGeometry(.118, 24, 18), M(0xe9e0cf, { transparent: true, opacity: 0.2, depthWrite: false, clearcoat: 0 })), 0, 1.68, 0));
+            return { parts: parts, bones: bones };
+        }
         function an3Init(st) {
             const T = THREE; st.innerHTML = '';
             const W = st.clientWidth || 600, H = st.clientHeight || 400;
@@ -4627,7 +4699,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); r.setSize(W, H); st.appendChild(r.domElement);
             const sc = new T.Scene(), cam = new T.PerspectiveCamera(38, W / H, 0.1, 50);
             cam.position.set(0, 1.0, 3.2); cam.lookAt(0, 0.95, 0);
-            sc.add(new T.AmbientLight(0xffffff, 0.75));
+            sc.add(new T.AmbientLight(0xffffff, 0.45)); sc.add(new T.HemisphereLight(0xffffff, 0x6b8f71, 0.65));
             const dl = new T.DirectionalLight(0xffffff, 0.8); dl.position.set(2, 3, 4); sc.add(dl);
             const g = new T.Group(); sc.add(g);
             const bm = new T.MeshPhongMaterial({ color: 0xe2f5e8, transparent: true, opacity: 0.2, depthWrite: false });
@@ -4641,13 +4713,9 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 add(new T.CylinderGeometry(.075, .055, .8, 14), s * .1, .4, 0);
             });
             an3.meshes = [];
-            Object.keys(AN3_DATA).forEach(mode => AN3_DATA[mode].forEach((e, i) => {
-                (e[4] ? [1, -1] : [1]).forEach(s => {
-                    const m = new T.Mesh(new T.SphereGeometry(1, 20, 16), new T.MeshPhongMaterial({ color: e[3], shininess: 40 }));
-                    m.position.set(e[1][0] * s, e[1][1], e[1][2]); m.scale.set(e[2][0], e[2][1], e[2][2]);
-                    m.userData = { mode: mode, i: i }; g.add(m); an3.meshes.push(m);
-                });
-            }));
+            const B = an3Build(T);
+            B.parts.forEach(pt => { pt.group.traverse(o => { if (o.isMesh) { o.userData = { mode: pt.mode, i: pt.i }; an3.meshes.push(o); } }); g.add(pt.group); });
+            g.add(B.bones);
             an3.bodyMat = bm; an3.ready = true; an3Apply();
             const hint = document.createElement('div'); hint.className = 'an3-hint'; hint.textContent = 'Geser untuk memutar • scroll untuk zoom • ketuk bagian tubuh'; st.appendChild(hint);
             const el = r.domElement, ray = new T.Raycaster(), v = new T.Vector2();

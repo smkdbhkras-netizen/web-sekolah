@@ -1199,6 +1199,8 @@ html.dark .an3-tip,html.dark .an3-chip{background:#0b3d24;color:#bbf7d0}
 .an3-sl input{width:110px;accent-color:#f59e0b}
 .an3-go{margin-top:10px;border:0;background:#0b8a43;color:#fff;font-weight:800;font-size:12px;padding:9px 16px;border-radius:999px;cursor:pointer}
 html.dark .an3-sl{color:#bbf7d0}
+.an3-lab2{max-width:34%;font-size:10px;padding:3px 8px}
+.an3-stage{height:540px}@media(max-width:640px){.an3-stage{height:500px}}
 </style>
 <style id="usu-move">
     /* ===== MOVE: banner gaya USU + deret tahapan gaya ikon SDG ===== */
@@ -4587,7 +4589,174 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             ['Rigi otot serambi kanan', [-.465, .22, -.15], 0, 0xb85a4e, 0, 'Crista terminalis adalah rigi otot yang memisahkan dinding halus dan dinding bergerigi serambi kanan; musculi pectinati adalah rigi-rigi otot kecil pada dinding bergerigi itu.', 'Terlihat saat jantung dipotong.', 'Crista terminalis & Musculi pectinati', 1],
             ['Katup & muara vena jantung', [-.2, -.02, -.19], 0, 0xf3cfc4, 0, 'Valvula venae cavae inferioris adalah lipatan kecil di muara vena kava bawah; ostium sinus coronarii adalah muara vena-vena jantung ke serambi kanan.', 'Gambaran dibuat skematis untuk belajar; bentuk aslinya lebih bervariasi.', 'Valvula v. cavae inferioris & Ostium sinus coronarii', 1]
         ];
-        let an3 = { view: 'svg', mode: 'otot', sel: -1, lastSel: -2, parts: [], focus: true, explode: 0, cut: false, labels: true, auto: true, rotT: null, camT: { y: 1, z: 3.3 }, ready: false };
+        // ================== ATLAS TUBUH LENGKAP (tambahan: gaya atlas anatomi) ==================
+        // [nama, -, -, warna, kembar, penjelasan, tips, latin]
+        AN3_DATA.atlas = [
+            ['Tengkorak', [0, 0, 0], [0, 0, 0], 0xe8dcb8, 0, 'Tulang kepala yang melindungi otak dan membentuk rangka wajah: rongga mata, rongga hidung, dan rahang bawah yang dapat bergerak untuk mengunyah.', 'Gunakan helm saat berkendara untuk melindungi kepala.', 'Cranium'],
+            ['Otot leher & bahu', [0, 0, 0], [0, 0, 0], 0xc8352c, 1, 'Trapezius, sternocleidomastoid, dan deltoid. Otot-otot ini menahan serta memutar kepala, dan menggerakkan bahu serta lengan.', 'Sering tegang karena menunduk atau duduk lama; ubah posisi tiap 30 menit dan lakukan peregangan leher ringan.', 'Musculi colli et humeri'],
+            ['Otot lengan', [0, 0, 0], [0, 0, 0], 0xd4503a, 1, 'Biceps di depan menekuk siku, triceps di belakang meluruskannya, sedangkan otot lengan bawah menggerakkan pergelangan dan jari untuk menggenggam.', 'Istirahatkan tangan secara berkala bila mengetik atau memegang ponsel lama.', 'Musculi brachii et antebrachii'],
+            ['Otot tungkai', [0, 0, 0], [0, 0, 0], 0xc8352c, 1, 'Quadriceps, hamstring, adduktor, dan otot betis. Bersama-sama menopang tubuh saat berdiri, berjalan, berlari, dan melompat.', 'Pemanasan sebelum olahraga dan peregangan sesudahnya membantu mengurangi kaku; cukup minum air bila kram.', 'Musculi membri inferioris'],
+            ['Rusuk & selangka', [0, 0, 0], [0, 0, 0], 0xe8dcb8, 1, 'Tulang rusuk membentuk sangkar yang melindungi jantung dan paru-paru serta membantu gerak napas; tulang selangka menghubungkan dada dengan bahu. Jumlah rusuk pada model disederhanakan.', 'Napas dalam dan perlahan membuat rongga dada mengembang dengan baik.', 'Costae et clavicula'],
+            ['Panggul & sendi pinggul', [0, 0, 0], [0, 0, 0], 0xe8dcb8, 1, 'Cincin tulang yang menopang tubuh bagian atas, melindungi organ di rongga panggul, dan bertemu tulang paha di sendi pinggul.', 'Posisi duduk yang seimbang membantu panggul menopang badan dengan baik.', 'Pelvis et articulatio coxae'],
+            ['Trakea & bronkus', [0, 0, 0], [0, 0, 0], 0xe46a60, 0, 'Pipa napas dengan dinding bercincin tulang rawan yang menjaganya tetap terbuka; bercabang menjadi dua bronkus menuju paru kanan dan kiri.', 'Hindari asap rokok dan debu; pakai masker bila udara berdebu.', 'Trachea et bronchi'],
+            ['Paru-paru', [0, 0, 0], [0, 0, 0], 0xd13d3a, 1, 'Mengambil oksigen dan membuang karbon dioksida. Paru kanan memiliki tiga lobus, paru kiri dua lobus karena berbagi ruang dengan jantung.', 'Udara bersih dan tidak merokok menjaga paru-paru sehat.', 'Pulmo'],
+            ['Jantung', [0, 0, 0], [0, 0, 0], 0xcf4c42, 0, 'Memompa darah ke seluruh tubuh lewat empat ruangnya, sekitar seratus ribu kali per hari.', 'Olahraga teratur membuat jantung lebih kuat.', 'Cor'],
+            ['Hati & empedu', [0, 0, 0], [0, 0, 0], 0xc4545b, 0, 'Hati adalah organ dalam terbesar: menyaring racun, mengolah nutrisi, dan membuat empedu. Kantung empedu menyimpan empedu untuk membantu mencerna lemak. Dari depan, hati tampak di sisi kiri gambar karena letaknya di kanan tubuh.', 'Pola makan seimbang membantu menjaga hati.', 'Hepar et vesica biliaris'],
+            ['Lambung & pankreas', [0, 0, 0], [0, 0, 0], 0xe08a8a, 0, 'Lambung mencerna makanan dengan asam dan enzim; pankreas (kuning) menghasilkan enzim pencernaan dan insulin; limpa (ungu) menyaring darah.', 'Makan teratur dan batasi minuman terlalu manis membantu pencernaan dan gula darah.', 'Gaster, pancreas et splen'],
+            ['Usus halus', [0, 0, 0], [0, 0, 0], 0xe58b92, 0, 'Pipa panjang berlekuk-lekuk, beberapa meter panjangnya, tempat sebagian besar nutrisi dari makanan diserap ke dalam darah.', 'Serat dan air putih membantu pencernaan lancar.', 'Intestinum tenue'],
+            ['Usus besar', [0, 0, 0], [0, 0, 0], 0xe0777f, 0, 'Membingkai usus halus; menyerap air dan garam dari sisa makanan lalu membentuk tinja. Dindingnya bergelembung-gelembung (haustra).', 'Makanan berserat dan cukup minum membantu buang air besar teratur.', 'Intestinum crassum'],
+            ['Pembuluh darah besar', [0, 0, 0], [0, 0, 0], 0x1e9be0, 1, 'Aorta, vena kava, dan cabang-cabangnya ke leher, lengan, dan tungkai. Pada model, semuanya diberi warna biru agar mudah dilihat (pada atlas medis, arteri merah dan vena biru).', 'Jangan menekan keras pada area yang berdenyut atau nyeri tajam; bergerak teratur membantu peredaran darah.', 'Vasa sanguinea magna'],
+            ['Otot badan', [0, 0, 0], [0, 0, 0], 0xc8352c, 1, 'Otot sisi dada dan perut (serratus, oblique), otot punggung (latissimus, trapezius bawah), serta otot pangkal paha. Menjaga postur dan melindungi organ.', 'Duduk tegak dan mengangkat beban dengan teknik benar mengurangi beban pinggang.', 'Musculi trunci']
+        ];
+        // titik penunjuk label (koordinat lokal tubuh) untuk tampilan atlas
+        const AN3_ATLAS_LAB = [
+            [-.06, 1.76, .09], [.16, 1.46, .04], [.335, 1.12, .05], [-.105, .66, .07], [.17, 1.2, .03],
+            [.1, .83, .02], [-.012, 1.46, .03], [-.1, 1.3, .09], [.04, 1.27, .1], [-.11, 1.15, .09],
+            [.07, 1.1, .08], [.05, .92, .07], [-.125, .96, .07], [.1, .7, .1], [.175, 1.04, .04]
+        ];
+        // Pembuat bentuk 3D atlas: figur "écorché" (tengkorak, otot merah, pembuluh biru, organ)
+        function an3Atlas(T) {
+            const V = a => new T.Vector3(a[0], a[1], a[2]);
+            const curve = pts => new T.CatmullRomCurve3(pts.map(V));
+            const muscle = c => an3Mat(T, c, 'm'), organ = c => an3Mat(T, c, 'o');
+            const vessel = () => new T.MeshPhysicalMaterial({ color: 0x1e9be0, roughness: .28, metalness: .05, clearcoat: .8, clearcoatRoughness: .2 });
+            const bone = c => new T.MeshStandardMaterial({ color: c || 0xe8dcb8, roughness: .6, metalness: 0 });
+            const tube = (pts, r, mat, seg) => new T.Mesh(new T.TubeGeometry(curve(pts), seg || 40, r, 10, false), mat);
+            const blob = (c, rd, mat, rz, tp, amp) => new T.Mesh(an3BlobGeo(T, c, rd, rz || 0, tp || 0, amp || 0), mat);
+            const spin = (a, b, r, sx, sz, bel, mat) => new T.Mesh(an3SpindleGeo(T, a, b, r, sx, sz, bel), mat);
+            const parts = [], both = f => [1, -1].forEach(f);
+            const mk = (i, fn) => { const g = new T.Group(); fn(g); parts.push({ i: i, group: g }); };
+            // 0 tengkorak
+            mk(0, g => {
+                const bm = bone(), dk = new T.MeshStandardMaterial({ color: 0x3a2a1c, roughness: .9 }), tm = new T.MeshStandardMaterial({ color: 0xfaf5e6, roughness: .4 });
+                g.add(blob([0, 1.70, 0], [.098, .118, .108], bm));
+                g.add(blob([0, 1.605, .045], [.065, .045, .062], bm));
+                both(s => g.add(blob([s * .04, 1.69, .094], [.025, .022, .02], dk)));
+                g.add(blob([0, 1.655, .105], [.012, .02, .012], dk));
+                for (let k = -5; k <= 5; k++) [1.636, 1.618].forEach(y => { const t = new T.Mesh(new T.BoxGeometry(.0105, .014, .01), tm); t.position.set(k * .0098, y, .1 - k * k * .0011); g.add(t); });
+                g.add(tube([[0, 1.52, -.02], [0, 1.58, -.015]], .02, bm, 6));
+            });
+            // 1 otot leher & bahu
+            mk(1, g => {
+                const m = muscle(0xc8352c), jm = bone(0xe6dcb0);
+                both(s => {
+                    g.add(spin([s * .07, 1.62, 0], [s * .02, 1.47, .07], .017, 1, 1, .5, m));
+                    g.add(spin([s * .04, 1.56, -.04], [s * .24, 1.44, 0], .03, 1, .5, .5, m));
+                    g.add(blob([s * .3, 1.38, 0], [.05, .08, .062], muscle(0xd9532b)));
+                    g.add(blob([s * .255, 1.4, 0], [.042, .042, .042], jm));
+                });
+            });
+            // 2 otot lengan
+            mk(2, g => {
+                const jm = bone(0xe6dcb0);
+                both(s => {
+                    const m = muscle(0xd4503a);
+                    g.add(spin([s * .275, 1.34, .03], [s * .322, 1.17, .025], .036, 1, 1, .5, m));
+                    g.add(spin([s * .285, 1.33, -.025], [s * .332, 1.17, -.02], .032, 1, 1, .5, m));
+                    g.add(spin([s * .327, 1.13, 0], [s * .368, .93, 0], .033, 1.1, 1, .35, m));
+                    g.add(blob([s * .327, 1.15, 0], [.03, .03, .03], jm));
+                    g.add(blob([s * .378, .86, 0], [.03, .06, .016], muscle(0xd9826f)));
+                });
+            });
+            // 3 otot tungkai
+            mk(3, g => {
+                const jm = bone(0xe6dcb0);
+                both(s => {
+                    const m = muscle(0xc8352c);
+                    g.add(spin([s * .095, .86, .03], [s * .1, .5, .035], .075, 1, .9, .5, m));
+                    g.add(spin([s * .085, .86, -.03], [s * .105, .5, -.025], .065, 1, .9, .5, m));
+                    g.add(blob([s * .105, .48, .03], [.04, .04, .04], jm));
+                    g.add(spin([s * .1, .46, -.02], [s * .09, .1, -.01], .05, 1, 1, .6, m));
+                    g.add(spin([s * .1, .45, .03], [s * .092, .1, .02], .03, 1, 1, .5, m));
+                    g.add(blob([s * .09, .04, .05], [.04, .03, .09], muscle(0xd9826f)));
+                });
+            });
+            // 4 rusuk & selangka
+            mk(4, g => {
+                both(s => {
+                    const bm = bone();
+                    for (let k = 0; k < 10; k++) {
+                        const y = 1.44 - k * .05, w = .12 + .06 * Math.sin(Math.min(1, k / 7) * Math.PI * .85);
+                        g.add(tube([[s * .025, y, -.085], [s * w * .75, y - .005, -.06], [s * w, y - .015, 0], [s * w * .8, y - .03, .07], [s * .06, y - .05, .095]], .0062, bm, 28));
+                    }
+                    g.add(tube([[s * .02, 1.46, .07], [s * .15, 1.47, .03], [s * .26, 1.44, 0]], .009, bm, 16));
+                });
+            });
+            // 5 panggul & sendi pinggul
+            mk(5, g => {
+                const bm = bone(0xe6dcb0);
+                both(s => {
+                    g.add(blob([s * .105, .9, -.005], [.1, .075, .04], bm, s * .35));
+                    g.add(blob([s * .1, .82, 0], [.038, .038, .038], bm));
+                });
+                g.add(blob([0, .84, -.07], [.05, .07, .03], bm));
+                const t = new T.Mesh(new T.TorusGeometry(.07, .012, 8, 24, Math.PI), bm); t.rotation.z = Math.PI; t.position.set(0, .8, .05); g.add(t);
+            });
+            // 6 trakea & bronkus
+            mk(6, g => {
+                const rm = organ(0xe46a60), im = organ(0xd9534a);
+                g.add(tube([[0, 1.55, .02], [0, 1.37, .025]], .014, im, 8));
+                for (let k = 0; k < 14; k++) { const r = new T.Mesh(new T.TorusGeometry(.016, .0052, 8, 18), rm); r.rotation.x = Math.PI / 2; r.position.set(0, 1.545 - k * .0125, .02); g.add(r); }
+                both(s => g.add(tube([[0, 1.37, .025], [s * .04, 1.335, .035], [s * .075, 1.3, .045]], .009, rm, 12)));
+            });
+            // 7 paru-paru
+            mk(7, g => {
+                both(s => {
+                    const m = organ(0xd13d3a);
+                    g.add(blob([s * .095, 1.3, .035], [s > 0 ? .062 : .07, .105, .06], m, s * .05, .15, .035));
+                    g.add(tube([[s * .03, 1.34, .04], [s * .07, 1.3, .075], [s * .1, 1.26, .09]], .0045, organ(0x8f1f1f), 10));
+                });
+            });
+            // 8 jantung (memakai pembuat jantung yang sudah ada)
+            mk(8, g => { const hb = an3Heart(T, false); hb.root.scale.setScalar(.135); hb.root.position.set(.03, 1.27, .07); g.add(hb.root); });
+            // 9 hati & empedu
+            mk(9, g => {
+                g.add(blob([-.075, 1.135, .04], [.105, .05, .055], organ(0xc4545b), .15, 0, .02));
+                g.add(blob([-.04, 1.085, .082], [.014, .025, .014], organ(0x5fa05a)));
+            });
+            // 10 lambung, pankreas, limpa
+            mk(10, g => {
+                g.add(blob([.06, 1.12, .06], [.065, .05, .045], organ(0xe08a8a), -.5));
+                g.add(spin([-.03, 1.06, .035], [.11, 1.075, .03], .014, 1, 1, .5, organ(0xf2c14e)));
+                g.add(blob([.14, 1.14, -.01], [.025, .045, .02], organ(0x7a3b69)));
+            });
+            // 11 usus halus (gulungan)
+            mk(11, g => {
+                const pts = [];
+                for (let r = 0; r < 7; r++) { const y = .995 - r * .02, dir = r % 2 ? -1 : 1; for (let k = 0; k <= 6; k++) { const u = k / 6; pts.push([dir * (-.085 + .17 * u), y + .006 * Math.sin(k * 2.1 + r), .04 + .012 * Math.sin(k * 1.7 + r * 1.3)]); } }
+                g.add(tube(pts, .0145, organ(0xe58b92), 420));
+            });
+            // 12 usus besar (bingkai dengan haustra)
+            mk(12, g => {
+                const c = curve([[-.115, .87, .05], [-.125, .95, .05], [-.12, 1.02, .055], [-.07, 1.06, .065], [0, 1.055, .07], [.07, 1.06, .065], [.12, 1.02, .055], [.125, .95, .05], [.115, .88, .045], [.09, .83, .045], [.04, .81, .05], [0, .82, .04]]);
+                const m = organ(0xe0777f), gm = new T.SphereGeometry(.026, 12, 10);
+                for (let k = 0; k <= 46; k++) { const q = c.getPoint(k / 46), s = new T.Mesh(gm, m); s.position.copy(q); s.scale.set(1, .85, 1); g.add(s); }
+            });
+            // 13 pembuluh darah besar (biru)
+            mk(13, g => {
+                const vm = vessel();
+                g.add(tube([[0, 1.4, .07], [.015, 1.33, .1], [.035, 1.27, .125], [.03, 1.2, .125], [0, 1.14, .12], [-.02, 1.09, .12], [0, 1.03, .11], [.02, .97, .1]], .016, vm, 60));
+                both(s => {
+                    g.add(tube([[s * .025, 1.34, .1], [s * .04, 1.42, .075], [s * .04, 1.5, .06], [s * .045, 1.58, .04]], .008, vm, 20));
+                    g.add(tube([[s * .03, 1.36, .1], [s * .12, 1.42, .07], [s * .24, 1.4, .05], [s * .29, 1.3, .05], [s * .33, 1.17, .05], [s * .36, 1.0, .045], [s * .373, .88, .04]], .008, vm, 50));
+                    g.add(tube([[s * .005, .95, .09], [s * .06, .86, .1], [s * .1, .78, .11], [s * .108, .62, .115], [s * .105, .5, .1], [s * .098, .36, .07], [s * .092, .2, .06], [s * .09, .1, .06]], .011, vm, 60));
+                });
+            });
+            // 14 otot badan
+            mk(14, g => {
+                g.add(blob([0, 1.18, -.095], [.19, .33, .035], muscle(0xb92f2a), 0, 0, .015));
+                both(s => {
+                    const m = muscle(0xd9532b);
+                    g.add(spin([s * .175, 1.3, 0], [s * .165, .98, .02], .045, .8, 1.3, .5, m));
+                    g.add(spin([s * .23, 1.38, .04], [s * .15, 1.34, .08], .028, 1, .6, .5, m));
+                    g.add(blob([s * .045, .85, .07], [.04, .045, .04], m));
+                });
+            });
+            return parts;
+        }
+        // ================== END ATLAS ==================
+
+        let an3 = { view: 'svg', mode: 'atlas', sel: -1, lastSel: -2, parts: [], focus: true, explode: 0, cut: false, labels: true, auto: true, rotT: null, camT: { y: 1, z: 3.3 }, ready: false };
         // Infografis organ dalam (SVG): [nama,,,,,penjelasan,tips] agar format sama dengan AN3_DATA
         const AN3_SVG = (function () {
             const o = i => AN3_DATA.organ[i], f = i => [o(i)[0], 0, 0, 0, 0, o(i)[5], o(i)[6]];
@@ -4645,7 +4814,8 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 + '<div class="an3-tabs"><button type="button" class="an3-vtab on" data-v="svg" onclick="an3View(\'svg\')">Gambar Organ Dalam</button>'
                 + '<button type="button" class="an3-vtab" data-v="3d" onclick="an3View(\'3d\')">Model 3D</button></div>'
                 + '<div class="an3-tabs" id="an3-sub" style="display:none">'
-                + '<button type="button" class="an3-tab on" data-m="otot" onclick="an3Mode(\'otot\')">Otot &amp; Area Pijat</button>'
+                + '<button type="button" class="an3-tab on" data-m="atlas" onclick="an3Mode(\'atlas\')">Tubuh Lengkap (Atlas)</button>'
+                + '<button type="button" class="an3-tab" data-m="otot" onclick="an3Mode(\'otot\')">Otot &amp; Area Pijat</button>'
                 + '<button type="button" class="an3-tab" data-m="organ" onclick="an3Mode(\'organ\')">Organ Dalam</button>'
                 + '<button type="button" class="an3-tab" data-m="rangka" onclick="an3Mode(\'rangka\')">Rangka</button>'
                 + '<button type="button" class="an3-tab" data-m="jantung" onclick="an3Mode(\'jantung\')">Jantung (detail)</button></div>'
@@ -4667,7 +4837,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             an3.mode = m; an3.sel = -1; an3.lastSel = -2;
             document.querySelectorAll('.an3-tab').forEach(b => b.classList.toggle('on', b.dataset.m === m));
             const l = document.getElementById('an3-list'); if (l) l.innerHTML = an3ChipsHtml();
-            if (m === 'jantung') an3.rotT = 0;
+            if (m === 'jantung' || m === 'atlas') an3.rotT = 0;
             an3Info(-1);
         }
         function an3Toggle(k) {
@@ -4689,7 +4859,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             const e = (an3.view === 'svg' ? AN3_SVG : AN3_DATA[an3.mode])[i], a = document.getElementById('an3-info-body');
             if (e && an3.view === '3d' && an3.mode === 'jantung' && e[8] && !an3.cut) { an3.cut = true; const c = document.getElementById('an3-cut'); if (c) c.classList.add('on'); }
             if (a) a.innerHTML = e ? '<h5>' + e[0] + '</h5>' + (e[7] ? '<p class="an3-lat">' + e[7] + '</p>' : '') + '<p>' + e[5] + '</p><p class="an3-tip"><i class="fas fa-lightbulb"></i> ' + e[6] + '</p>'
-                + (an3.view === '3d' && an3.mode === 'organ' && i === 2 ? '<button type="button" class="an3-go" onclick="an3Mode(\'jantung\')">Lihat detail jantung per bagian →</button>' : '')
+                + (an3.view === '3d' && ((an3.mode === 'organ' && i === 2) || (an3.mode === 'atlas' && i === 8)) ? '<button type="button" class="an3-go" onclick="an3Mode(\'jantung\')">Lihat detail jantung per bagian →</button>' : '')
                 : '<h5>Pilih bagian tubuh</h5><p>Ketuk bagian pada model 3D atau pilih dari daftar di bawah.</p>';
             document.querySelectorAll('.an3-chip[data-i]').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
             an3Apply();
@@ -4718,7 +4888,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 p.meshes.forEach(o => { const mt = o.material; mt.transparent = op < 1; mt.opacity = op; mt.depthWrite = op >= .99; if (mt.emissive) mt.emissive.setHex(isSel ? 0x7a4a00 : 0); });
                 p.group.position.copy(p.base).addScaledVector(p.dir, an3.explode * (m === 'jantung' ? .6 : .5));
             });
-            let tY = 1.0, tZ = 3.3;
+            let tY = 1.0, tZ = (m === 'atlas' ? 3.5 : 3.3);
             if (m === 'jantung') { tY = 0.05; tZ = 3.0; }
             else if (sel >= 0 && an3.focus) {
                 const p = an3.parts.find(q => q.group.visible && !q.ghost && q.mode === m && q.i === sel);
@@ -4987,6 +5157,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             B.parts.forEach(pt => { if (pt.i === 2) return; body.add(pt.group); reg('organ', pt.i, pt.group); });
             const hb = an3Heart(T, false); hb.root.scale.setScalar(.12); hb.root.position.set(.03, 1.27, .05); body.add(hb.root); reg('organ', 2, hb.root);
             AN3_DATA.rangka.forEach((e, i) => { (e[4] ? [1, -1] : [1]).forEach(s => { const grp = an3Skeleton(T, i, s); body.add(grp); reg('rangka', i, grp); }); });
+            an3Atlas(T).forEach(pt => { body.add(pt.group); reg('atlas', pt.i, pt.group); });
             const hh = an3Heart(T, true); hh.root.scale.setScalar(1.15); hh.root.position.y = -.2; hd.add(hh.root);
             hh.subs.forEach(sp => reg('jantung', sp.k, sp.group, { interior: sp.interior }));
             hd.visible = false;
@@ -5007,6 +5178,44 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 const d = document.createElement('div'); d.className = 'an3-lab'; d.style.display = 'none';
                 d.innerHTML = '<b>' + e[7] + '</b>' + e[0].split(' (')[0]; d.addEventListener('click', () => an3Info(i)); ov.appendChild(d); return d;
             });
+
+            // label penunjuk gaya atlas (tampilan Tubuh Lengkap)
+            const svg2 = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg2.setAttribute('class', 'an3-ovs'); ov.appendChild(svg2);
+            const labs2 = AN3_ATLAS_LAB.map((a, i) => {
+                const e = AN3_DATA.atlas[i], d = document.createElement('div'); d.className = 'an3-lab an3-lab2'; d.style.display = 'none';
+                d.innerHTML = '<b>' + e[7] + '</b>' + e[0]; d.addEventListener('click', () => an3Info(i)); ov.appendChild(d); return d;
+            });
+            let labsOn = false;
+            function placeAtlas() {
+                const w = st.clientWidth, h = st.clientHeight, narrow = w < 520, on = an3.mode === 'atlas' && an3.view === '3d' && an3.labels;
+                if (!on) { if (labsOn) { labs2.forEach(l => { l.style.display = 'none'; }); svg2.innerHTML = ''; labsOn = false; } return; }
+                labsOn = true; body.updateMatrixWorld(true);
+                const items = [];
+                AN3_ATLAS_LAB.forEach((a, i) => {
+                    const lab = labs2[i], pt = an3.parts.find(p => p.mode === 'atlas' && p.i === i);
+                    const q = new T.Vector3(a[0], a[1], a[2]);
+                    if (pt) q.add(pt.group.position).sub(pt.base);
+                    q.applyMatrix4(body.matrixWorld);
+                    const vis = q.z > -.02 && (!narrow || i === an3.sel);
+                    lab.classList.toggle('on', i === an3.sel);
+                    if (!vis) { lab.style.display = 'none'; return; }
+                    lab.style.display = 'block'; q.project(cam);
+                    items.push({ i: i, px: (q.x + 1) / 2 * w, py: (1 - q.y) / 2 * h });
+                });
+                let lines = '';
+                [true, false].forEach(left => {
+                    const col = items.filter(o => (o.px < w / 2) === left).sort((a, b) => a.py - b.py); let prev = -99;
+                    col.forEach(o => {
+                        const lab = labs2[o.i], lh2 = lab.offsetHeight || 30;
+                        let ly2 = Math.max(o.py - lh2 / 2, prev + 4, 6); ly2 = Math.min(ly2, h - lh2 - 6); prev = ly2 + lh2;
+                        if (left) { lab.style.left = '8px'; lab.style.right = 'auto'; } else { lab.style.right = '8px'; lab.style.left = 'auto'; }
+                        lab.style.top = ly2 + 'px';
+                        const ex = left ? 8 + lab.offsetWidth : w - 8 - lab.offsetWidth;
+                        lines += '<line x1="' + ex + '" y1="' + (ly2 + lh2 / 2) + '" x2="' + o.px + '" y2="' + o.py + '" stroke="#fde68a" stroke-width="1.2"/><circle cx="' + o.px + '" cy="' + o.py + '" r="3" fill="#f59e0b"/>';
+                    });
+                });
+                svg2.innerHTML = lines;
+            }
             st.appendChild(ov);
             const hint = document.createElement('div'); hint.className = 'an3-hint'; hint.id = 'an3-hint'; st.appendChild(hint);
             an3.ready = true; an3Apply();
@@ -5059,10 +5268,11 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 const w = st.clientWidth, h = st.clientHeight;
                 if (w && h && (w !== lw || h !== lh)) { lw = w; lh = h; r.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix(); }
                 if (an3.rotT != null) { let d = an3.rotT - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * .12; if (Math.abs(d) < .01) an3.rotT = null; }
-                else if (an3.auto && an3.mode !== 'jantung' && an3.sel < 0) g.rotation.y += 0.004;
+                else if (an3.auto && an3.mode === 'atlas' && an3.sel < 0) g.rotation.y = Math.sin(Date.now() / 2200) * .45;
+                else if (an3.auto && an3.mode !== 'jantung' && an3.mode !== 'atlas' && an3.sel < 0) g.rotation.y += 0.004;
                 cam.position.y += (an3.camT.y - cam.position.y) * .08; cam.position.z += (an3.camT.z - cam.position.z) * .08; cam.lookAt(0, cam.position.y, 0);
                 hh.root.updateMatrixWorld(true); an3.clip.copy(an3.clipL).applyMatrix4(hh.root.matrixWorld);
-                if (w && h) place();
+                if (w && h) { place(); placeAtlas(); }
                 r.render(sc, cam); requestAnimationFrame(tick);
             })();
         }

@@ -1152,7 +1152,45 @@ html.dark .mv-label{color:#94a3b8}
     html.dark #home-terbaru-container>div>div:first-child{border-bottom-color:#24324d}
     @media(max-width:640px){#home-terbaru-container .space-y-3{grid-template-columns:1fr}#home-terbaru-container .space-y-3>button:first-child{grid-column:auto;min-height:320px}#home-terbaru-container .space-y-3>button{min-height:230px}}
     </style>
-    <style id="anat3d-style">
+    <style id="mg-style">
+/* ===== MOVE: Panduan booking + sorotan fitur (ditambahkan) ===== */
+.mg-wrap{background:#fff;border-radius:2rem;border-top:5px solid #15803d;box-shadow:0 12px 32px rgba(5,90,42,.1);padding:24px;margin-bottom:2rem}
+.mg-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.mg-badge{display:inline-flex;align-items:center;gap:8px;background:#f0fdf4;color:#15803d;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:999px}
+.mg-wrap h4{font-size:1.4rem;font-weight:900;color:#0a6b34;margin:10px 0 4px}
+.mg-sub{font-size:13px;color:#475569;margin:0 0 16px;line-height:1.6}
+.mg-toggle{border:1px solid #bbf7d0;background:#fff;color:#166534;font-weight:800;font-size:11px;padding:6px 14px;border-radius:999px;cursor:pointer}
+.mg-steps{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));list-style:none;padding:0;margin:0 0 14px}
+.mg-steps li{position:relative;background:#f0fdf4;border-radius:16px;padding:16px 16px 14px}
+.mg-steps b{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#055a2a,#0b8a43);color:#fff;font-size:13px;margin-bottom:8px}
+.mg-steps strong{display:block;font-size:13px;color:#14532d;margin-bottom:4px}
+.mg-steps span{font-size:12px;line-height:1.6;color:#475569}
+.mg-cta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.mg-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,#055a2a,#0b8a43);color:#fff;border:0;font-weight:800;font-size:12px;padding:11px 18px;border-radius:999px;cursor:pointer}
+.mg-btn.alt{background:#fff7ed;color:#c2410c;border:1px solid #fdba74}
+.mg-h{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#15803d;margin:0 0 10px}
+.mg-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-bottom:22px}
+.mg-card{display:flex;gap:12px;align-items:flex-start;border:1px solid #dcfce7;border-radius:16px;padding:14px;background:#fff}
+.mg-card i{flex:0 0 38px;height:38px;border-radius:12px;background:#ecfdf5;color:#15803d;display:flex;align-items:center;justify-content:center;font-size:16px}
+.mg-card b{display:block;font-size:13px;color:#14532d;margin-bottom:2px}
+.mg-card span{font-size:12px;line-height:1.55;color:#475569}
+.mg-3d{border-radius:20px;padding:20px;background:linear-gradient(135deg,#055a2a 0%,#0b8a43 60%,#3fae3a 100%);color:#fff;border:2px solid #f59e0b}
+.mg-3d h5{font-size:1.1rem;font-weight:900;margin:8px 0 4px}
+.mg-3d p{font-size:12px;line-height:1.6;color:rgba(255,255,255,.85);margin:0 0 12px}
+.mg-new{display:inline-flex;align-items:center;gap:6px;background:#f59e0b;color:#052e1b;font-weight:900;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+.mg-cols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.mg-col{background:rgba(255,255,255,.12);border-radius:14px;padding:14px}
+.mg-col h6{font-size:12px;font-weight:900;margin:0 0 8px;color:#fde68a}
+.mg-col ul{margin:0;padding:0;list-style:none}
+.mg-col li{font-size:12px;line-height:1.55;padding-left:20px;position:relative;margin-bottom:6px}
+.mg-col li::before{content:"\f00c";font-family:"Font Awesome 5 Free","Font Awesome 6 Free";font-weight:900;position:absolute;left:0;color:#86efac;font-size:11px}
+.mg-col.nx li::before{content:"\f0eb";color:#fcd34d}
+html.dark .mg-wrap{background:#151f32}
+html.dark .mg-sub,html.dark .mg-steps span,html.dark .mg-card span{color:#cbd5e1}
+html.dark .mg-wrap h4,html.dark .mg-steps strong,html.dark .mg-card b{color:#86efac}
+html.dark .mg-steps li,html.dark .mg-card,html.dark .mg-toggle{background:#0b3d24;border-color:#166534;color:#bbf7d0}
+</style>
+<style id="anat3d-style">
 /* ===== MOVE: Pembelajaran Anatomi 3D (ditambahkan, terpisah dari Booking) ===== */
 .an3-wrap{background:#fff;border-radius:2rem;border-top:5px solid #f59e0b;box-shadow:0 12px 32px rgba(5,90,42,.1);padding:24px;margin-bottom:2rem}
 .an3-badge{display:inline-flex;align-items:center;gap:8px;background:#fff7ed;color:#c2410c;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:999px}
@@ -5635,9 +5673,63 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
         // ================== END PEMBELAJARAN ANATOMI 3D ==================
 
+        // ===== PANDUAN MOVE: cara booking/daftar + sorotan fitur + pengembangan 3D =====
+        // Daftar di bawah ini mudah diubah sendiri: tambah/hapus baris teks sesuai perkembangan fitur.
+        const MOVE_INFO_3D = {
+            tersedia: [
+                'Gambar organ dalam: ketuk organ untuk membuka model 3D-nya',
+                'Model 3D detail organ utama, misalnya jantung, otak, paru-paru, hati, dan ginjal',
+                'Label nama tiap bagian, dan penjelasan fungsi saat bagian diketuk',
+                'Fokus bagian, Potong (lihat dalam), dan geser Pisahkan untuk melihat bagian satu per satu',
+                'Tombol Reset untuk kembali ke tampilan awal'
+            ],
+            berikutnya: [
+                'Penambahan organ dan bagian tubuh lain',
+                'Kuis anatomi untuk menguji pemahaman',
+                'Tombol Booking langsung dari area tubuh yang dipelajari'
+            ]
+        };
+        function mgToggle() {
+            const b = document.getElementById('mg-body'), btn = document.getElementById('mg-toggle');
+            if (!b) return;
+            const hide = b.style.display !== 'none';
+            b.style.display = hide ? 'none' : '';
+            if (btn) btn.textContent = hide ? 'Tampilkan panduan' : 'Sembunyikan panduan';
+        }
+        function buildPanduanMoveHtml() {
+            const li = a => a.map(x => '<li>' + x + '</li>').join('');
+            const st = [
+                ['Klik Daftar / Booking', 'Tekan tombol Daftar / Booking di bagian Layanan Pijat Terapis.'],
+                ['Isi Biodata', 'Isi data diri dan jumlah orang. Mau cepat? Tekan Mulai Bicara lalu sebutkan datanya.'],
+                ['Pilih Keluhan', 'Pilih bagian yang pegal, atau sebutkan keluhan Anda dengan suara.'],
+                ['Lihat Peta Titik', 'Sistem menunjukkan titik yang perlu dipijat sesuai keluhan Anda.']
+            ].map((s, i) => '<li><b>' + (i + 1) + '</b><strong>' + s[0] + '</strong><span>' + s[1] + '</span></li>').join('');
+            const ft = [
+                ['fa-hand-holding-medical', 'Daftar dan booking online', 'Isi form langsung dari halaman ini, tanpa perlu datang dulu.'],
+                ['fa-microphone', 'Isi form dengan suara', 'Ucapan hanya diubah menjadi teks untuk mengisi form, bukan direkam.'],
+                ['fa-location-crosshairs', 'Peta titik pijat', 'Titik yang perlu dipijat ditampilkan sesuai keluhan yang dipilih.'],
+                ['fa-folder-open', 'Berkas persiapan MOVE', 'Unduh dokumen tiap fase kegiatan: Investigasi, Aksi, Refleksi, Demonstrasi.'],
+                ['fa-cube', 'Belajar anatomi 3D', 'Pelajari bagian tubuh dengan model 3D interaktif di bagian bawah halaman ini.']
+            ].map(f => '<div class="mg-card"><i class="fas ' + f[0] + '"></i><div><b>' + f[1] + '</b><span>' + f[2] + '</span></div></div>').join('');
+            return '<section id="kg-sec-panduan" class="mg-wrap" style="scroll-margin-top:100px">'
+                + '<div class="mg-top"><span class="mg-badge"><i class="fas fa-circle-info"></i> Panduan MOVE</span>'
+                + '<button type="button" class="mg-toggle" id="mg-toggle" onclick="mgToggle()">Sembunyikan panduan</button></div>'
+                + '<div id="mg-body"><h4>Cara Booking dan Daftar Layanan Pijat</h4>'
+                + '<p class="mg-sub">Ikuti 4 langkah singkat berikut. Seluruhnya bisa dilakukan dari HP.</p>'
+                + '<ol class="mg-steps">' + st + '</ol>'
+                + '<div class="mg-cta"><button type="button" class="mg-btn" onclick="openPijatModal()"><i class="fas fa-hand-holding-medical"></i> Mulai Daftar / Booking</button>'
+                + '<button type="button" class="mg-btn alt" onclick="kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-cube"></i> Coba Belajar Anatomi 3D</button></div>'
+                + '<p class="mg-h">Sorotan Fitur</p><div class="mg-grid">' + ft + '</div>'
+                + '<div class="mg-3d"><span class="mg-new"><i class="fas fa-star"></i> Terus dikembangkan</span>'
+                + '<h5>Pembelajaran Anatomi 3D</h5><p>Belajar bagian tubuh secara visual dan interaktif, terpisah dari layanan booking.</p>'
+                + '<div class="mg-cols"><div class="mg-col"><h6>Sudah tersedia</h6><ul>' + li(MOVE_INFO_3D.tersedia) + '</ul></div>'
+                + '<div class="mg-col nx"><h6>Pengembangan berikutnya</h6><ul>' + li(MOVE_INFO_3D.berikutnya) + '</ul></div></div></div>'
+                + '</div></section>';
+        }
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
+            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-panduan\')"><i class="fas fa-circle-info"></i> Panduan</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-graduation-cap"></i> Belajar Anatomi 3D</button>';
             if (bmSorted(true).length) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-berkas\')"><i class="fas fa-file-arrow-down"></i> Berkas</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-statistik\')"><i class="fas fa-chart-simple"></i> Statistik</button>';
@@ -6048,6 +6140,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     let html = '<div class="w-full">';
 
                     html += buildMoveHubHtml();
+                    html += buildPanduanMoveHtml();
                     html += buildKegiatanVideoHtml(subData);
 
                     if (introDisplayText && introDisplayText.trim() !== '') {

@@ -1189,6 +1189,15 @@ html.dark .mg-wrap{background:#151f32}
 html.dark .mg-sub,html.dark .mg-steps span,html.dark .mg-card span{color:#cbd5e1}
 html.dark .mg-wrap h4,html.dark .mg-steps strong,html.dark .mg-card b{color:#86efac}
 html.dark .mg-steps li,html.dark .mg-card,html.dark .mg-toggle{background:#0b3d24;border-color:#166534;color:#bbf7d0}
+.mg-pop{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(5,46,27,.55);backdrop-filter:blur(3px);opacity:0;transition:opacity .25s}
+.mg-pop.on{opacity:1}
+.mg-box{position:relative;width:100%;max-width:780px;max-height:90vh;overflow-y:auto;background:#fff;border-radius:24px;border-top:6px solid #f59e0b;padding:26px 24px 0;box-shadow:0 30px 70px rgba(0,0,0,.35);transform:translateY(18px) scale(.97);transition:transform .25s}
+.mg-pop.on .mg-box{transform:none}
+.mg-x{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;border:0;background:#f0fdf4;color:#166534;cursor:pointer;font-size:15px}
+.mg-ok{position:sticky;bottom:0;display:block;width:calc(100% + 48px);margin:18px -24px 0;border:0;background:linear-gradient(90deg,#055a2a,#0b8a43);color:#fff;font-weight:900;font-size:13px;padding:16px;cursor:pointer}
+.mg-box .mg-wrapless{margin:0}
+html.dark .mg-box{background:#151f32}
+html.dark .mg-x{background:#0b3d24;color:#bbf7d0}
 </style>
 <style id="anat3d-style">
 /* ===== MOVE: Pembelajaran Anatomi 3D (ditambahkan, terpisah dari Booking) ===== */
@@ -5689,12 +5698,27 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 'Tombol Booking langsung dari area tubuh yang dipelajari'
             ]
         };
-        function mgToggle() {
-            const b = document.getElementById('mg-body'), btn = document.getElementById('mg-toggle');
-            if (!b) return;
-            const hide = b.style.display !== 'none';
-            b.style.display = hide ? 'none' : '';
-            if (btn) btn.textContent = hide ? 'Tampilkan panduan' : 'Sembunyikan panduan';
+        let MG_LAST = 0;
+        function mgKey(e) { if (e.key === 'Escape') mgClose(); }
+        function mgClose() {
+            const el = document.getElementById('mg-pop'); if (el) el.remove();
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', mgKey);
+        }
+        function mgOpen() {
+            mgClose();
+            const d = document.createElement('div'); d.innerHTML = buildPanduanMoveHtml();
+            const el = d.firstChild; document.body.appendChild(el);
+            document.body.style.overflow = 'hidden';
+            document.addEventListener('keydown', mgKey);
+            requestAnimationFrame(() => el.classList.add('on'));
+            const ok = el.querySelector('.mg-ok'); if (ok) ok.focus();
+        }
+        // Dipanggil setiap halaman MOVE dibuka; dilewati bila sudah tampil / baru dirender ulang karena data dimuat
+        function mgAuto() {
+            if (document.getElementById('mg-pop')) return;
+            const now = Date.now(); if (now - MG_LAST < 4000) return;
+            MG_LAST = now; mgOpen();
         }
         function buildPanduanMoveHtml() {
             const li = a => a.map(x => '<li>' + x + '</li>').join('');
@@ -5709,27 +5733,28 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 ['fa-microphone', 'Isi form dengan suara', 'Ucapan hanya diubah menjadi teks untuk mengisi form, bukan direkam.'],
                 ['fa-location-crosshairs', 'Peta titik pijat', 'Titik yang perlu dipijat ditampilkan sesuai keluhan yang dipilih.'],
                 ['fa-folder-open', 'Berkas persiapan MOVE', 'Unduh dokumen tiap fase kegiatan: Investigasi, Aksi, Refleksi, Demonstrasi.'],
-                ['fa-cube', 'Belajar anatomi 3D', 'Pelajari bagian tubuh dengan model 3D interaktif di bagian bawah halaman ini.']
+                ['fa-cube', 'Belajar anatomi 3D', 'Pelajari bagian tubuh dengan model 3D interaktif di bagian bawah halaman MOVE.']
             ].map(f => '<div class="mg-card"><i class="fas ' + f[0] + '"></i><div><b>' + f[1] + '</b><span>' + f[2] + '</span></div></div>').join('');
-            return '<section id="kg-sec-panduan" class="mg-wrap" style="scroll-margin-top:100px">'
-                + '<div class="mg-top"><span class="mg-badge"><i class="fas fa-circle-info"></i> Panduan MOVE</span>'
-                + '<button type="button" class="mg-toggle" id="mg-toggle" onclick="mgToggle()">Sembunyikan panduan</button></div>'
-                + '<div id="mg-body"><h4>Cara Booking dan Daftar Layanan Pijat</h4>'
+            return '<div id="mg-pop" class="mg-pop" role="dialog" aria-modal="true" aria-labelledby="mg-title" onclick="if(event.target===this)mgClose()">'
+                + '<div class="mg-box"><button type="button" class="mg-x" aria-label="Tutup" onclick="mgClose()"><i class="fas fa-xmark"></i></button>'
+                + '<span class="mg-badge"><i class="fas fa-circle-info"></i> Panduan MOVE</span>'
+                + '<h4 id="mg-title">Cara Booking dan Daftar Layanan Pijat</h4>'
                 + '<p class="mg-sub">Ikuti 4 langkah singkat berikut. Seluruhnya bisa dilakukan dari HP.</p>'
                 + '<ol class="mg-steps">' + st + '</ol>'
-                + '<div class="mg-cta"><button type="button" class="mg-btn" onclick="openPijatModal()"><i class="fas fa-hand-holding-medical"></i> Mulai Daftar / Booking</button>'
-                + '<button type="button" class="mg-btn alt" onclick="kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-cube"></i> Coba Belajar Anatomi 3D</button></div>'
+                + '<div class="mg-cta"><button type="button" class="mg-btn" onclick="mgClose();openPijatModal()"><i class="fas fa-hand-holding-medical"></i> Mulai Daftar / Booking</button>'
+                + '<button type="button" class="mg-btn alt" onclick="mgClose();kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-cube"></i> Coba Belajar Anatomi 3D</button></div>'
                 + '<p class="mg-h">Sorotan Fitur</p><div class="mg-grid">' + ft + '</div>'
                 + '<div class="mg-3d"><span class="mg-new"><i class="fas fa-star"></i> Terus dikembangkan</span>'
                 + '<h5>Pembelajaran Anatomi 3D</h5><p>Belajar bagian tubuh secara visual dan interaktif, terpisah dari layanan booking.</p>'
                 + '<div class="mg-cols"><div class="mg-col"><h6>Sudah tersedia</h6><ul>' + li(MOVE_INFO_3D.tersedia) + '</ul></div>'
                 + '<div class="mg-col nx"><h6>Pengembangan berikutnya</h6><ul>' + li(MOVE_INFO_3D.berikutnya) + '</ul></div></div></div>'
-                + '</div></section>';
+                + '<button type="button" class="mg-ok" onclick="mgClose()">Mengerti, lanjut</button></div></div>';
         }
+
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
-            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-panduan\')"><i class="fas fa-circle-info"></i> Panduan</button>';
+            h += '<button type="button" class="kg-qn" onclick="mgOpen()"><i class="fas fa-circle-info"></i> Panduan</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-graduation-cap"></i> Belajar Anatomi 3D</button>';
             if (bmSorted(true).length) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-berkas\')"><i class="fas fa-file-arrow-down"></i> Berkas</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-statistik\')"><i class="fas fa-chart-simple"></i> Statistik</button>';
@@ -6140,7 +6165,6 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     let html = '<div class="w-full">';
 
                     html += buildMoveHubHtml();
-                    html += buildPanduanMoveHtml();
                     html += buildKegiatanVideoHtml(subData);
 
                     if (introDisplayText && introDisplayText.trim() !== '') {
@@ -6222,6 +6246,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
 
                         html += '</div>';
                         container.innerHTML = html.replace('<div class="w-full">', '<div class="w-full kg-wrap">');
+                        setTimeout(mgAuto, 400);
                         if (imageUrls.length > 0) initAutoGallery('kegiatan-narasi', imageUrls.length, 4500);
                         renderKegiatanItemsUI();
                         return;

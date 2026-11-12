@@ -1199,6 +1199,90 @@ html.dark .mg-steps li,html.dark .mg-card,html.dark .mg-toggle{background:#0b3d2
 html.dark .mg-box{background:#151f32}
 html.dark .mg-x{background:#0b3d24;color:#bbf7d0}
 </style>
+<style id="mgp-style">
+/* ===== MOVE: Popup Panduan versi baru (mgp-) ===== */
+.mgp-pop{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(3,30,17,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .25s}
+.mgp-pop.on{opacity:1}
+.mgp-box{position:relative;display:flex;flex-direction:column;width:100%;max-width:840px;max-height:92vh;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.4);transform:translateY(24px) scale(.97);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.mgp-pop.on .mgp-box{transform:none}
+/* Header */
+.mgp-hero{position:relative;flex:0 0 auto;padding:26px 30px 24px;color:#fff;overflow:hidden;background:linear-gradient(135deg,#043d1d 0%,#0a6b34 55%,#16a34a 100%)}
+.mgp-hero::before{content:"";position:absolute;right:-50px;top:-70px;width:230px;height:230px;border-radius:50%;background:rgba(255,255,255,.08)}
+.mgp-hero::after{content:"";position:absolute;right:70px;bottom:-90px;width:170px;height:170px;border-radius:50%;background:rgba(245,158,11,.22)}
+.mgp-badge{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:999px}
+.mgp-title{position:relative;z-index:1;margin:12px 44px 6px 0;font-size:1.65rem;line-height:1.2;font-weight:900;color:#fff}
+.mgp-sub{position:relative;z-index:1;margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.88);max-width:560px}
+.mgp-x{position:absolute;z-index:2;right:16px;top:16px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.16);color:#fff;font-size:15px;cursor:pointer;transition:background .2s,transform .2s}
+.mgp-x:hover{background:rgba(255,255,255,.3);transform:rotate(90deg)}
+/* Isi (bisa di-scroll) */
+.mgp-scroll{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;padding:24px 30px 10px;scrollbar-width:thin;scrollbar-color:#86efac transparent}
+.mgp-h{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#15803d}
+.mgp-h::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,#bbf7d0,transparent)}
+/* Langkah */
+.mgp-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 16px;padding:0;list-style:none}
+.mgp-steps li{position:relative;display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:18px;background:linear-gradient(180deg,#f0fdf4,#fff);border:1px solid #d1fae5;overflow:hidden;transition:transform .2s,box-shadow .2s;animation:mgpUp .45s both}
+.mgp-steps li:nth-child(2){animation-delay:.06s}.mgp-steps li:nth-child(3){animation-delay:.12s}.mgp-steps li:nth-child(4){animation-delay:.18s}
+.mgp-steps li:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(5,90,42,.12)}
+.mgp-steps li::after{content:attr(data-n);position:absolute;right:12px;bottom:-14px;font-size:64px;font-weight:900;line-height:1;color:rgba(22,163,74,.08)}
+.mgp-num{flex:0 0 42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;background:linear-gradient(135deg,#055a2a,#16a34a);box-shadow:0 6px 14px rgba(5,90,42,.28)}
+.mgp-steps strong{display:block;margin-bottom:3px;font-size:14px;font-weight:800;color:#14532d}
+.mgp-steps span{display:block;font-size:12.5px;line-height:1.6;color:#475569}
+.mgp-steps em{display:block;margin-bottom:2px;font-style:normal;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#16a34a}
+/* Tombol aksi */
+.mgp-cta{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 26px}
+.mgp-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;font-weight:800;font-size:13px;padding:12px 20px;border-radius:999px;color:#fff;background:linear-gradient(90deg,#055a2a,#0b8a43);box-shadow:0 8px 18px rgba(5,90,42,.28);transition:transform .15s,box-shadow .15s}
+.mgp-btn:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(5,90,42,.34)}
+.mgp-btn.alt{color:#c2410c;background:#fff7ed;border:1px solid #fdba74;box-shadow:none}
+/* Sorotan fitur */
+.mgp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:0 0 26px}
+.mgp-card{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#fff;border:1px solid #e2e8f0;transition:transform .2s,box-shadow .2s,border-color .2s}
+.mgp-card:hover{transform:translateY(-2px);border-color:var(--c);box-shadow:0 10px 22px rgba(15,23,42,.08)}
+.mgp-card i{flex:0 0 40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--c);background:color-mix(in srgb,var(--c) 13%,#fff)}
+.mgp-card b{display:block;margin-bottom:2px;font-size:13.5px;font-weight:800;color:#0f172a}
+.mgp-card span{display:block;font-size:12.5px;line-height:1.55;color:#64748b}
+/* Panel 3D */
+.mgp-3d{position:relative;overflow:hidden;margin:0 0 14px;padding:22px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#043d1d 0%,#0a6b34 60%,#2f9e44 100%);border:2px solid #f59e0b}
+.mgp-3d::before{content:"";position:absolute;right:-40px;top:-50px;width:170px;height:170px;border-radius:50%;background:rgba(245,158,11,.18)}
+.mgp-new{position:relative;display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:#f59e0b;color:#3b2300;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.mgp-3d h5{position:relative;margin:10px 0 4px;font-size:1.2rem;font-weight:900;color:#fff}
+.mgp-3d p{position:relative;margin:0 0 14px;font-size:12.5px;line-height:1.6;color:rgba(255,255,255,.86)}
+.mgp-cols{position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.mgp-col{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16)}
+.mgp-col h6{margin:0 0 8px;font-size:12px;font-weight:900;color:#fde68a;letter-spacing:.04em}
+.mgp-col ul{margin:0;padding:0;list-style:none}
+.mgp-col li{position:relative;margin-bottom:7px;padding-left:22px;font-size:12.5px;line-height:1.55;color:#f0fdf4}
+.mgp-col li::before{content:"\f00c";position:absolute;left:0;top:1px;font-family:"Font Awesome 6 Free","Font Awesome 5 Free";font-weight:900;font-size:11px;color:#86efac}
+.mgp-col.nx li::before{content:"\f0eb";color:#fcd34d}
+/* Footer tetap di bawah */
+.mgp-foot{flex:0 0 auto;padding:14px 30px 18px;background:#fff;border-top:1px solid #e2f5e8}
+.mgp-ok{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;cursor:pointer;padding:15px;border-radius:16px;font-size:14px;font-weight:900;color:#fff;background:linear-gradient(90deg,#055a2a,#0b8a43);box-shadow:0 10px 22px rgba(5,90,42,.3);transition:transform .15s}
+.mgp-ok:hover{transform:translateY(-1px)}
+.mgp-ok:focus-visible,.mgp-btn:focus-visible,.mgp-x:focus-visible{outline:3px solid #fbbf24;outline-offset:2px}
+@keyframes mgpUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* HP: tampil seperti bottom-sheet */
+@media(max-width:640px){
+  .mgp-pop{align-items:flex-end;padding:0}
+  .mgp-box{max-width:none;max-height:94vh;border-radius:26px 26px 0 0;transform:translateY(60px)}
+  .mgp-hero{padding:22px 20px 20px}
+  .mgp-title{font-size:1.3rem}
+  .mgp-scroll{padding:18px 18px 6px}
+  .mgp-steps{grid-template-columns:1fr}
+  .mgp-btn{flex:1 1 100%}
+  .mgp-foot{padding:12px 18px calc(14px + env(safe-area-inset-bottom,0px))}
+}
+@media(prefers-reduced-motion:reduce){.mgp-pop,.mgp-box,.mgp-steps li,.mgp-card,.mgp-btn,.mgp-x{transition:none;animation:none}}
+/* Mode gelap */
+html.dark .mgp-box,html.dark .mgp-foot{background:#111b2e}
+html.dark .mgp-foot{border-top-color:#1f3a2c}
+html.dark .mgp-steps li{background:linear-gradient(180deg,#0b3d24,#0f2a22);border-color:#166534}
+html.dark .mgp-steps strong{color:#86efac}
+html.dark .mgp-steps span,html.dark .mgp-card span{color:#cbd5e1}
+html.dark .mgp-card{background:#162238;border-color:#24324d}
+html.dark .mgp-card b{color:#e2e8f0}
+html.dark .mgp-card i{background:color-mix(in srgb,var(--c) 22%,#111b2e)}
+html.dark .mgp-h{color:#86efac}
+html.dark .mgp-btn.alt{background:#3b2a12;color:#fdba74;border-color:#92400e}
+</style>
 <style id="anat3d-style">
 /* ===== MOVE: Pembelajaran Anatomi 3D (ditambahkan, terpisah dari Booking) ===== */
 .an3-wrap{background:#fff;border-radius:2rem;border-top:5px solid #f59e0b;box-shadow:0 12px 32px rgba(5,90,42,.1);padding:24px;margin-bottom:2rem}
@@ -5723,32 +5807,37 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         function buildPanduanMoveHtml() {
             const li = a => a.map(x => '<li>' + x + '</li>').join('');
             const st = [
-                ['Klik Daftar / Booking', 'Tekan tombol Daftar / Booking di bagian Layanan Pijat Terapis.'],
-                ['Isi Biodata', 'Isi data diri dan jumlah orang. Mau cepat? Tekan Mulai Bicara lalu sebutkan datanya.'],
-                ['Pilih Keluhan', 'Pilih bagian yang pegal, atau sebutkan keluhan Anda dengan suara.'],
-                ['Lihat Peta Titik', 'Sistem menunjukkan titik yang perlu dipijat sesuai keluhan Anda.']
-            ].map((s, i) => '<li><b>' + (i + 1) + '</b><strong>' + s[0] + '</strong><span>' + s[1] + '</span></li>').join('');
+                ['fa-hand-pointer', 'Klik Daftar / Booking', 'Tekan tombol Daftar / Booking di bagian Layanan Pijat Terapis.'],
+                ['fa-user-pen', 'Isi Biodata', 'Isi data diri dan jumlah orang. Mau cepat? Tekan Mulai Bicara lalu sebutkan datanya.'],
+                ['fa-notes-medical', 'Pilih Keluhan', 'Pilih bagian yang pegal, atau sebutkan keluhan Anda dengan suara.'],
+                ['fa-location-dot', 'Lihat Peta Titik', 'Sistem menunjukkan titik yang perlu dipijat sesuai keluhan Anda.']
+            ].map((s, i) => '<li data-n="' + (i + 1) + '"><div class="mgp-num"><i class="fas ' + s[0] + '"></i></div>'
+                + '<div><em>Langkah ' + (i + 1) + '</em><strong>' + s[1] + '</strong><span>' + s[2] + '</span></div></li>').join('');
             const ft = [
-                ['fa-hand-holding-medical', 'Daftar dan booking online', 'Isi form langsung dari halaman ini, tanpa perlu datang dulu.'],
-                ['fa-microphone', 'Isi form dengan suara', 'Ucapan hanya diubah menjadi teks untuk mengisi form, bukan direkam.'],
-                ['fa-location-crosshairs', 'Peta titik pijat', 'Titik yang perlu dipijat ditampilkan sesuai keluhan yang dipilih.'],
-                ['fa-folder-open', 'Berkas persiapan MOVE', 'Unduh dokumen tiap fase kegiatan: Investigasi, Aksi, Refleksi, Demonstrasi.'],
-                ['fa-cube', 'Belajar anatomi 3D', 'Pelajari bagian tubuh dengan model 3D interaktif di bagian bawah halaman MOVE.']
-            ].map(f => '<div class="mg-card"><i class="fas ' + f[0] + '"></i><div><b>' + f[1] + '</b><span>' + f[2] + '</span></div></div>').join('');
-            return '<div id="mg-pop" class="mg-pop" role="dialog" aria-modal="true" aria-labelledby="mg-title" onclick="if(event.target===this)mgClose()">'
-                + '<div class="mg-box"><button type="button" class="mg-x" aria-label="Tutup" onclick="mgClose()"><i class="fas fa-xmark"></i></button>'
-                + '<span class="mg-badge"><i class="fas fa-circle-info"></i> Panduan MOVE</span>'
-                + '<h4 id="mg-title">Cara Booking dan Daftar Layanan Pijat</h4>'
-                + '<p class="mg-sub">Ikuti 4 langkah singkat berikut. Seluruhnya bisa dilakukan dari HP.</p>'
-                + '<ol class="mg-steps">' + st + '</ol>'
-                + '<div class="mg-cta"><button type="button" class="mg-btn" onclick="mgClose();openPijatModal()"><i class="fas fa-hand-holding-medical"></i> Mulai Daftar / Booking</button>'
-                + '<button type="button" class="mg-btn alt" onclick="mgClose();kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-cube"></i> Coba Belajar Anatomi 3D</button></div>'
-                + '<p class="mg-h">Sorotan Fitur</p><div class="mg-grid">' + ft + '</div>'
-                + '<div class="mg-3d"><span class="mg-new"><i class="fas fa-star"></i> Terus dikembangkan</span>'
+                ['fa-hand-holding-medical', '#15803d', 'Daftar dan booking online', 'Isi form langsung dari halaman ini, tanpa perlu datang dulu.'],
+                ['fa-microphone', '#0891b2', 'Isi form dengan suara', 'Ucapan hanya diubah menjadi teks untuk mengisi form, bukan direkam.'],
+                ['fa-location-crosshairs', '#dc2626', 'Peta titik pijat', 'Titik yang perlu dipijat ditampilkan sesuai keluhan yang dipilih.'],
+                ['fa-folder-open', '#d97706', 'Berkas persiapan MOVE', 'Unduh dokumen tiap fase kegiatan: Investigasi, Aksi, Refleksi, Demonstrasi.'],
+                ['fa-cube', '#7c3aed', 'Belajar anatomi 3D', 'Pelajari bagian tubuh dengan model 3D interaktif di bagian bawah halaman MOVE.']
+            ].map(f => '<div class="mgp-card" style="--c:' + f[1] + '"><i class="fas ' + f[0] + '"></i><div><b>' + f[2] + '</b><span>' + f[3] + '</span></div></div>').join('');
+            return '<div id="mg-pop" class="mgp-pop" role="dialog" aria-modal="true" aria-labelledby="mg-title" onclick="if(event.target===this)mgClose()">'
+                + '<div class="mgp-box">'
+                + '<div class="mgp-hero"><button type="button" class="mgp-x" aria-label="Tutup" onclick="mgClose()"><i class="fas fa-xmark"></i></button>'
+                + '<span class="mgp-badge"><i class="fas fa-circle-info"></i> Panduan MOVE</span>'
+                + '<h4 id="mg-title" class="mgp-title">Cara Booking dan Daftar Layanan Pijat</h4>'
+                + '<p class="mgp-sub">Ikuti 4 langkah singkat berikut. Seluruhnya bisa dilakukan dari HP.</p></div>'
+                + '<div class="mgp-scroll">'
+                + '<p class="mgp-h">Cara Daftar</p><ol class="mgp-steps">' + st + '</ol>'
+                + '<div class="mgp-cta"><button type="button" class="mgp-btn" onclick="mgClose();openPijatModal()"><i class="fas fa-hand-holding-medical"></i> Mulai Daftar / Booking</button>'
+                + '<button type="button" class="mgp-btn alt" onclick="mgClose();kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-cube"></i> Coba Belajar Anatomi 3D</button></div>'
+                + '<p class="mgp-h">Sorotan Fitur</p><div class="mgp-grid">' + ft + '</div>'
+                + '<div class="mgp-3d"><span class="mgp-new"><i class="fas fa-star"></i> Terus dikembangkan</span>'
                 + '<h5>Pembelajaran Anatomi 3D</h5><p>Belajar bagian tubuh secara visual dan interaktif, terpisah dari layanan booking.</p>'
-                + '<div class="mg-cols"><div class="mg-col"><h6>Sudah tersedia</h6><ul>' + li(MOVE_INFO_3D.tersedia) + '</ul></div>'
-                + '<div class="mg-col nx"><h6>Pengembangan berikutnya</h6><ul>' + li(MOVE_INFO_3D.berikutnya) + '</ul></div></div></div>'
-                + '<button type="button" class="mg-ok" onclick="mgClose()">Mengerti, lanjut</button></div></div>';
+                + '<div class="mgp-cols"><div class="mgp-col"><h6>Sudah tersedia</h6><ul>' + li(MOVE_INFO_3D.tersedia) + '</ul></div>'
+                + '<div class="mgp-col nx"><h6>Pengembangan berikutnya</h6><ul>' + li(MOVE_INFO_3D.berikutnya) + '</ul></div></div></div>'
+                + '</div>'
+                + '<div class="mgp-foot"><button type="button" class="mgp-ok mg-ok" onclick="mgClose()"><i class="fas fa-check"></i> Mengerti, lanjut</button></div>'
+                + '</div></div>';
         }
 
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {

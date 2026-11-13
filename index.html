@@ -1347,6 +1347,16 @@ html.dark .mgi-bub p{color:#cbd5e1}
 html.dark .mgi-tag{background:#0b3d24;color:#bbf7d0}
 html.dark .mgi-prog{background:#0b3d24}
 @media (prefers-reduced-motion:reduce){.mgi-av,.mgi-ring,.mgi-bot.walk .mgi-leg{animation:none}}
+/* ===== Mode HP: navigasi bawah & tombol melayang tidak boleh menimpa popup / perkenalan / tur ===== */
+@media(max-width:767px){
+  body:has(#mg-pop) #mobile-nav-bar,body:has(#mgi-wrap) #mobile-nav-bar,body:has(.mgt-bot) #mobile-nav-bar{transform:translateY(125%)}
+  body:has(#mg-pop) #floating-action-stack,body:has(#mgi-wrap) #floating-action-stack,body:has(.mgt-bot) #floating-action-stack{display:none !important}
+  .mgt-fab{bottom:82px;transition:bottom .28s ease}
+  .mgt-fab-tip{bottom:112px;transition:bottom .28s ease}
+  body.nav-gone .mgt-fab{bottom:20px}
+  body.nav-gone .mgt-fab-tip{bottom:50px}
+  .mgp-box{max-height:94vh;max-height:94dvh}
+}
 @keyframes mgpUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 /* HP: tampil seperti bottom-sheet */
 @media(max-width:640px){
@@ -3070,6 +3080,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             let lastWin = window.pageYOffset || 0;
             const lastPos = new WeakMap();
             function anyModalOpen() {
+                if (document.getElementById('mg-pop') || document.getElementById('mgi-wrap') || document.querySelector('.mgt-bot')) return true;
                 return MODAL_IDS.some(function (id) {
                     const m = document.getElementById(id);
                     return m && !m.classList.contains('hidden') && getComputedStyle(m).display !== 'none';
@@ -3079,6 +3090,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 const n = document.getElementById('mobile-nav-bar');
                 const modal = anyModalOpen();
                 if (n) n.classList.toggle('nav-hidden', scrollHidden || modal);
+                document.body.classList.toggle('nav-gone', scrollHidden || modal); window.__navScrollHidden = scrollHidden;
                 // tombol chat/WA melayang: turun saat menu bawah hilang, dan disembunyikan saat popup/form terbuka
                 const fab = document.getElementById('floating-action-stack');
                 if (fab) { fab.classList.toggle('nav-away', scrollHidden || modal); fab.classList.toggle('fab-modal-hide', modal); }
@@ -3104,6 +3116,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             document.addEventListener('scroll', onScroll, { capture: true, passive: true });
             function watchModals() {
                 const mo = new MutationObserver(apply);
+                new MutationObserver(apply).observe(document.body, { childList: true });
                 MODAL_IDS.forEach(function (id) {
                     const m = document.getElementById(id);
                     if (m) mo.observe(m, { attributes: true, attributeFilter: ['class', 'style'] });
@@ -6104,7 +6117,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             if (!MGI || MGI.walking) return;
             MGI.walking = true; clearInterval(MGI.typer); clearTimeout(MGI.auto);
             const el = document.getElementById('mgi-txt'); if (el) el.textContent = MGI_TEKS;
-            const vw = window.innerWidth, vh = window.innerHeight, x1 = MGI.x, y1 = MGI.y, S1 = MGI.S, x2 = 16, y2 = vh - 16 - 72;
+            const vw = window.innerWidth, vh = window.innerHeight, x1 = MGI.x, y1 = MGI.y, S1 = MGI.S, x2 = 16, y2 = vh - ((vw < 768 && !window.__navScrollHidden) ? 82 : 16) - 72;
             const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             const dur = reduce ? 450 : Math.max(2000, Math.min(3400, Math.hypot(x2 - x1, y2 - y1) * 3.4));
             const N = Math.max(4, Math.round(dur / 430));

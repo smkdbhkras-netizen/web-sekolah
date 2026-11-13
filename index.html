@@ -1308,6 +1308,45 @@ html.dark .mgt-b.pr{background:linear-gradient(90deg,#055a2a,#0b8a43);color:#fff
 .mgt-fab:hover{transform:scale(1.08)}
 .mgt-fab-tip{position:fixed;z-index:9970;left:90px;bottom:46px;background:#fff;color:#14532d;font-weight:800;font-size:12px;padding:8px 12px;border-radius:14px 14px 14px 4px;box-shadow:0 8px 22px rgba(0,0,0,.25);animation:mgtIn .4s both;pointer-events:none;border-left:4px solid #f59e0b}
 html.dark .mgt-fab-tip{background:#151f32;color:#86efac}
+/* ===== Perkenalan robot pemandu (setelah popup Panduan Terapis ditutup) ===== */
+.mgi-wrap{position:fixed;inset:0;z-index:10001;overflow:hidden}
+.mgi-dim{position:absolute;inset:0;opacity:0;transition:opacity .5s}
+.mgi-wrap.on .mgi-dim{opacity:1}
+.mgi-wrap.go .mgi-dim{opacity:0;transition:opacity .9s}
+.mgi-ring{position:absolute;border-radius:50%;border:3px solid #f59e0b;transform:scale(.3);opacity:0;pointer-events:none;transition:transform .6s cubic-bezier(.2,.9,.3,1.2) .15s,opacity .4s .15s;animation:mgiGlow 1.8s ease-in-out infinite}
+.mgi-wrap.on .mgi-ring{transform:scale(1);opacity:1}
+.mgi-wrap.go .mgi-ring{transform:scale(.6);opacity:0;transition:transform .4s,opacity .35s}
+@keyframes mgiGlow{0%,100%{box-shadow:0 0 0 8px rgba(245,158,11,.16),0 0 34px 6px rgba(245,158,11,.35)}50%{box-shadow:0 0 0 18px rgba(245,158,11,.07),0 0 60px 16px rgba(245,158,11,.5)}}
+.mgi-bot{position:absolute;left:0;top:0;width:64px;height:88px;transform-origin:0 0;opacity:0}
+.mgi-wrap.on .mgi-bot{opacity:1}
+.mgi-rock{width:64px;height:88px;transform-origin:50% 100%}
+.mgi-av{width:64px;height:88px;animation:mgtFloat 2.4s ease-in-out infinite;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+.mgi-av svg{width:64px;height:88px;display:block;overflow:visible}
+.mgi-leg{transform-box:fill-box;transform-origin:50% 0}
+.mgi-bot.walk .mgi-av{animation:none}
+.mgi-bot.walk .mgi-leg.l{animation:mgiStep var(--mgi-cyc,.8s) ease-in-out infinite}
+.mgi-bot.walk .mgi-leg.r{animation:mgiStep var(--mgi-cyc,.8s) ease-in-out infinite;animation-delay:calc(var(--mgi-cyc,.8s) / -2)}
+.mgi-bot.arrive .mgi-leg{animation:none;transform:scaleY(0);transition:transform .28s ease-in}
+@keyframes mgiStep{0%,100%{transform:rotate(-26deg)}50%{transform:rotate(26deg)}}
+.mgi-bub{box-sizing:border-box;position:absolute;width:min(380px,calc(100vw - 28px));background:#fff;border-radius:20px;border-top:5px solid #f59e0b;padding:14px 16px 14px;box-shadow:0 18px 44px rgba(0,0,0,.35);opacity:0;transform:translateY(14px) scale(.96);transition:opacity .4s,transform .4s cubic-bezier(.2,.9,.3,1.2)}
+.mgi-bub::before{content:"";position:absolute;top:-17px;left:50%;margin-left:-10px;border:10px solid transparent;border-bottom-color:#f59e0b;border-top:0}
+.mgi-bub.show{opacity:1;transform:none}
+.mgi-wrap.go .mgi-bub{opacity:0;transform:translateY(10px) scale(.94);transition:opacity .3s,transform .3s}
+.mgi-tag{display:inline-block;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#166534;background:#f0fdf4;border-radius:999px;padding:3px 10px}
+.mgi-bub h6{font-size:17px;font-weight:900;color:#14532d;margin:8px 0 4px}
+.mgi-bub p{font-size:13px;line-height:1.6;color:#334155;margin:0 0 10px;min-height:84px}
+.mgi-prog{height:4px;border-radius:4px;background:#d1fae5;overflow:hidden;margin-bottom:12px}
+.mgi-prog i{display:block;height:100%;width:0;background:#f59e0b}
+.mgi-acts{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mgi-skip{border:0;background:none;color:#64748b;font-size:11px;font-weight:700;cursor:pointer;text-decoration:underline}
+.mgi-go{border:0;cursor:pointer;color:#fff;font-weight:800;font-size:13px;padding:10px 18px;border-radius:999px;background:linear-gradient(90deg,#055a2a,#0b8a43);box-shadow:0 8px 18px rgba(5,90,42,.3)}
+.mgi-go:focus-visible,.mgi-skip:focus-visible{outline:3px solid #fbbf24;outline-offset:2px}
+html.dark .mgi-bub{background:#151f32}
+html.dark .mgi-bub h6{color:#86efac}
+html.dark .mgi-bub p{color:#cbd5e1}
+html.dark .mgi-tag{background:#0b3d24;color:#bbf7d0}
+html.dark .mgi-prog{background:#0b3d24}
+@media (prefers-reduced-motion:reduce){.mgi-av,.mgi-ring,.mgi-bot.walk .mgi-leg{animation:none}}
 @keyframes mgpUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 /* HP: tampil seperti bottom-sheet */
 @media(max-width:640px){
@@ -5833,7 +5872,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             ]
         };
         let MG_LAST = 0;
-        function mgKey(e) { if (e.key === 'Escape') mgClose(); }
+        function mgKey(e) { if (e.key === 'Escape') mgDismiss(); }
         function mgClose() {
             const el = document.getElementById('mg-pop'); if (el) el.remove();
             document.body.style.overflow = '';
@@ -5870,9 +5909,9 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 ['fa-folder-open', '#d97706', 'Berkas persiapan MOVE', 'Unduh dokumen tiap fase kegiatan: Investigasi, Aksi, Refleksi, Demonstrasi.'],
                 ['fa-cube', '#7c3aed', 'Belajar anatomi 3D', 'Pelajari bagian tubuh dengan model 3D interaktif di bagian bawah halaman MOVE.']
             ].map(f => '<div class="mgp-card" style="--c:' + f[1] + '"><i class="fas ' + f[0] + '"></i><div><b>' + f[2] + '</b><span>' + f[3] + '</span></div></div>').join('');
-            return '<div id="mg-pop" class="mgp-pop" role="dialog" aria-modal="true" aria-labelledby="mg-title" onclick="if(event.target===this)mgClose()">'
+            return '<div id="mg-pop" class="mgp-pop" role="dialog" aria-modal="true" aria-labelledby="mg-title" onclick="if(event.target===this)mgDismiss()">'
                 + '<div class="mgp-box">'
-                + '<div class="mgp-hero"><button type="button" class="mgp-x" aria-label="Tutup" onclick="mgClose()"><i class="fas fa-xmark"></i></button>'
+                + '<div class="mgp-hero"><button type="button" class="mgp-x" aria-label="Tutup" onclick="mgDismiss()"><i class="fas fa-xmark"></i></button>'
                 + '<span class="mgp-badge"><i class="fas fa-circle-info"></i> Panduan Terapis</span>'
                 + '<h4 id="mg-title" class="mgp-title">Cara Mencoba Layanan Terapis</h4>'
                 + '<p class="mgp-sub">Ikuti 4 langkah singkat berikut. Seluruhnya bisa dilakukan dari HP.</p></div>'
@@ -5889,7 +5928,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 + '<div class="mgp-cols"><div class="mgp-col"><h6>Sudah tersedia</h6><ul>' + li(MOVE_INFO_3D.tersedia) + '</ul></div>'
                 + '<div class="mgp-col nx"><h6>Pengembangan berikutnya</h6><ul>' + li(MOVE_INFO_3D.berikutnya) + '</ul></div></div></div>'
                 + '</div>'
-                + '<div class="mgp-foot"><button type="button" class="mgp-ok mg-ok" onclick="mgClose()"><i class="fas fa-check"></i> Mengerti, lanjut</button></div>'
+                + '<div class="mgp-foot"><button type="button" class="mgp-ok mg-ok" onclick="mgDismiss()"><i class="fas fa-check"></i> Mengerti, lanjut</button></div>'
                 + '</div></div>';
         }
 
@@ -5998,6 +6037,110 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
 
 
+        // ===== PERKENALAN ROBOT: setelah popup Panduan Terapis ditutup, robot muncul di tengah layar (sorotan),
+        // memperkenalkan diri, lalu berjalan ke pojok kiri bawah dan menjadi tombol pemandu =====
+        const MGI_ONCE = true; // true = hanya sekali per sesi browser; ubah ke false agar tampil setiap popup ditutup
+        const MGI_JUDUL = 'Halo, aku Pemandu MOVE!';
+        const MGI_TEKS = 'Aku robot pemandu halaman ini. Aku akan menemanimu mencoba layanan terapis, belajar anatomi 3D, sampai melihat dokumentasi kegiatan. Setelah ini aku menunggu di pojok kiri bawah. Klik aku kapan saja untuk memulai tur!';
+        const MGI_JEDA = 5000; // ms menunggu sebelum robot berjalan sendiri
+        let MGI = null;
+        function mgiRobot() {
+            const legs = '<g class="mgi-leg l"><rect x="21" y="64" width="8" height="16" rx="4" fill="#065f2c"/><ellipse cx="25" cy="81" rx="7.5" ry="3.8" fill="#f59e0b"/></g>'
+                + '<g class="mgi-leg r"><rect x="35" y="64" width="8" height="16" rx="4" fill="#065f2c"/><ellipse cx="39" cy="81" rx="7.5" ry="3.8" fill="#f59e0b"/></g>';
+            return MGT_ROBOT.replace('viewBox="0 0 64 72"', 'viewBox="0 0 64 88"').replace('aria-hidden="true">', 'aria-hidden="true">' + legs);
+        }
+        function mgDismiss() { mgClose(); mgIntro(); }
+        function mgIntro() {
+            if (MGI || MGT) return;
+            if (!document.getElementById('kg-sec-riwayat') && !document.getElementById('kg-sec-belajar')) return;
+            if (MGI_ONCE) { try { if (sessionStorage.getItem('mgiDone')) return; } catch (e) { } }
+            const wrap = document.createElement('div'); wrap.id = 'mgi-wrap'; wrap.className = 'mgi-wrap'; wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-label', 'Perkenalan Pemandu MOVE');
+            wrap.innerHTML = '<div class="mgi-dim"></div><div class="mgi-ring"></div>'
+                + '<div class="mgi-bot"><div class="mgi-rock"><div class="mgi-av">' + mgiRobot() + '</div></div></div>'
+                + '<div class="mgi-bub"><span class="mgi-tag">Perkenalan</span><h6>' + MGI_JUDUL + '</h6><p id="mgi-txt" aria-live="polite"></p>'
+                + '<div class="mgi-prog"><i></i></div>'
+                + '<div class="mgi-acts"><button type="button" class="mgi-skip" onclick="mgiFinish()">Lewati</button><button type="button" class="mgi-go" onclick="mgiWalk()">Siap, lanjut &rsaquo;</button></div></div>';
+            document.body.appendChild(wrap); document.body.style.overflow = 'hidden';
+            MGI = { wrap: wrap, bot: wrap.querySelector('.mgi-bot'), rock: wrap.querySelector('.mgi-rock'), bub: wrap.querySelector('.mgi-bub'), ring: wrap.querySelector('.mgi-ring'), dim: wrap.querySelector('.mgi-dim'), typer: 0, auto: 0, walking: false, x: 0, y: 0, S: 2 };
+            document.addEventListener('keydown', mgiKey); window.addEventListener('resize', mgiLayout);
+            mgiLayout();
+            requestAnimationFrame(() => {
+                if (!MGI) return; wrap.classList.add('on');
+                try { MGI.bot.animate([{ transform: 'translate(' + MGI.x + 'px,' + MGI.y + 'px) scale(.05)' }, { transform: 'translate(' + MGI.x + 'px,' + MGI.y + 'px) scale(' + MGI.S * 1.12 + ')', offset: .6 }, { transform: 'translate(' + MGI.x + 'px,' + MGI.y + 'px) scale(' + MGI.S + ')' }], { duration: 700, easing: 'ease-out' }); } catch (e) { }
+            });
+            setTimeout(() => {
+                if (!MGI) return; MGI.bub.classList.add('show');
+                const go = MGI.bub.querySelector('.mgi-go'); if (go) go.focus({ preventScroll: true });
+                mgiType();
+            }, 750);
+        }
+        function mgiLayout() {
+            if (!MGI || MGI.walking) return;
+            const vw = window.innerWidth, vh = window.innerHeight, S = vw < 480 ? 1.8 : 2.2, rw = 64 * S, rh = 88 * S;
+            const bw = Math.min(380, vw - 28), bh = MGI.bub.offsetHeight || 230, total = rh + 40 + bh;
+            const y = Math.max(12, (vh - total) / 2), x = (vw - rw) / 2, cy = y + rh * .5;
+            MGI.x = x; MGI.y = y; MGI.S = S;
+            MGI.bot.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + S + ')';
+            MGI.bub.style.left = ((vw - bw) / 2) + 'px'; MGI.bub.style.top = (y + rh + 40) + 'px';
+            const rd = rh * 1.38; MGI.ring.style.width = rd + 'px'; MGI.ring.style.height = rd + 'px'; MGI.ring.style.left = (vw / 2 - rd / 2) + 'px'; MGI.ring.style.top = (cy - rd / 2) + 'px';
+            MGI.dim.style.background = 'radial-gradient(circle at ' + (vw / 2) + 'px ' + cy + 'px, rgba(4,40,22,0) ' + (rh * .6) + 'px, rgba(4,40,22,.8) ' + (rh * 1.15) + 'px)';
+        }
+        function mgiType() {
+            if (!MGI) return;
+            const el = document.getElementById('mgi-txt'); if (!el) return; let n = 0; el.textContent = '';
+            const iv = MGI.typer = setInterval(() => {
+                if (!MGI) { clearInterval(iv); return; }
+                n += 2; el.textContent = MGI_TEKS.slice(0, n);
+                if (n >= MGI_TEKS.length) {
+                    clearInterval(iv);
+                    const bar = MGI.bub.querySelector('.mgi-prog i');
+                    if (bar) { bar.style.transition = 'width ' + MGI_JEDA + 'ms linear'; bar.style.width = '100%'; }
+                    MGI.auto = setTimeout(mgiWalk, MGI_JEDA);
+                }
+            }, 24);
+        }
+        function mgiKey(e) { if (e.key === 'Escape') mgiFinish(); }
+        function mgiWalk() {
+            if (!MGI || MGI.walking) return;
+            MGI.walking = true; clearInterval(MGI.typer); clearTimeout(MGI.auto);
+            const el = document.getElementById('mgi-txt'); if (el) el.textContent = MGI_TEKS;
+            const vw = window.innerWidth, vh = window.innerHeight, x1 = MGI.x, y1 = MGI.y, S1 = MGI.S, x2 = 16, y2 = vh - 16 - 72;
+            const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const dur = reduce ? 450 : Math.max(2000, Math.min(3400, Math.hypot(x2 - x1, y2 - y1) * 3.4));
+            const N = Math.max(4, Math.round(dur / 430));
+            MGI.wrap.classList.add('go'); MGI.bot.classList.add('walk');
+            MGI.bot.style.setProperty('--mgi-cyc', (2 * dur / N / 1000) + 's');
+            const k1 = [], k2 = [], steps = 56;
+            for (let k = 0; k <= steps; k++) {
+                const t = k / steps, e = (1 - Math.cos(Math.PI * t)) / 2, taper = reduce ? 0 : Math.min(1, t * 8, (1 - t) * 8);
+                const x = x1 + (x2 - x1) * e, y = y1 + (y2 - y1) * e, s = S1 + (1 - S1) * e;
+                const sw = Math.sin(Math.PI * N * t), hop = Math.abs(sw) * 14 * taper * s / 1.4, rot = sw * 5 * taper;
+                k1.push({ offset: t, transform: 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + s.toFixed(3) + ')' });
+                k2.push({ offset: t, transform: 'translateY(' + (-hop).toFixed(1) + 'px) rotate(' + rot.toFixed(2) + 'deg)' });
+            }
+            let done = false;
+            const fin = () => {
+                if (done || !MGI) return; done = true;
+                MGI.bot.classList.remove('walk'); MGI.bot.classList.add('arrive');
+                setTimeout(mgiFinish, 320);
+            };
+            try {
+                const a = MGI.bot.animate(k1, { duration: dur, easing: 'linear', fill: 'forwards' });
+                MGI.rock.animate(k2, { duration: dur, easing: 'linear', fill: 'forwards' });
+                a.onfinish = fin;
+            } catch (e) { MGI.bot.style.transform = 'translate(' + x2 + 'px,' + y2 + 'px) scale(1)'; setTimeout(fin, dur); }
+            setTimeout(fin, dur + 400);
+        }
+        function mgiFinish() {
+            if (!MGI) return;
+            clearInterval(MGI.typer); clearTimeout(MGI.auto);
+            MGI.wrap.remove(); MGI = null;
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', mgiKey); window.removeEventListener('resize', mgiLayout);
+            try { sessionStorage.setItem('mgiDone', '1'); } catch (e) { }
+            mgLauncherShow();
+        }
+
         // Robot peluncur: selalu tampil di halaman MOVE (pojok kiri bawah) agar tur mudah dibuka kapan saja
         function mgLauncherHide() {
             ['mgt-fab', 'mgt-fab-tip'].forEach(id => { const e = document.getElementById(id); if (e) e.remove(); });
@@ -6014,8 +6157,8 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
         setInterval(function () {
             const onMove = !!document.getElementById('kg-sec-riwayat') || !!document.getElementById('kg-sec-belajar');
-            const busy = !!MGT || !!document.getElementById('mg-pop');
-            if (!onMove) { mgLauncherHide(); if (MGT) mgTourEnd(); }
+            const busy = !!MGT || !!MGI || !!document.getElementById('mg-pop');
+            if (!onMove) { mgLauncherHide(); if (MGT) mgTourEnd(); if (MGI) mgiFinish(); }
             else if (busy) mgLauncherHide();
             else mgLauncherShow();
         }, 1000);

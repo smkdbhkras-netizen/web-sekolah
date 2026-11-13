@@ -11483,8 +11483,15 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         // ================================================================
         let PIJAT_PANEL_REF = null;
         function pijatPanel() {
-            if (!PIJAT_PANEL_REF) PIJAT_PANEL_REF = document.getElementById('pijat-panel');
-            return PIJAT_PANEL_REF;
+            // Aman setelah pindah halaman: bila halaman MOVE dirender ulang, panel lama ikut terhapus dari halaman.
+            if (PIJAT_PANEL_REF && PIJAT_PANEL_REF.isConnected) return PIJAT_PANEL_REF;
+            const ada = document.getElementById('pijat-panel');
+            if (ada) { PIJAT_PANEL_REF = ada; return ada; }
+            if (PIJAT_PANEL_REF) { // panel terlepas -> kembalikan ke penampung supaya form bisa dibuka lagi
+                const holder = document.getElementById('modal-pijat');
+                if (holder) { holder.appendChild(PIJAT_PANEL_REF); holder.classList.add('hidden'); holder.classList.remove('pjp-overlay'); return PIJAT_PANEL_REF; }
+            }
+            return null;
         }
         function pijatSteps(n) {
             document.querySelectorAll('#pijat-steps li').forEach(function (li) {

@@ -6577,6 +6577,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         function renderSubMenuPage(sectionKey) {
             const container = document.getElementById('info-detail');
             if(!container) return;
+            const _pjTerbuka = pijatSelamatkanPanel(); // jaga form booking agar tidak ikut terhapus saat halaman diganti
             const titleEl = document.getElementById('info-title');
             if(titleEl) titleEl.innerText = (sectionKey.toLowerCase() === 'kegiatan') ? 'MOVE - Melayani Komunitas Via Edukasi' : sectionKey.replace(/_/g, ' ');
 
@@ -6699,6 +6700,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
 
                         html += '</div>';
                         container.innerHTML = html.replace('<div class="w-full">', '<div class="w-full kg-wrap">');
+                        pijatPulihkanPanel(_pjTerbuka);
                         setTimeout(mgAuto, 400);
                         if (imageUrls.length > 0) initAutoGallery('kegiatan-narasi', imageUrls.length, 4500);
                         renderKegiatanItemsUI();
@@ -11483,15 +11485,33 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         // ================================================================
         let PIJAT_PANEL_REF = null;
         function pijatPanel() {
-            // Aman setelah pindah halaman: bila halaman MOVE dirender ulang, panel lama ikut terhapus dari halaman.
+            // Aman ke halaman manapun: bila halaman dirender ulang, panel lama ikut terhapus dari halaman.
             if (PIJAT_PANEL_REF && PIJAT_PANEL_REF.isConnected) return PIJAT_PANEL_REF;
             const ada = document.getElementById('pijat-panel');
             if (ada) { PIJAT_PANEL_REF = ada; return ada; }
             if (PIJAT_PANEL_REF) { // panel terlepas -> kembalikan ke penampung supaya form bisa dibuka lagi
+                try { pijatSuaraBerhenti(true); } catch (e) { }
                 const holder = document.getElementById('modal-pijat');
                 if (holder) { holder.appendChild(PIJAT_PANEL_REF); holder.classList.add('hidden'); holder.classList.remove('pjp-overlay'); return PIJAT_PANEL_REF; }
             }
             return null;
+        }
+        // Dipanggil SEBELUM isi halaman diganti: simpan panel booking ke penampung agar tidak ikut terhapus.
+        function pijatSelamatkanPanel() {
+            try {
+                const panel = pijatPanel(), holder = document.getElementById('modal-pijat'), host = document.getElementById('pijat-inline-host');
+                const terbuka = !!(panel && host && host.contains(panel));
+                if (terbuka && holder) { holder.appendChild(panel); holder.classList.add('hidden'); holder.classList.remove('pjp-overlay'); }
+                return terbuka;
+            } catch (e) { return false; }
+        }
+        // Dipanggil SESUDAH halaman MOVE dirender ulang: bila form tadi sedang terbuka, tampilkan lagi.
+        function pijatPulihkanPanel(terbuka) {
+            try {
+                if (!terbuka) return;
+                const panel = pijatPanel(), host = document.getElementById('pijat-inline-host');
+                if (panel && host) { host.appendChild(panel); host.classList.add('open'); }
+            } catch (e) { }
         }
         function pijatSteps(n) {
             document.querySelectorAll('#pijat-steps li').forEach(function (li) {
@@ -11521,10 +11541,10 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             if (!panel) return;
             const host = document.getElementById('pijat-inline-host');
             const holder = document.getElementById('modal-pijat');
-            const sudahTerbuka = (host && host.contains(panel)) || (holder && holder.classList.contains('pjp-overlay'));
+            const sudahTerbuka = host ? host.contains(panel) : (holder && holder.classList.contains('pjp-overlay'));
             if (!sudahTerbuka) {
                 pijatSiapkanForm();
-                if (host) { host.appendChild(panel); host.classList.add('open'); }
+                if (host) { if (holder) { holder.classList.add('hidden'); holder.classList.remove('pjp-overlay'); } host.appendChild(panel); host.classList.add('open'); }
                 else if (holder) { holder.classList.remove('hidden'); holder.classList.add('pjp-overlay'); } // cadangan
                 panel.style.animation = 'none'; void panel.offsetWidth; panel.style.animation = '';
             }

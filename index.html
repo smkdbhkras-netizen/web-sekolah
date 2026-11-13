@@ -1259,6 +1259,15 @@ html.dark .mg-x{background:#0b3d24;color:#bbf7d0}
 .mgp-ok:hover{transform:translateY(-1px)}
 /* perbaikan: sisa gaya lama .mg-ok (margin -24px, sticky) membuat tombol bergeser ke kiri; dinetralkan di dalam footer popup */
 .mgp-foot .mgp-ok{position:static;margin:0;width:100%}
+/* ===== Pemandu robot dari daftar isi: daftar fitur tiap bagian ===== */
+.mgt-bub{max-height:62vh;overflow-y:auto;overscroll-behavior:contain}
+.mgt-feat{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:6px}
+.mgt-feat li{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.5;color:#334155;opacity:0;transform:translateX(-8px);animation:mgtLi .4s ease forwards;animation-delay:calc(var(--i) * .2s)}
+.mgt-feat li i{flex:0 0 auto;margin-top:3px;color:#16a34a;font-size:11px}
+@keyframes mgtLi{to{opacity:1;transform:none}}
+.mgt-act{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;border:0;cursor:pointer;margin:0 0 10px;padding:10px;border-radius:12px;font-weight:800;font-size:12px;color:#fff;background:linear-gradient(90deg,#d97706,#f59e0b)}
+html.dark .mgt-feat li{color:#cbd5e1}
+@media(prefers-reduced-motion:reduce){.mgt-feat li{animation:none;opacity:1;transform:none}}
 .mgp-ok:focus-visible,.mgp-btn:focus-visible,.mgp-x:focus-visible{outline:3px solid #fbbf24;outline-offset:2px}
 .mgp-go{margin:0 0 26px;padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #bbf7d0;border-left:6px solid #f59e0b}
 .mgp-go-hd{display:flex;align-items:center;gap:14px;margin-bottom:12px}
@@ -5950,13 +5959,21 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         // ===== TUR PEMANDU (bot) =====
         // Langkah tur di bawah mudah diubah sendiri. Seksi yang tidak ada di halaman otomatis dilewati.
         const MOVE_TOUR = [
-            { id: 'kg-sec-booking', judul: 'Coba layanan terapis', teks: 'Di sini kamu bisa mencoba layanan terapis. Tekan Daftar / Booking, isi biodata, pilih keluhan, lalu lihat peta titik pijatnya.' },
-            { id: 'kg-sec-belajar', judul: 'Belajar anatomi 3D', teks: 'Ketuk organ pada gambar untuk membuka model 3D. Coba tombol Fokus, Potong, dan Pisahkan untuk melihat bagian dalamnya.' },
-            { id: 'kg-sec-berkas', judul: 'Berkas persiapan MOVE', teks: 'Unduh dokumen tiap fase kegiatan di sini sebagai panduan dan bukti pelaksanaan.' },
-            { id: 'kg-sec-statistik', judul: 'Statistik kegiatan', teks: 'Ringkasan angka kegiatan MOVE yang sudah berjalan.' },
-            { id: 'kg-sec-riwayat', judul: 'Dokumentasi implementasi', teks: 'Ini dokumentasi dan bukti lengkap tiap kegiatan. Cari berdasarkan nama, desa, tahun, atau jenis layanan.' },
-            { id: 'kg-sec-peta', judul: 'Peta sebaran lokasi', teks: 'Titik-titik di mana kegiatan MOVE sudah dilaksanakan.' },
-            { id: 'kg-sec-testimoni', judul: 'Testimoni pelanggan', teks: 'Dengarkan langsung dari mereka yang sudah merasakan layanan kami.' }
+            { id: 'kg-sec-booking', judul: 'Layanan pijat terapis', teks: 'Di sini kamu bisa mencoba layanan terapis langsung dari halaman ini.',
+              fitur: ['Tekan Daftar / Booking untuk membuka formulir', 'Isi biodata dan jumlah orang, atau tekan Mulai Bicara untuk mengisi dengan suara', 'Pilih bagian yang pegal atau sebutkan keluhanmu', 'Lihat peta titik yang perlu dipijat sesuai keluhan'],
+              aksi: { label: 'Buka formulir booking', ikon: 'fa-hand-holding-medical', js: 'mgTourEnd();openPijatModal()' } },
+            { id: 'kg-sec-belajar', judul: 'Belajar anatomi tubuh', teks: 'Pelajari bagian tubuh lewat gambar dan model 3D interaktif.',
+              fitur: ['Ketuk organ pada gambar untuk membuka model 3D detailnya', 'Pilih tab Tubuh Lengkap (Atlas), Otot, Organ Dalam, Rangka, atau Jantung', 'Gunakan Fokus bagian, Potong (lihat dalam), Label, dan geser Pisahkan', 'Tombol Reset mengembalikan ke tampilan awal'] },
+            { id: 'kg-sec-berkas', judul: 'Berkas persiapan MOVE', teks: 'Dokumen tiap fase kegiatan bisa diunduh langsung dari sini.',
+              fitur: ['Dikelompokkan per fase: Investigasi, Aksi, Refleksi, Demonstrasi', 'Ketuk tab fase untuk menyaring berkas', 'Unduh langsung tanpa mencari di Google Drive', 'Gunakan kotak cari bila berkasnya banyak'] },
+            { id: 'kg-sec-statistik', judul: 'Statistik kegiatan', teks: 'Ringkasan angka kegiatan MOVE yang sudah berjalan.',
+              fitur: ['Kegiatan terlaksana', 'Desa atau kecamatan terjangkau', 'Orang yang dilayani dan keterlibatan siswa', 'Titik lokasi yang terpetakan', 'Angka menyesuaikan tahun yang dipilih'] },
+            { id: 'kg-sec-riwayat', judul: 'Dokumentasi implementasi', teks: 'Dokumentasi dan bukti lengkap tiap kegiatan.',
+              fitur: ['Cari berdasarkan nama atau desa', 'Pilih tahun dan jenis layanan', 'Kegiatan dikelompokkan per wilayah; ketuk judul wilayah untuk membuka atau menutup daftarnya', 'Buka satu kegiatan untuk melihat detail dan dokumentasinya'] },
+            { id: 'kg-sec-peta', judul: 'Peta sebaran lokasi', teks: 'Titik-titik tempat kegiatan MOVE sudah dilaksanakan.',
+              fitur: ['Setiap titik adalah satu lokasi kegiatan', 'Geser dan perbesar peta untuk menjelajah', 'Tombol Layar penuh membuka peta yang lebih besar bila tersedia'] },
+            { id: 'kg-sec-testimoni', judul: 'Testimoni pelanggan', teks: 'Dengarkan langsung dari mereka yang sudah merasakan layanan kami.',
+              fitur: ['Video testimoni dari pelanggan', 'Putar langsung di halaman ini'] }
         ];
         let MGT = null;
         const MGT_ROBOT = '<svg viewBox="0 0 64 72" aria-hidden="true"><line x1="32" y1="8" x2="32" y2="16" stroke="#065f2c" stroke-width="3"/><circle class="mgt-ant" cx="32" cy="7" r="4.5" fill="#f59e0b"/><rect x="6" y="28" width="5" height="14" rx="2.5" fill="#f59e0b"/><rect x="53" y="28" width="5" height="14" rx="2.5" fill="#f59e0b"/><rect x="10" y="16" width="44" height="38" rx="15" fill="#0b8a43"/><rect x="16" y="23" width="32" height="24" rx="11" fill="#ecfdf5"/><ellipse class="mgt-eye" cx="26" cy="33" rx="3.2" ry="4" fill="#065f2c"/><ellipse class="mgt-eye" cx="38" cy="33" rx="3.2" ry="4" fill="#065f2c"/><path d="M26 40 Q32 45 38 40" stroke="#065f2c" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M20 56 H44 L48 70 H16 Z" fill="#0b8a43"/><circle cx="32" cy="63" r="3" fill="#f59e0b"/></svg>';
@@ -5985,7 +6002,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             return MOVE_TOUR.map(s => ({ s: s, el: document.getElementById(s.id) })).filter(x => x.el)
                 .sort((a, b) => a.el.getBoundingClientRect().top - b.el.getBoundingClientRect().top).map(x => x.s);
         }
-        function mgTourStart() {
+        function mgTourStart(startId) {
             if (MGT) mgTourEnd();
             mgLauncherHide();
             const steps = mgTourSteps(); if (!steps.length) { alert('Halaman MOVE belum selesai dimuat. Coba lagi sebentar lagi.'); return; }
@@ -5995,7 +6012,8 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             document.body.appendChild(spot); document.body.appendChild(bot);
             MGT = { steps: steps, i: -1, tok: 0, spot: spot, bot: bot, moving: false, typer: 0, raf: 0 };
             document.addEventListener('keydown', mgTourKey);
-            mgTourLoop(); mgTourGo(-1);
+            const k0 = startId ? steps.findIndex(s => s.id === startId) : -1; MGT.single = k0 >= 0;
+            mgTourLoop(); mgTourGo(Math.max(-1, k0));
         }
         function mgTourKey(e) {
             if (!MGT) return;
@@ -6013,11 +6031,11 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             } else MGT.spot.style.opacity = 0;
             MGT.raf = requestAnimationFrame(mgTourLoop);
         }
-        function mgTourType(text) {
+        function mgTourType(text, done) {
             clearInterval(MGT.typer);
             const el = document.getElementById('mgt-txt'); if (!el) return;
             let n = 0; el.textContent = '';
-            const iv = MGT.typer = setInterval(() => { if (!MGT) { clearInterval(iv); return; } n += 2; el.textContent = text.slice(0, n); if (n >= text.length) clearInterval(iv); }, 22);
+            const iv = MGT.typer = setInterval(() => { if (!MGT) { clearInterval(iv); return; } n += 2; el.textContent = text.slice(0, n); if (n >= text.length) { clearInterval(iv); if (done) done(); } }, 22);
         }
         function mgTourGo(i) {
             if (!MGT) return;
@@ -6030,8 +6048,8 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             document.getElementById('mgt-bub').innerHTML =
                 '<button type="button" class="mgt-x" aria-label="Tutup tur" onclick="mgTourEnd()">&times;</button>'
                 + '<div class="mgt-top"><b>Pemandu MOVE</b><span>' + (st ? (i + 1) + ' / ' + total : 'Halo!') + '</span></div>'
-                + '<h6>' + judul + '</h6><p id="mgt-txt" aria-live="polite"></p><div class="mgt-dots">' + dots + '</div>'
-                + '<div class="mgt-acts"><button type="button" class="mgt-skip" onclick="mgTourEnd()">Lewati tur</button><span>'
+                + '<h6>' + judul + '</h6><p id="mgt-txt" aria-live="polite"></p><ul class="mgt-feat" id="mgt-feat"></ul><div class="mgt-dots">' + dots + '</div>'
+                + '<div class="mgt-acts"><button type="button" class="mgt-skip" onclick="mgTourEnd()">' + (MGT.single ? 'Tutup' : 'Lewati tur') + '</button><span>'
                 + (i >= 0 ? '<button type="button" class="mgt-b" onclick="mgTourPrev()">&lsaquo; Kembali</button>' : '')
                 + '<button type="button" class="mgt-b pr" onclick="mgTourNext()">' + (i < 0 ? 'Ayo, mulai' : last ? 'Selesai' : 'Lanjut') + ' &rsaquo;</button></span></div>';
             if (!st) { MGT.moving = false; mgTourType(teks); return; }
@@ -6039,8 +6057,15 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             MGT.moving = true;
             mgScrollAnim(el.getBoundingClientRect().top + window.pageYOffset - 96).then(() => {
                 if (!MGT || MGT.tok !== tok) return;
-                MGT.moving = false; mgTourType(teks);
+                MGT.moving = false; mgTourType(teks, () => mgTourFeat(st, tok));
             });
+        }
+        // Menampilkan daftar fitur bagian yang sedang dipandu (muncul satu per satu setelah teks selesai diketik)
+        function mgTourFeat(st, tok) {
+            if (!MGT || MGT.tok !== tok) return;
+            const ul = document.getElementById('mgt-feat'); if (!ul) return;
+            ul.innerHTML = (st.fitur || []).map((t, k) => '<li style="--i:' + k + '"><i class="fas fa-check"></i><span>' + t + '</span></li>').join('');
+            if (st.aksi) ul.insertAdjacentHTML('afterend', '<button type="button" class="mgt-act" onclick="' + st.aksi.js + '"><i class="fas ' + st.aksi.ikon + '"></i> ' + st.aksi.label + '</button>');
         }
         function mgTourNext() { if (!MGT) return; if (MGT.i >= MGT.steps.length - 1) mgTourEnd(); else mgTourGo(MGT.i + 1); }
         function mgTourPrev() { if (MGT && MGT.i > 0) mgTourGo(MGT.i - 1); else if (MGT) mgTourGo(-1); }
@@ -6180,15 +6205,15 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
 
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';
-            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
+            h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
             h += '<button type="button" class="kg-qn" onclick="mgOpen()"><i class="fas fa-circle-info"></i> Panduan Terapis</button>';
             h += '<button type="button" class="kg-qn" onclick="mgTourStart()"><i class="fas fa-robot"></i> Tur Pemandu</button>';
-            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-graduation-cap"></i> Belajar Anatomi 3D</button>';
-            if (bmSorted(true).length) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-berkas\')"><i class="fas fa-file-arrow-down"></i> Berkas</button>';
-            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-statistik\')"><i class="fas fa-chart-simple"></i> Statistik</button>';
-            h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-riwayat\')"><i class="fas fa-clipboard-list"></i> Riwayat Kegiatan</button>';
-            if (hasMap) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-peta\')"><i class="fas fa-map-location-dot"></i> Peta</button>';
-            if (hasTestimoni) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-testimoni\')"><i class="fas fa-comment-dots"></i> Testimoni</button>';
+            h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-belajar\')"><i class="fas fa-graduation-cap"></i> Belajar Anatomi 3D</button>';
+            if (bmSorted(true).length) h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-berkas\')"><i class="fas fa-file-arrow-down"></i> Berkas</button>';
+            h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-statistik\')"><i class="fas fa-chart-simple"></i> Statistik</button>';
+            h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-riwayat\')"><i class="fas fa-clipboard-list"></i> Riwayat Kegiatan</button>';
+            if (hasMap) h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-peta\')"><i class="fas fa-map-location-dot"></i> Peta</button>';
+            if (hasTestimoni) h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-testimoni\')"><i class="fas fa-comment-dots"></i> Testimoni</button>';
             return h + '</div>';
         }
 

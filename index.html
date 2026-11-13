@@ -1257,6 +1257,8 @@ html.dark .mg-x{background:#0b3d24;color:#bbf7d0}
 .mgp-foot{flex:0 0 auto;padding:14px 30px 18px;background:#fff;border-top:1px solid #e2f5e8}
 .mgp-ok{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;cursor:pointer;padding:15px;border-radius:16px;font-size:14px;font-weight:900;color:#fff;background:linear-gradient(90deg,#055a2a,#0b8a43);box-shadow:0 10px 22px rgba(5,90,42,.3);transition:transform .15s}
 .mgp-ok:hover{transform:translateY(-1px)}
+/* perbaikan: sisa gaya lama .mg-ok (margin -24px, sticky) membuat tombol bergeser ke kiri; dinetralkan di dalam footer popup */
+.mgp-foot .mgp-ok{position:static;margin:0;width:100%}
 .mgp-ok:focus-visible,.mgp-btn:focus-visible,.mgp-x:focus-visible{outline:3px solid #fbbf24;outline-offset:2px}
 .mgp-go{margin:0 0 26px;padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #bbf7d0;border-left:6px solid #f59e0b}
 .mgp-go-hd{display:flex;align-items:center;gap:14px;margin-bottom:12px}

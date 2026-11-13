@@ -1258,6 +1258,21 @@ html.dark .mg-x{background:#0b3d24;color:#bbf7d0}
 .mgp-ok{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;cursor:pointer;padding:15px;border-radius:16px;font-size:14px;font-weight:900;color:#fff;background:linear-gradient(90deg,#055a2a,#0b8a43);box-shadow:0 10px 22px rgba(5,90,42,.3);transition:transform .15s}
 .mgp-ok:hover{transform:translateY(-1px)}
 .mgp-ok:focus-visible,.mgp-btn:focus-visible,.mgp-x:focus-visible{outline:3px solid #fbbf24;outline-offset:2px}
+.mgp-go{margin:0 0 26px;padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #bbf7d0;border-left:6px solid #f59e0b}
+.mgp-go-hd{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.mgp-go-hd>i{flex:0 0 46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#055a2a,#0b8a43);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;animation:mgpBounce 1.6s ease-in-out infinite}
+.mgp-go-hd b{display:block;font-size:15px;font-weight:900;color:#14532d}
+.mgp-go-hd span{font-size:12px;color:#475569}
+.mgp-go-list{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px}
+.mgp-go-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.55;color:#334155}
+.mgp-go-list li>i{flex:0 0 28px;height:28px;border-radius:9px;background:#fff;color:#15803d;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 6px rgba(5,90,42,.12)}
+.mgp-go-list b{color:#14532d}
+@keyframes mgpBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media (prefers-reduced-motion:reduce){.mgp-go-hd>i{animation:none}}
+html.dark .mgp-go{background:#0b3d24;border-color:#166534}
+html.dark .mgp-go-hd b,html.dark .mgp-go-list b{color:#86efac}
+html.dark .mgp-go-hd span,html.dark .mgp-go-list li{color:#cbd5e1}
+html.dark .mgp-go-list li>i{background:#151f32;color:#86efac}
 @keyframes mgpUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 /* HP: tampil seperti bottom-sheet */
 @media(max-width:640px){
@@ -5766,7 +5781,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
         // ================== END PEMBELAJARAN ANATOMI 3D ==================
 
-        // ===== PANDUAN MOVE: cara booking/daftar + sorotan fitur + pengembangan 3D =====
+        // ===== PANDUAN TERAPIS: cara mencoba terapis + sorotan fitur + pengembangan 3D =====
         // Daftar di bawah ini mudah diubah sendiri: tambah/hapus baris teks sesuai perkembangan fitur.
         const MOVE_INFO_3D = {
             tersedia: [
@@ -5807,7 +5822,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         function buildPanduanMoveHtml() {
             const li = a => a.map(x => '<li>' + x + '</li>').join('');
             const st = [
-                ['fa-hand-pointer', 'Klik Daftar / Booking', 'Tekan tombol Daftar / Booking di bagian Layanan Pijat Terapis.'],
+                ['fa-hand-pointer', 'Klik Daftar / Booking', 'Gulir ke bawah, lalu tekan tombol Daftar / Booking di bagian Layanan Pijat Terapis.'],
                 ['fa-user-pen', 'Isi Biodata', 'Isi data diri dan jumlah orang. Mau cepat? Tekan Mulai Bicara lalu sebutkan datanya.'],
                 ['fa-notes-medical', 'Pilih Keluhan', 'Pilih bagian yang pegal, atau sebutkan keluhan Anda dengan suara.'],
                 ['fa-location-dot', 'Lihat Peta Titik', 'Sistem menunjukkan titik yang perlu dipijat sesuai keluhan Anda.']
@@ -5823,13 +5838,16 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             return '<div id="mg-pop" class="mgp-pop" role="dialog" aria-modal="true" aria-labelledby="mg-title" onclick="if(event.target===this)mgClose()">'
                 + '<div class="mgp-box">'
                 + '<div class="mgp-hero"><button type="button" class="mgp-x" aria-label="Tutup" onclick="mgClose()"><i class="fas fa-xmark"></i></button>'
-                + '<span class="mgp-badge"><i class="fas fa-circle-info"></i> Panduan MOVE</span>'
-                + '<h4 id="mg-title" class="mgp-title">Cara Booking dan Daftar Layanan Pijat</h4>'
+                + '<span class="mgp-badge"><i class="fas fa-circle-info"></i> Panduan Terapis</span>'
+                + '<h4 id="mg-title" class="mgp-title">Cara Mencoba Layanan Terapis</h4>'
                 + '<p class="mgp-sub">Ikuti 4 langkah singkat berikut. Seluruhnya bisa dilakukan dari HP.</p></div>'
                 + '<div class="mgp-scroll">'
-                + '<p class="mgp-h">Cara Daftar</p><ol class="mgp-steps">' + st + '</ol>'
-                + '<div class="mgp-cta"><button type="button" class="mgp-btn" onclick="mgClose();openPijatModal()"><i class="fas fa-hand-holding-medical"></i> Mulai Daftar / Booking</button>'
-                + '<button type="button" class="mgp-btn alt" onclick="mgClose();kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-cube"></i> Coba Belajar Anatomi 3D</button></div>'
+                + '<p class="mgp-h">Cara Mencoba</p><ol class="mgp-steps">' + st + '</ol>'
+                + '<div class="mgp-go"><div class="mgp-go-hd"><i class="fas fa-angles-down"></i><div><b>Gulir ke bawah untuk mencoba</b><span>Semuanya ada di halaman ini, tinggal digulir.</span></div></div>'
+                + '<ul class="mgp-go-list"><li><i class="fas fa-spa"></i><span><b>Coba layanan terapis</b> di bagian Layanan Pijat Terapis.</span></li>'
+                + '<li><i class="fas fa-images"></i><span><b>Lihat dokumentasi implementasi</b> pada Riwayat Kegiatan.</span></li>'
+                + '<li><i class="fas fa-folder-open"></i><span><b>Buka bukti lengkapnya</b> melalui Berkas dan Statistik.</span></li></ul>'
+                + '<button type="button" class="mgp-btn" onclick="mgClose();kgScrollTo(\'kg-sec-booking\')"><i class="fas fa-arrow-down"></i> Gulir ke Bawah</button></div>'
                 + '<p class="mgp-h">Sorotan Fitur</p><div class="mgp-grid">' + ft + '</div>'
                 + '<div class="mgp-3d"><span class="mgp-new"><i class="fas fa-star"></i> Terus dikembangkan</span>'
                 + '<h5>Pembelajaran Anatomi 3D</h5><p>Belajar bagian tubuh secara visual dan interaktif, terpisah dari layanan booking.</p>'
@@ -5843,7 +5861,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
-            h += '<button type="button" class="kg-qn" onclick="mgOpen()"><i class="fas fa-circle-info"></i> Panduan</button>';
+            h += '<button type="button" class="kg-qn" onclick="mgOpen()"><i class="fas fa-circle-info"></i> Panduan Terapis</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-belajar\')"><i class="fas fa-graduation-cap"></i> Belajar Anatomi 3D</button>';
             if (bmSorted(true).length) h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-berkas\')"><i class="fas fa-file-arrow-down"></i> Berkas</button>';
             h += '<button type="button" class="kg-qn" onclick="kgScrollTo(\'kg-sec-statistik\')"><i class="fas fa-chart-simple"></i> Statistik</button>';

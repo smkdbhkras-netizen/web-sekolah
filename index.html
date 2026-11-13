@@ -1303,6 +1303,11 @@ html.dark .mgt-bub h6,html.dark .mgt-top{color:#86efac}
 html.dark .mgt-bub p{color:#cbd5e1}
 html.dark .mgt-b{background:#0b3d24;color:#bbf7d0;border-color:#166534}
 html.dark .mgt-b.pr{background:linear-gradient(90deg,#055a2a,#0b8a43);color:#fff}
+.mgt-fab{position:fixed;z-index:9970;left:16px;bottom:16px;width:64px;height:72px;border:0;background:none;padding:0;cursor:pointer;animation:mgtFloat 2.4s ease-in-out infinite;filter:drop-shadow(0 8px 10px rgba(0,0,0,.35))}
+.mgt-fab svg{width:64px;height:72px;display:block}
+.mgt-fab:hover{transform:scale(1.08)}
+.mgt-fab-tip{position:fixed;z-index:9970;left:90px;bottom:46px;background:#fff;color:#14532d;font-weight:800;font-size:12px;padding:8px 12px;border-radius:14px 14px 14px 4px;box-shadow:0 8px 22px rgba(0,0,0,.25);animation:mgtIn .4s both;pointer-events:none;border-left:4px solid #f59e0b}
+html.dark .mgt-fab-tip{background:#151f32;color:#86efac}
 @keyframes mgpUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 /* HP: tampil seperti bottom-sheet */
 @media(max-width:640px){
@@ -5916,7 +5921,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     if (stop) { done(); return; }
                     if (t0 === null) t0 = ts;
                     const p = Math.min(1, (ts - t0) / ms);
-                    window.scrollTo(0, y0 + d * mgEase(p));
+                    window.scrollTo({ top: y0 + d * mgEase(p), behavior: 'instant' });
                     if (p < 1) requestAnimationFrame(f); else done();
                 };
                 requestAnimationFrame(f);
@@ -5928,7 +5933,8 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
         function mgTourStart() {
             if (MGT) mgTourEnd();
-            const steps = mgTourSteps(); if (!steps.length) return;
+            mgLauncherHide();
+            const steps = mgTourSteps(); if (!steps.length) { alert('Halaman MOVE belum selesai dimuat. Coba lagi sebentar lagi.'); return; }
             const spot = document.createElement('div'); spot.className = 'mgt-spot';
             const bot = document.createElement('div'); bot.className = 'mgt-bot'; bot.setAttribute('role', 'dialog'); bot.setAttribute('aria-label', 'Pemandu MOVE');
             bot.innerHTML = '<div class="mgt-av">' + MGT_ROBOT + '</div><div class="mgt-bub" id="mgt-bub"></div>';
@@ -5957,7 +5963,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             clearInterval(MGT.typer);
             const el = document.getElementById('mgt-txt'); if (!el) return;
             let n = 0; el.textContent = '';
-            MGT.typer = setInterval(() => { n += 2; el.textContent = text.slice(0, n); if (n >= text.length) clearInterval(MGT.typer); }, 22);
+            const iv = MGT.typer = setInterval(() => { if (!MGT) { clearInterval(iv); return; } n += 2; el.textContent = text.slice(0, n); if (n >= text.length) clearInterval(iv); }, 22);
         }
         function mgTourGo(i) {
             if (!MGT) return;
@@ -5990,6 +5996,29 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             MGT.spot.remove(); MGT.bot.remove(); MGT = null;
             document.removeEventListener('keydown', mgTourKey);
         }
+
+
+        // Robot peluncur: selalu tampil di halaman MOVE (pojok kiri bawah) agar tur mudah dibuka kapan saja
+        function mgLauncherHide() {
+            ['mgt-fab', 'mgt-fab-tip'].forEach(id => { const e = document.getElementById(id); if (e) e.remove(); });
+        }
+        function mgLauncherShow() {
+            if (document.getElementById('mgt-fab')) return;
+            const b = document.createElement('button'); b.id = 'mgt-fab'; b.className = 'mgt-fab'; b.type = 'button';
+            b.setAttribute('aria-label', 'Buka Pemandu MOVE'); b.innerHTML = MGT_ROBOT;
+            b.onclick = () => { mgLauncherHide(); mgTourStart(); };
+            document.body.appendChild(b);
+            const tip = document.createElement('div'); tip.id = 'mgt-fab-tip'; tip.className = 'mgt-fab-tip'; tip.textContent = 'Butuh pemandu? Klik aku!';
+            document.body.appendChild(tip);
+            setTimeout(() => { const x = document.getElementById('mgt-fab-tip'); if (x) x.remove(); }, 6000);
+        }
+        setInterval(function () {
+            const onMove = !!document.getElementById('kg-sec-riwayat') || !!document.getElementById('kg-sec-belajar');
+            const busy = !!MGT || !!document.getElementById('mg-pop');
+            if (!onMove) { mgLauncherHide(); if (MGT) mgTourEnd(); }
+            else if (busy) mgLauncherHide();
+            else mgLauncherShow();
+        }, 1000);
 
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';

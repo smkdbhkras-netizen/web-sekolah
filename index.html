@@ -597,6 +597,38 @@
     .kg-sec-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;color:#0f172a;margin:0 0 4px}
     .kg-sec-title i{color:#2563eb}
     .kg-sec-sub{font-size:13px;color:#64748b;margin:0 0 16px}
+    .kgt{background:#fff;border:1px solid #e2e8f0;border-radius:28px;padding:22px 18px;margin-bottom:24px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+    .kgt-head{text-align:center;max-width:640px;margin:0 auto 18px}
+    .kgt-head span{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#0f766e;background:#ccfbf1;padding:4px 12px;border-radius:99px}
+    .kgt-head h3{margin:10px 0 6px;font-size:22px;font-weight:900;color:#0f172a;letter-spacing:-.01em}
+    .kgt-head p{font-size:13px;line-height:1.6;color:#475569;margin:0}
+    .kgt-two{display:grid;grid-template-columns:1fr;gap:10px;align-items:stretch}
+    .kgt-card{position:relative;border-radius:22px;padding:18px 18px 20px;color:#fff;overflow:hidden}
+    .kgt-card::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08)}
+    .kgt-a{background:linear-gradient(145deg,#0f2f6b,#1d4ed8)}
+    .kgt-b{background:linear-gradient(145deg,#0f766e,#0d9488)}
+    .kgt-ic{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px;position:relative;z-index:1}
+    .kgt-card small{display:block;font-size:10px;font-weight:800;letter-spacing:.14em;color:#fde68a;position:relative;z-index:1}
+    .kgt-card b{display:block;font-size:30px;font-weight:900;line-height:1.1;margin-top:2px;position:relative;z-index:1}
+    .kgt-card em{display:block;font-style:normal;font-size:12px;font-weight:700;color:#dbeafe;margin:2px 0 10px;position:relative;z-index:1}
+    .kgt-card p{font-size:12.5px;line-height:1.6;color:#e2e8f0;margin:0;position:relative;z-index:1}
+    .kgt-plus{display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:14px}
+    .kgt-sub{margin:20px 0 10px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#0f766e;display:flex;align-items:center;gap:8px}
+    .kgt-grid{display:grid;grid-template-columns:1fr;gap:10px}
+    .kgt-f{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid #eef2f7;background:#f8fafc;border-radius:16px}
+    .kgt-f>i{flex-shrink:0;width:34px;height:34px;border-radius:11px;background:#ccfbf1;color:#0f766e;display:flex;align-items:center;justify-content:center;font-size:14px}
+    .kgt-f b{display:block;font-size:13px;font-weight:800;color:#1e293b}
+    .kgt-f span{display:block;font-size:11.5px;line-height:1.5;color:#64748b;margin-top:2px}
+    .kgt-cta{margin-top:16px;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;padding:14px;border-radius:18px;background:#f0fdfa;border:1px dashed #5eead4}
+    .kgt-cta span{font-size:13px;font-weight:700;color:#0f766e}
+    .kgt-cta button{background:#0f766e;color:#fff;font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:12px 22px;border-radius:14px;border:0;cursor:pointer;box-shadow:0 8px 18px -8px rgba(15,118,110,.6)}
+    .kgt-cta button:hover{background:#115e59}
+    @media(min-width:768px){.kgt{padding:30px 28px}.kgt-head h3{font-size:28px}.kgt-two{grid-template-columns:1fr auto 1fr}.kgt-grid{grid-template-columns:repeat(2,1fr)}.kgt-cta{flex-direction:row;justify-content:space-between;text-align:left;padding:14px 18px}}
+    html.dark .kgt{background:#0f172a;border-color:#334155}
+    html.dark .kgt-head h3{color:#f1f5f9}html.dark .kgt-head p,html.dark .kgt-f span{color:#94a3b8}
+    html.dark .kgt-f{background:#1e293b;border-color:#334155}html.dark .kgt-f b{color:#f1f5f9}
+    html.dark .kgt-head span{background:#134e4a;color:#99f6e4}
+    html.dark .kgt-cta{background:#042f2e;border-color:#0f766e}html.dark .kgt-cta span{color:#99f6e4}
     .kgi{position:relative;overflow:hidden;border-radius:28px;margin-bottom:24px;color:#fff;background:linear-gradient(135deg,#0f2f6b 0%,#0f766e 100%);box-shadow:0 18px 40px -18px rgba(15,47,107,.55)}
     .kgi-bg{position:absolute;inset:0;background:radial-gradient(circle at 85% 10%,rgba(255,193,7,.28),transparent 45%),radial-gradient(circle at 10% 100%,rgba(94,234,212,.22),transparent 50%)}
     .kgi-in{position:relative;padding:22px 18px 24px}
@@ -6393,6 +6425,37 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             } else { jalan(); }
         }
 
+        // ================================================================
+        // PENJELASAN: MOVE (program) & TERAPIS (aplikasi booking)
+        // ================================================================
+        function buildMoveTerapisInfoHtml() {
+            const fit = [
+                ['fa-hand-pointer', 'Pilih keluhan dengan ketukan atau suara', 'Cukup ucapkan "punggung pegal dan leher kaku", keluhan tercentang otomatis.'],
+                ['fa-person', 'Peta anatomi titik pijat', 'Keluhan dipetakan ke gambar tubuh: hijau aman, kuning hati-hati, merah dihindari.'],
+                ['fa-stopwatch', 'Estimasi durasi', 'Lama pijat dihitung dari area yang dipilih, area yang sama tidak dihitung dua kali.'],
+                ['fa-chart-line', 'Skala nyeri sebelum dan sesudah', 'Perkembangan tercatat, hasilnya tampil sebagai angka dampak.'],
+                ['fa-file-signature', 'Persetujuan tanda tangan digital', 'Konfirmasi layanan lewat link, tanpa kertas.'],
+                ['fa-bell', 'Pengingat lewat WhatsApp', 'Jadwal dan evaluasi pasca pijat diingatkan otomatis.']
+            ];
+            return '<div id="kg-sec-tentang" class="kgt">'
+                + '<div class="kgt-head"><span>Mengenal lebih dekat</span><h3>MOVE &amp; Terapis, apa bedanya?</h3>'
+                + '<p>Keduanya saling melengkapi: <b>MOVE</b> adalah programnya, <b>Terapis</b> adalah teknologi yang membuat pelayanannya lebih tertib, aman, dan terukur.</p></div>'
+                + '<div class="kgt-two">'
+                +   '<div class="kgt-card kgt-a"><div class="kgt-ic"><i class="fas fa-people-group"></i></div><small>PROGRAM</small><b>MOVE</b><em>Melayani Komunitas Via Edukasi</em>'
+                +   '<p>Program pelayanan pijat untuk masyarakat yang dijalankan SMK IT Al Mubarok bersama tim pelaksana dan siswa. Selain meringankan pegal dan kaku, MOVE menjadi sarana belajar dan edukasi hidup sehat langsung di tengah warga.</p></div>'
+                +   '<div class="kgt-plus"><i class="fas fa-plus"></i></div>'
+                +   '<div class="kgt-card kgt-b"><div class="kgt-ic"><i class="fas fa-laptop-medical"></i></div><small>APLIKASI BOOKING</small><b>Terapis</b><em>Teknologi Rekam Anatomi untuk Pelayanan Pijat</em>'
+                +   '<p>Aplikasi tempat warga memesan pijat. Keluhan dicatat pada peta tubuh sehingga terapis tahu titik mana yang perlu dipijat, mana yang harus dihindari, dan berapa lama waktunya.</p></div>'
+                + '</div>'
+                + '<div class="kgt-sub"><i class="fas fa-wand-magic-sparkles"></i> Yang dilakukan aplikasi Terapis</div>'
+                + '<div class="kgt-grid">' + fit.map(function (f) {
+                    return '<div class="kgt-f"><i class="fas ' + f[0] + '"></i><div><b>' + f[1] + '</b><span>' + f[2] + '</span></div></div>';
+                  }).join('') + '</div>'
+                + '<div class="kgt-cta"><span>Punya keluhan pegal? Coba aplikasi Terapis sekarang.</span>'
+                + '<button type="button" onclick="openPijatModal()"><i class="fas fa-spa"></i> Booking Pijat Terapis</button></div>'
+                + '</div>';
+        }
+
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';
             h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
@@ -6809,6 +6872,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     let html = '<div class="w-full">';
 
                     html += buildKegiatanImpactHtml(kegiatanItems);
+                    html += buildMoveTerapisInfoHtml();
                     html += buildMoveHubHtml();
                     html += buildKegiatanVideoHtml(subData);
 

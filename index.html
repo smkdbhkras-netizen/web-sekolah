@@ -3414,7 +3414,44 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             { no: 19, masalah: "Pegal setelah duduk lama",     area: "Leher, bahu, punggung, pinggang, bokong",        zones: ["leher","bahu","punggung_atas","pinggang","bokong"] },
             { no: 20, masalah: "Pegal setelah berdiri lama",   area: "Pinggang, paha, betis, telapak kaki",            zones: ["pinggang","paha_depan","betis","telapak_kaki"] },
             { no: 21, masalah: "Pegal setelah berjalan jauh",  area: "Paha, betis, pergelangan kaki, telapak kaki",    zones: ["paha_depan","betis","pergelangan_kaki","telapak_kaki"] },
-            { no: 22, masalah: "Seluruh tubuh terasa pegal",   area: "Seluruh tubuh: leher, bahu, punggung, pinggang, tangan, paha, betis, hingga telapak kaki", zones: ["SEMUA"] }
+            { no: 22, masalah: "Seluruh tubuh terasa pegal",   area: "Seluruh tubuh: leher, bahu, punggung, pinggang, tangan, paha, betis, hingga telapak kaki", zones: ["SEMUA"] },
+            // ---- KELUHAN SARAF (perlu kewaspadaan): serius:true => tampil panduan tingkat keparahan & tindakan ----
+            { no: 23, masalah: "Saraf terjepit di leher",      area: "Otot sekitar leher & bahu (bukan di titik nyeri / tulang leher)", zones: ["leher","tengkuk","bahu"], serius: true,
+              gejala: "Nyeri leher yang menjalar ke bahu, lengan, atau jari; kesemutan atau rasa tebal di lengan/tangan.",
+              ringan: "Nyeri atau kesemutan hilang-timbul, tidak ada kelemahan, membaik saat istirahat atau ganti posisi.",
+              sedang: "Nyeri menjalar ke lengan hampir tiap hari, kesemutan terus-menerus lebih dari 1 minggu, atau tidak membaik dengan istirahat.",
+              berat:  "Lengan/tangan terasa lemah, sulit menggenggam atau sering menjatuhkan benda, jalan tidak stabil, nyeri setelah jatuh/kecelakaan, demam, atau gangguan BAK/BAB.",
+              darurat: "Nyeri leher/lengan disertai nyeri dada, sesak, keringat dingin, atau wajah perot, bicara pelo, dan lemas satu sisi tubuh: SEGERA ke IGD / hubungi 119.",
+              langkah_ringan: ["Istirahatkan leher, hindari menunduk lama (HP/laptop)", "Kompres hangat 15-20 menit, 2-3 kali sehari", "Peregangan leher pelan tanpa memaksa", "Pijat hanya sangat lembut di otot bahu & tengkuk", "Bila belum membaik dalam 1-2 minggu, periksa ke puskesmas/dokter"],
+              langkah_sedang: ["Periksakan ke dokter (puskesmas/klinik) SEBELUM dipijat", "Tunda pijat sampai ada pemeriksaan", "Hindari mengangkat beban berat dan posisi menunduk lama"],
+              langkah_berat:  ["JANGAN dipijat", "Segera ke dokter / IGD hari ini", "Jangan memutar, menarik, atau 'meretakkan' leher"] },
+            { no: 24, masalah: "Saraf terjepit di pinggang",   area: "Otot pinggang & bokong di sekitar nyeri (bukan di tulang belakang)", zones: ["pinggang","bokong","paha_belakang"], serius: true,
+              gejala: "Nyeri pinggang yang menjalar ke bokong, paha, betis, atau kaki; kesemutan/tebal di kaki; nyeri bertambah saat batuk, membungkuk, atau duduk lama.",
+              ringan: "Nyeri menjalar ringan sampai bokong/paha, tidak ada kelemahan kaki, membaik saat istirahat atau ganti posisi.",
+              sedang: "Nyeri menjalar sampai bawah lutut atau kaki, kesemutan terus-menerus lebih dari 1 minggu, sulit duduk/berdiri lama, tidak membaik dengan istirahat.",
+              berat:  "Kaki lemah atau terseret, baal di selangkangan/area duduk, tidak bisa menahan atau sulit BAK/BAB, nyeri hebat di malam hari, demam, atau nyeri setelah jatuh/kecelakaan.",
+              darurat: "Baal di selangkangan/bokong, gangguan BAK/BAB, atau kelemahan kedua kaki yang muncul mendadak: SEGERA ke IGD.",
+              langkah_ringan: ["Tetap bergerak ringan (jalan santai), hindari tirah baring total", "Kompres hangat 15-20 menit pada pinggang", "Hindari mengangkat beban dan membungkuk berulang", "Pijat hanya lembut di otot pinggang & bokong, jangan menekan tulang belakang", "Bila belum membaik dalam 1-2 minggu, periksa ke puskesmas/dokter"],
+              langkah_sedang: ["Periksakan ke dokter (puskesmas/klinik) SEBELUM dipijat", "Tunda pijat sampai ada pemeriksaan", "Hindari duduk lama dan mengangkat beban"],
+              langkah_berat:  ["JANGAN dipijat", "Segera ke dokter / IGD hari ini", "Jangan diurut keras, ditarik, atau diinjak punggungnya"] },
+            { no: 25, masalah: "Kesemutan atau baal di tangan", area: "Lengan bawah, telapak & jari tangan, bahu (tekanan ringan)", zones: ["lengan_bawah","pergelangan_tangan","telapak_tangan","jari_tangan","bahu"], serius: true,
+              gejala: "Jari atau telapak tangan kesemutan/tebal, terutama malam hari atau setelah memegang HP/mengetik lama; genggaman terasa kurang kuat.",
+              ringan: "Kesemutan hilang-timbul, hilang setelah tangan digoyang/diistirahatkan, genggaman masih kuat.",
+              sedang: "Kesemutan hampir tiap hari atau membangunkan dari tidur, jari terasa tebal, genggaman mulai melemah.",
+              berat:  "Tangan lemah atau sering menjatuhkan benda, otot telapak tangan mengecil, baal terus-menerus, atau muncul mendadak setelah cedera.",
+              darurat: "Kesemutan/lemas mendadak di satu sisi tubuh disertai wajah perot, bicara pelo, atau nyeri dada: SEGERA ke IGD / hubungi 119.",
+              langkah_ringan: ["Istirahatkan tangan, hindari menekuk pergelangan terlalu lama", "Atur posisi mengetik/memegang HP agar pergelangan lurus", "Kompres hangat lalu peregangan jari & pergelangan pelan", "Pijat lembut lengan bawah, jangan menekan kuat di pergelangan", "Bila belum membaik dalam 1-2 minggu, periksa ke dokter"],
+              langkah_sedang: ["Periksakan ke dokter SEBELUM dipijat", "Tunda pijat di pergelangan & telapak tangan", "Kurangi gerakan berulang; bila ada diabetes, sampaikan ke dokter"],
+              langkah_berat:  ["JANGAN dipijat", "Segera ke dokter / IGD", "Jangan memaksa menggerakkan atau menarik jari"] },
+            { no: 26, masalah: "Kesemutan atau baal di kaki",   area: "Betis, telapak kaki, paha (tekanan ringan)", zones: ["paha_belakang","betis","telapak_kaki","kaki_depan"], serius: true,
+              gejala: "Kaki atau jari kaki kesemutan/tebal/seperti terbakar; rasa menjalar dari pinggang ke kaki.",
+              ringan: "Kesemutan hilang-timbul (misal setelah duduk bersila/lama), hilang saat ganti posisi, kaki tidak lemah.",
+              sedang: "Kesemutan hampir tiap hari, tebal di telapak kaki, atau tidak hilang dengan ganti posisi lebih dari 1 minggu.",
+              berat:  "Kaki lemah atau terseret, baal menyebar ke paha/selangkangan, gangguan BAK/BAB, atau muncul mendadak setelah cedera.",
+              darurat: "Betis bengkak, merah, panas, dan nyeri satu sisi, atau sesak napas, atau lemas satu sisi tubuh mendadak: SEGERA ke IGD / hubungi 119.",
+              langkah_ringan: ["Ganti posisi, jalan pelan, hindari duduk bersila/menekuk kaki lama", "Kompres hangat pada betis, peregangan betis pelan", "Pijat hanya lembut; jangan menekan kuat di betis", "Bila punya diabetes atau tak membaik dalam 1-2 minggu, periksa ke dokter"],
+              langkah_sedang: ["Periksakan ke dokter SEBELUM dipijat", "Tunda pijat sampai ada pemeriksaan", "Periksa kaki setiap hari terhadap luka atau bengkak"],
+              langkah_berat:  ["JANGAN dipijat", "Segera ke dokter / IGD", "Jangan menekan atau mengurut betis yang bengkak/merah"] }
         ];
         let PIJAT_SELECTED = [];
 
@@ -11671,8 +11708,14 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             const grid = document.getElementById('keluhan-grid');
             if (!grid) return;
             grid.className = 'pjp-kgrid';
+            let _sarafHead = false;
             grid.innerHTML = KELUHAN_DATA.map(function (k) {
-                return '<label class="pjp-kc"><input type="checkbox" value="' + k.no + '" class="keluhan-check" onchange="pijatUpdateCount()">'
+                let head = '';
+                if (k.serius && !_sarafHead) {
+                    _sarafHead = true;
+                    head = '<div class="pjp-ksec"><i class="fas fa-triangle-exclamation"></i><div><b>Keluhan saraf (perlu kewaspadaan)</b><small>Bila dipilih, kami tampilkan tingkat keparahan & tindakan yang tepat. Kasus berat tidak boleh dipijat.</small></div></div>';
+                }
+                return head + '<label class="pjp-kc' + (k.serius ? ' pjp-kc-serius' : '') + '"><input type="checkbox" value="' + k.no + '" class="keluhan-check" onchange="pijatUpdateCount()">'
                     + '<span class="pjp-kc-box"><i class="fas fa-check"></i></span>'
                     + '<span class="pjp-kc-tx"><b>' + k.masalah + '</b><small>' + k.area + '</small></span>'
                     + '<span class="pjp-dur"><i class="fas fa-clock"></i> ' + pijatDurasiKeluhan(k) + ' mnt</span></label>';
@@ -11729,6 +11772,15 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             if (/\b(bahu|pundak)\b/.test(t)) hit.add(3);
             if (/\b(leher|tengkuk)\b/.test(t)) hit.add(4);
             if (/\b(kepala|pusing)\b/.test(t)) hit.add(5);
+            // keluhan saraf
+            if (/saraf|syaraf|kejepit|terjepit|kepit/.test(t)) {
+                if (/leher|tengkuk/.test(t)) hit.add(23);
+                if (/pinggang|punggung\s+bawah|bokong|pantat/.test(t)) hit.add(24);
+            }
+            if (/kesemutan|semutan|baal|kebas|tebal\s+tebal/.test(t)) {
+                if (/\b(tangan|jari|lengan)\b/.test(t) && !/jari\s+kaki/.test(t)) hit.add(25);
+                if (/\bkaki\b/.test(t)) hit.add(26);
+            }
             if (/\bpaha\b/.test(t)) hit.add(10);
             if (/\bbetis\b/.test(t)) hit.add(11);
             if (/\blutut\b/.test(t)) hit.add(13);
@@ -12305,6 +12357,9 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             selectedItems.forEach(function (k) { k.zones.forEach(function (z) { kz.add(z); }); });
             const semua = kz.has('SEMUA');
             const hasil = {};
+            // zona dari keluhan saraf: tidak pernah hijau (tekanan sangat ringan saja)
+            const zSaraf = new Set();
+            selectedItems.forEach(function (k) { if (k && k.serius) k.zones.forEach(function (z) { zSaraf.add(z); }); });
             Object.keys(KG_ZONE_LABEL).forEach(function (z) {
                 const sens = PIJAT_ZONA_SENSITIF[z];
                 const termasuk = semua || kz.has(z);
@@ -12318,6 +12373,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                     else if (dekat) { status = 'kuning'; catatan = 'Dekat area keluhan: cukup sentuhan ringan sebagai peralihan.'; }
                     else { status = 'merah'; catatan = 'Tidak ada keluhan di area ini, tidak perlu dipijat.'; }
                 }
+                if (status === 'hijau' && zSaraf.has(z)) { status = 'kuning'; catatan = 'Keluhan saraf: hanya usapan/tekanan sangat ringan di otot sekitar. Jangan menekan titik nyeri.'; spesifik = true; }
                 const dasar = PIJAT_ZONA_MENIT[z] || 3;
                 let menit = 0;
                 if (status === 'hijau') menit = dasar;
@@ -12351,6 +12407,14 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             const items = Array.prototype.map.call(document.querySelectorAll('.keluhan-check:checked'), function (cb) {
                 return KELUHAN_DATA.find(function (k) { return k.no === parseInt(cb.value, 10); });
             }).filter(Boolean);
+            // peringatan langsung bila ada keluhan saraf
+            let sw = document.getElementById('pijat-saraf-live');
+            const adaSaraf = items.some(function (k) { return k.serius; });
+            if (adaSaraf) {
+                if (!sw) { sw = document.createElement('div'); sw.id = 'pijat-saraf-live'; sw.className = 'pjs-live'; box.parentNode.insertBefore(sw, box); }
+                sw.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span><b>Keluhan saraf dipilih.</b> Jika ada kelemahan anggota gerak, baal di selangkangan, gangguan BAK/BAB, atau nyeri setelah kecelakaan, <b>jangan dipijat</b> dan segera ke dokter/IGD. Panduan lengkap tampil setelah booking.</span>';
+                sw.style.display = 'flex';
+            } else if (sw) { sw.style.display = 'none'; }
             if (!items.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
             box.style.display = 'flex';
             box.innerHTML = '<div class="pjp-live-ic"><i class="fas fa-stopwatch"></i></div><div><small>Estimasi durasi sesi</small><b>'
@@ -12430,6 +12494,20 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         }
 
         /** HTML lengkap: legenda + gambar depan/belakang + daftar status + catatan keselamatan. */
+        /** Panduan keluhan saraf: tingkat ringan / sedang / berat + tindakan. Kosong bila tidak ada keluhan saraf. */
+        function pijatSarafHtml(selectedItems) {
+            const items = (selectedItems || []).filter(function (k) { return k && k.serius; });
+            if (!items.length) return '';
+            const ul = function (a) { return '<ul>' + a.map(function (s) { return '<li>' + kgEsc(s) + '</li>'; }).join('') + '</ul>'; };
+            return '<div class="pjs-wrap">' + items.map(function (k) {
+                return '<div class="pjs-card"><div class="pjs-head"><i class="fas fa-triangle-exclamation"></i><div><b>' + kgEsc(k.masalah) + '</b><small>' + kgEsc(k.gejala) + '</small></div></div>'
+                    + '<div class="pjs-lv pjs-g"><div class="pjs-t"><i></i>Ringan <em>boleh dipijat sangat lembut</em></div><p>' + kgEsc(k.ringan) + '</p>' + ul(k.langkah_ringan) + '</div>'
+                    + '<div class="pjs-lv pjs-y"><div class="pjs-t"><i></i>Sedang <em>periksa dokter dulu, tunda pijat</em></div><p>' + kgEsc(k.sedang) + '</p>' + ul(k.langkah_sedang) + '</div>'
+                    + '<div class="pjs-lv pjs-r"><div class="pjs-t"><i></i>Berat <em>jangan dipijat, segera berobat</em></div><p>' + kgEsc(k.berat) + '</p>' + ul(k.langkah_berat) + '</div>'
+                    + '<div class="pjs-ugd"><i class="fas fa-truck-medical"></i><span>' + kgEsc(k.darurat) + '</span></div></div>';
+            }).join('') + '<p class="pjs-note">Panduan ini bersifat umum dan bukan diagnosis. Terapis akan menanyakan kondisi Anda sebelum memijat dan dapat menolak memijat bila ada tanda bahaya. Jika ragu, pilih tingkat yang lebih berat dan periksakan ke tenaga medis.</p></div>';
+        }
+
         function pijatStatusHtml(selectedItems) {
             const hasil = pijatHitungStatus(selectedItems);
             const grup = { hijau: [], kuning: [], merah: [] };
@@ -12442,7 +12520,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 pijatStatusFigur(SVG_ZONA_DEPAN, KG_ANCHOR_DEPAN, hasil, 'Tampak depan'),
                 pijatStatusFigur(SVG_ZONA_BELAKANG, KG_ANCHOR_BELAKANG, hasil, 'Tampak belakang')
             ].filter(Boolean).join('');
-            return '<div class="pj-wrap">' + pijatDurasiHtml(selectedItems, hasil) + legend
+            return '<div class="pj-wrap">' + pijatSarafHtml(selectedItems) + pijatDurasiHtml(selectedItems, hasil) + legend
                 + '<div class="kg-anatblock"><div class="kg-anat-head"><b>Peta titik aman &amp; tidak aman</b></div><div class="kg-figs">' + figs + '</div></div>'
                 + pijatGrupHtml('hijau', grup.hijau) + pijatGrupHtml('kuning', grup.kuning) + pijatGrupHtml('merah', grup.merah)
                 + '<p class="pj-note"><b>Catatan:</b> Panduan ini bersifat umum, bukan pengganti saran medis. Tunda pijat bila sedang demam, hamil, ada luka/bengkak/memar, varises berat, patah tulang, atau nyeri tajam. Segera hentikan bila terasa sakit, dan konsultasikan ke dokter bila keluhan berlanjut.</p>'
@@ -12714,6 +12792,28 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         .pjp-kc-tx small{display:block;font-size:11px;color:#94a3b8;line-height:1.4;margin-top:2px}
         .pjp-kc:has(input:checked){background:#f0fdfa;border-color:#0f766e;box-shadow:0 6px 16px -8px rgba(15,118,110,.45)}
         .pjp-kc:has(input:checked) .pjp-kc-box{background:#0f766e;border-color:#0f766e;color:#fff}
+        .pjp-ksec{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;margin-top:6px;padding:10px 12px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412}
+        .pjp-ksec i{margin-top:2px}.pjp-ksec b{display:block;font-size:12.5px;font-weight:800}.pjp-ksec small{display:block;font-size:11px;line-height:1.4;opacity:.85;margin-top:2px}
+        .pjp-kc-serius{border-color:#fed7aa}
+        .pjp-kc-serius:has(input:checked){background:#fff7ed;border-color:#ea580c;box-shadow:0 6px 16px -8px rgba(234,88,12,.45)}
+        .pjp-kc-serius:has(input:checked) .pjp-kc-box{background:#ea580c;border-color:#ea580c}
+        .pjs-live{display:none;gap:10px;align-items:flex-start;margin-top:10px;padding:11px 13px;border-radius:14px;background:#fff7ed;border:1.5px solid #fb923c;color:#9a3412;font-size:12px;line-height:1.5}
+        .pjs-wrap{display:grid;gap:12px}
+        .pjs-card{border:1.5px solid #fed7aa;border-radius:18px;background:#fff;overflow:hidden}
+        .pjs-head{display:flex;gap:10px;padding:13px 14px;background:#fff7ed;color:#9a3412}
+        .pjs-head b{display:block;font-size:14px;font-weight:800}.pjs-head small{display:block;font-size:11.5px;line-height:1.45;margin-top:2px;opacity:.9}
+        .pjs-lv{padding:11px 14px;border-top:1px solid #f1f5f9;font-size:12px;line-height:1.5;color:#334155}
+        .pjs-lv p{margin:4px 0 4px;color:#475569}.pjs-lv ul{margin:0;padding-left:18px}.pjs-lv li{margin:2px 0}
+        .pjs-t{display:flex;align-items:center;gap:8px;font-weight:800;font-size:12.5px}.pjs-t em{font-style:normal;font-weight:600;font-size:11px;opacity:.8}
+        .pjs-t i{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+        .pjs-g .pjs-t{color:#047857}.pjs-g .pjs-t i{background:#10b981}
+        .pjs-y .pjs-t{color:#b45309}.pjs-y .pjs-t i{background:#f59e0b}
+        .pjs-r{background:#fef2f2}.pjs-r .pjs-t{color:#b91c1c}.pjs-r .pjs-t i{background:#ef4444}
+        .pjs-ugd{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;background:#7f1d1d;color:#fff;font-size:12px;line-height:1.5;font-weight:600}
+        .pjs-note{font-size:11px;line-height:1.5;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:10px 12px}
+        html.dark .pjs-card,html.dark .pjs-lv{background:#0f172a;border-color:#334155;color:#e2e8f0}
+        html.dark .pjs-lv p{color:#cbd5e1}html.dark .pjs-r{background:#450a0a}html.dark .pjs-head,html.dark .pjp-ksec,html.dark .pjs-live{background:#431407;color:#fed7aa}
+        html.dark .pjs-note{background:#422006;border-color:#854d0e;color:#fde68a}
         .pjp-kgrid.pjp-err{outline:2px solid #fca5a5;outline-offset:4px;border-radius:16px}
         .pjp-btn-main{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;height:54px;border:0;border-radius:16px;background:linear-gradient(120deg,#0f766e,#14b8a6);color:#fff;font-weight:900;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 14px 26px -10px rgba(15,118,110,.55);transition:.2s;font-family:inherit}
         .pjp-btn-main:hover{transform:translateY(-1px)}

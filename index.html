@@ -597,6 +597,25 @@
     .kg-sec-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;color:#0f172a;margin:0 0 4px}
     .kg-sec-title i{color:#2563eb}
     .kg-sec-sub{font-size:13px;color:#64748b;margin:0 0 16px}
+    .kgi{position:relative;overflow:hidden;border-radius:28px;margin-bottom:24px;color:#fff;background:linear-gradient(135deg,#0f2f6b 0%,#0f766e 100%);box-shadow:0 18px 40px -18px rgba(15,47,107,.55)}
+    .kgi-bg{position:absolute;inset:0;background:radial-gradient(circle at 85% 10%,rgba(255,193,7,.28),transparent 45%),radial-gradient(circle at 10% 100%,rgba(94,234,212,.22),transparent 50%)}
+    .kgi-in{position:relative;padding:22px 18px 24px}
+    .kgi-top{display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fde68a;margin-bottom:16px}
+    .kgi-row{display:flex;flex-wrap:wrap;justify-content:center;gap:18px 0}
+    .kgi-it{flex:1 1 140px;min-width:130px;text-align:center;padding:0 12px;position:relative}
+    .kgi-it+.kgi-it::before{content:"";position:absolute;left:0;top:12%;bottom:12%;width:1px;background:rgba(255,255,255,.22)}
+    .kgi-it>i{display:block;font-size:18px;color:#5eead4;margin-bottom:6px}
+    .kgi-num{display:flex;align-items:baseline;justify-content:center;gap:2px;line-height:1}
+    .kgi-n{font-size:44px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+    .kgi-sfx{font-size:26px;font-weight:900;color:#fde68a}
+    .kgi-lb{margin-top:6px;font-size:13px;font-weight:700;color:#dbe6fb}
+    .kgi-ex{margin-top:3px;font-size:10.5px;color:#a7c0e8}
+    .kgi-go .kgi-it{animation:kgiUp .7s cubic-bezier(.2,.8,.2,1) both}
+    .kgi-go .kgi-it:nth-child(2){animation-delay:.12s}.kgi-go .kgi-it:nth-child(3){animation-delay:.24s}
+    @keyframes kgiUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    @media(min-width:768px){.kgi-in{padding:28px 28px 30px}.kgi-n{font-size:58px}.kgi-sfx{font-size:32px}.kgi-lb{font-size:14px}}
+    @media(max-width:520px){.kgi-row{flex-wrap:nowrap}.kgi-it{flex:1 1 0;min-width:0;padding:0 6px}.kgi-n{font-size:30px}.kgi-sfx{font-size:18px}.kgi-lb{font-size:11px}.kgi-ex{display:none}.kgi-it>i{font-size:15px}.kgi-top{font-size:10px}}
+    @media(prefers-reduced-motion:reduce){.kgi-go .kgi-it{animation:none}}
     .kg-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
     @media(min-width:640px){.kg-stats{grid-template-columns:repeat(5,1fr)}}
     .kg-stat{background:#f8fafc;border:1px solid #eef2f7;border-radius:18px;padding:16px 10px;text-align:center}
@@ -6314,6 +6333,66 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             else mgLauncherShow();
         }, 1000);
 
+        // ================================================================
+        // ANGKA DAMPAK BERGERAK (paling atas halaman MOVE)
+        // Orang dilayani + desa dari data kegiatan; "nyeri turun" hanya dari orang yang sudah punya skala sebelum DAN sesudah.
+        // ================================================================
+        function kgImpactHitung(items) {
+            items = items || [];
+            const orang = new Set(items.map(it => kgTxt(it.nama_pelanggan).toLowerCase()).filter(v => v !== '')).size;
+            const desa = new Set(items.filter(it => kgTxt(it.lokasi_desa) !== '').map(it => kgWilayah(it.lokasi_desa).key)).size;
+            let sumSeb = 0, sumSes = 0, n = 0;
+            items.forEach(function (it) {
+                const a = parseInt(it.skala_nyeri_sebelum, 10), b = parseInt(it.skala_nyeri_sesudah, 10);
+                if (a >= 1 && a <= 10 && b >= 1 && b <= 10) { sumSeb += a; sumSes += b; n++; }
+            });
+            const turun = (n > 0 && sumSeb > 0) ? Math.round((sumSeb - sumSes) / sumSeb * 100) : null;
+            return { orang: orang, desa: desa, turun: turun, nEval: n };
+        }
+        function buildKegiatanImpactHtml(items) {
+            const d = kgImpactHitung(items);
+            if (!d.orang && !d.desa) return '';
+            const cell = function (icon, val, suffix, label, extra) {
+                return '<div class="kgi-it"><i class="fas ' + icon + '"></i><div class="kgi-num"><span class="kgi-n" data-to="' + val + '">' + val.toLocaleString('id-ID') + '</span>' + (suffix ? '<span class="kgi-sfx">' + suffix + '</span>' : '') + '</div><div class="kgi-lb">' + label + '</div>' + (extra ? '<div class="kgi-ex">' + extra + '</div>' : '') + '</div>';
+            };
+            let h = '<div id="kg-impact" class="kgi"><div class="kgi-bg"></div><div class="kgi-in">'
+                + '<div class="kgi-top"><i class="fas fa-heart-pulse"></i> Dampak nyata MOVE</div><div class="kgi-row">';
+            h += cell('fa-people-group', d.orang, '', 'orang dilayani');
+            h += cell('fa-location-dot', d.desa, '', 'desa terjangkau');
+            if (d.turun !== null && d.turun > 0) h += cell('fa-arrow-trend-down', d.turun, '%', 'nyeri turun rata-rata', 'dari ' + d.nEval + ' orang yang sudah dievaluasi');
+            h += '</div></div></div>';
+            return h;
+        }
+        /** Hitung naik dari 0 saat banner terlihat. Hormati pengaturan "kurangi gerakan". */
+        function kgImpactAnimate() {
+            const box = document.getElementById('kg-impact');
+            if (!box) return;
+            const nums = Array.prototype.slice.call(box.querySelectorAll('.kgi-n'));
+            if (!nums.length) return;
+            const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduce || box.getAttribute('data-done') === '1') return;
+            const jalan = function () {
+                if (box.getAttribute('data-done') === '1') return;
+                box.setAttribute('data-done', '1');
+                box.classList.add('kgi-go');
+                const dur = 1800, t0 = performance.now();
+                nums.forEach(function (el) { el.textContent = '0'; });
+                const step = function (now) {
+                    const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+                    nums.forEach(function (el) {
+                        const to = parseInt(el.getAttribute('data-to'), 10) || 0;
+                        el.textContent = Math.round(to * e).toLocaleString('id-ID');
+                    });
+                    if (p < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            };
+            if ('IntersectionObserver' in window) {
+                const io = new IntersectionObserver(function (es) { if (es.some(function (x) { return x.isIntersecting; })) { io.disconnect(); jalan(); } }, { threshold: 0.35 });
+                io.observe(box);
+            } else { jalan(); }
+        }
+
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';
             h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
@@ -6729,6 +6808,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
 
                     let html = '<div class="w-full">';
 
+                    html += buildKegiatanImpactHtml(kegiatanItems);
                     html += buildMoveHubHtml();
                     html += buildKegiatanVideoHtml(subData);
 
@@ -6812,6 +6892,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                         html += '</div>';
                         container.innerHTML = html.replace('<div class="w-full">', '<div class="w-full kg-wrap">');
                         pijatPulihkanPanel(_pjTerbuka);
+                        kgImpactAnimate();
                         setTimeout(mgAuto, 400);
                         if (imageUrls.length > 0) initAutoGallery('kegiatan-narasi', imageUrls.length, 4500);
                         renderKegiatanItemsUI();

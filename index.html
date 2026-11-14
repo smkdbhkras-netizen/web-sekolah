@@ -6089,6 +6089,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             ].map((s, i) => '<li data-n="' + (i + 1) + '"><div class="mgp-num"><i class="fas ' + s[0] + '"></i></div>'
                 + '<div><em>Langkah ' + (i + 1) + '</em><strong>' + s[1] + '</strong><span>' + s[2] + '</span></div></li>').join('');
             const ft = [
+                ['fa-lightbulb', '#0f766e', 'MOVE = program, Terapis = aplikasi', 'MOVE adalah program pelayanan pijat; Terapis adalah aplikasi booking dengan teknologi rekam anatomi.'],
                 ['fa-hand-holding-medical', '#15803d', 'Daftar dan booking online', 'Isi form langsung dari halaman ini, tanpa perlu datang dulu.'],
                 ['fa-microphone', '#0891b2', 'Isi form dengan suara', 'Ucapan hanya diubah menjadi teks untuk mengisi form, bukan direkam.'],
                 ['fa-location-crosshairs', '#dc2626', 'Peta titik pijat', 'Titik yang perlu dipijat ditampilkan sesuai keluhan yang dipilih.'],
@@ -6121,6 +6122,8 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
         // ===== TUR PEMANDU (bot) =====
         // Langkah tur di bawah mudah diubah sendiri. Seksi yang tidak ada di halaman otomatis dilewati.
         const MOVE_TOUR = [
+            { id: 'kg-sec-tentang', judul: 'MOVE dan Terapis, apa bedanya?', teks: 'MOVE itu programnya, Terapis itu aplikasi bookingnya. Keduanya saling melengkapi.',
+              fitur: ['MOVE (Melayani Komunitas Via Edukasi) adalah program pelayanan pijat untuk masyarakat', 'Terapis adalah aplikasi booking dengan teknologi rekam anatomi untuk pelayanan pijat', 'Keluhan dicatat di peta tubuh: hijau aman, kuning hati-hati, merah dihindari', 'Dilengkapi estimasi durasi, skala nyeri sebelum dan sesudah, tanda tangan digital, dan pengingat WhatsApp'] },
             { id: 'kg-sec-booking', judul: 'Layanan pijat terapis', teks: 'Di sini kamu bisa mencoba layanan terapis langsung dari halaman ini.',
               fitur: ['Tekan Daftar / Booking untuk membuka formulir', 'Isi biodata dan jumlah orang, atau tekan Mulai Bicara untuk mengisi dengan suara', 'Pilih bagian yang pegal atau sebutkan keluhanmu', 'Lihat peta titik yang perlu dipijat sesuai keluhan'],
               aksi: { label: 'Buka formulir booking', ikon: 'fa-hand-holding-medical', js: 'mgTourEnd();openPijatModal()' } },
@@ -6444,20 +6447,21 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 +   '<div class="kgt-card kgt-a"><div class="kgt-ic"><i class="fas fa-people-group"></i></div><small>PROGRAM</small><b>MOVE</b><em>Melayani Komunitas Via Edukasi</em>'
                 +   '<p>Program pelayanan pijat untuk masyarakat yang dijalankan SMK IT Al Mubarok bersama tim pelaksana dan siswa. Selain meringankan pegal dan kaku, MOVE menjadi sarana belajar dan edukasi hidup sehat langsung di tengah warga.</p></div>'
                 +   '<div class="kgt-plus"><i class="fas fa-plus"></i></div>'
-                +   '<div class="kgt-card kgt-b"><div class="kgt-ic"><i class="fas fa-laptop-medical"></i></div><small>APLIKASI BOOKING</small><b>TERAPIS</b><em>Teknologi Rekam Anatomi untuk Pelayanan Pijat</em>'
-                +   '<p>Aplikasi tempat warga memesan pijat. Keluhan dicatat pada peta tubuh sehingga TERAPIS tahu titik mana yang perlu dipijat, mana yang harus dihindari, dan berapa lama waktunya.</p></div>'
+                +   '<div class="kgt-card kgt-b"><div class="kgt-ic"><i class="fas fa-laptop-medical"></i></div><small>APLIKASI BOOKING</small><b>Terapis</b><em>Teknologi Rekam Anatomi untuk Pelayanan Pijat</em>'
+                +   '<p>Aplikasi tempat warga memesan pijat. Keluhan dicatat pada peta tubuh sehingga terapis tahu titik mana yang perlu dipijat, mana yang harus dihindari, dan berapa lama waktunya.</p></div>'
                 + '</div>'
-                + '<div class="kgt-sub"><i class="fas fa-wand-magic-sparkles"></i> Yang dilakukan aplikasi TERAPIS</div>'
+                + '<div class="kgt-sub"><i class="fas fa-wand-magic-sparkles"></i> Yang dilakukan aplikasi Terapis</div>'
                 + '<div class="kgt-grid">' + fit.map(function (f) {
                     return '<div class="kgt-f"><i class="fas ' + f[0] + '"></i><div><b>' + f[1] + '</b><span>' + f[2] + '</span></div></div>';
                   }).join('') + '</div>'
-                + '<div class="kgt-cta"><span>Punya keluhan pegal? Coba aplikasi TERAPIS sekarang.</span>'
+                + '<div class="kgt-cta"><span>Punya keluhan pegal? Coba aplikasi Terapis sekarang.</span>'
                 + '<button type="button" onclick="openPijatModal()"><i class="fas fa-spa"></i> Booking Pijat Terapis</button></div>'
                 + '</div>';
         }
 
         function buildKegiatanQuickNavHtml(hasMap, hasTestimoni) {
             let h = '<div class="kg-quicknav">';
+            h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-tentang\')"><i class="fas fa-lightbulb"></i> MOVE &amp; Terapis</button>';
             h += '<button type="button" class="kg-qn" onclick="mgTourStart(\'kg-sec-booking\')"><i class="fas fa-spa"></i> Booking Pijat</button>';
             h += '<button type="button" class="kg-qn" onclick="mgOpen()"><i class="fas fa-circle-info"></i> Panduan Terapis</button>';
             h += '<button type="button" class="kg-qn" onclick="mgTourStart()"><i class="fas fa-robot"></i> Tur Pemandu</button>';

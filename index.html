@@ -14257,5 +14257,120 @@ PASANG: tempel SELURUH blok ini (style + script) TEPAT SEBELUM </body>,
 })();
 </script>
 
+<!-- =====================================================================
+     HALAMAN SKALA NYERI SESUDAH PIJAT  (dibuka dari link WhatsApp  ?nyeri=<token>)
+     Aktif hanya kalau URL berisi  ?nyeri=<token>. Selain itu tidak berbuat apa-apa.
+     ===================================================================== -->
+<style id="ny-style">
+  #ny-overlay{position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.78);overflow:auto;padding:16px;display:flex;justify-content:center;align-items:flex-start;-webkit-overflow-scrolling:touch}
+  #ny-box{background:#fff;color:#0f172a;width:100%;max-width:520px;border-radius:22px;padding:24px 20px;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.35);font-family:inherit}
+  #ny-box h2{font-size:21px;font-weight:900;margin:0 0 4px;color:#0f766e}
+  #ny-box .ny-sub{font-size:12.5px;color:#64748b;margin:0 0 14px;line-height:1.5}
+  #ny-box .ny-ring{background:#f0fdfa;border:1px solid #99f6e4;border-radius:14px;padding:11px 13px;font-size:13px;line-height:1.55;margin-bottom:14px}
+  #ny-box .ny-ring b{color:#0f766e}
+  #ny-box .ny-chip{display:inline-block;margin-top:6px;padding:3px 10px;border-radius:999px;background:#fff;border:1px solid #99f6e4;font-weight:800;font-size:12px;color:#0f766e}
+  #ny-box .ny-q{font-size:15px;font-weight:900;margin:0 0 4px}
+  #ny-box .ny-hint{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#64748b;margin:0 2px 8px}
+  #ny-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  #ny-grid button{border:2px solid transparent;border-radius:14px;padding:12px 0;font-weight:900;font-size:17px;color:#fff;cursor:pointer;transition:transform .12s,box-shadow .12s,opacity .12s;opacity:.78}
+  #ny-grid button:active{transform:scale(.94)}
+  #ny-grid button.on{opacity:1;transform:scale(1.07);border-color:#0f172a;box-shadow:0 6px 16px rgba(15,23,42,.3)}
+  #ny-box .ny-lvl{min-height:20px;margin:10px 2px 4px;font-size:13px;font-weight:800;text-align:center}
+  #ny-box label{display:block;font-size:12px;font-weight:700;margin:12px 0 4px}
+  #ny-box textarea{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:12px;padding:10px 12px;font-size:14px;font-family:inherit;resize:vertical;min-height:70px}
+  #ny-kirim{width:100%;margin-top:14px;border:0;border-radius:14px;padding:14px;font-weight:900;font-size:14px;cursor:pointer;background:#0f766e;color:#fff}
+  #ny-kirim[disabled]{opacity:.55;cursor:not-allowed}
+  #ny-err{color:#b91c1c;font-size:12.5px;margin-top:8px;min-height:16px}
+  #ny-box .ny-pesan{font-size:14px;line-height:1.65;text-align:center;padding:10px 4px}
+  #ny-box .ny-hasil{border-radius:16px;padding:16px;margin:8px 0 12px;text-align:center}
+  #ny-box .ny-hasil .ny-big{font-size:30px;font-weight:900;line-height:1.1}
+  #ny-box .ny-hasil.up{background:#dcfce7;color:#166534}
+  #ny-box .ny-hasil.same{background:#f1f5f9;color:#334155}
+  #ny-box .ny-hasil.down{background:#fee2e2;color:#991b1b}
+  #ny-box .ny-tutup{width:100%;border:0;border-radius:14px;padding:13px;font-weight:900;font-size:13px;cursor:pointer;background:#0f766e;color:#fff}
+</style>
+<script id="ny-script">
+(function () {
+  var token = (new URLSearchParams(location.search).get('nyeri') || '').trim().toLowerCase();
+  if (!/^[a-f0-9]{32}$/.test(token)) return;
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = String(s == null ? '' : s); return d.innerHTML; }
+  function run() { return window.google && window.google.script && window.google.script.run; }
+  function warna(n) { return 'hsl(' + Math.round(130 - (n - 1) * 13) + ',70%,42%)'; }
+  function level(n) { return n <= 3 ? 'Ringan' : n <= 6 ? 'Sedang' : n <= 8 ? 'Berat' : 'Sangat berat'; }
+
+  var overlay = document.createElement('div');
+  overlay.id = 'ny-overlay';
+  overlay.innerHTML = '<div id="ny-box"><div class="ny-pesan">Memuat…</div></div>';
+  document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
+  var box = overlay.firstChild;
+  function tutup() { location.href = location.pathname; }
+
+  function pesan(judul, teks, tombolTutup) {
+    box.innerHTML = '<h2>' + esc(judul) + '</h2><div class="ny-pesan">' + esc(teks) + '</div>'
+      + (tombolTutup ? '<button type="button" class="ny-tutup" id="ny-tutup">Tutup</button>' : '');
+    var t = document.getElementById('ny-tutup'); if (t) t.onclick = tutup;
+  }
+
+  function hasil(res) {
+    var d = res.selisih, sb = res.sebelum, ss = res.sesudah, kls, judul, isi;
+    if (d != null && d > 0) {
+      var pct = sb > 0 ? Math.round(d / sb * 100) : 0; kls = 'up';
+      judul = 'Nyeri turun ' + d + ' poin 🎉'; isi = pct + '% lebih ringan dibanding sebelum pijat. Alhamdulillah!';
+    } else if (d != null && d < 0) {
+      kls = 'down'; judul = 'Nyeri naik ' + Math.abs(d) + ' poin'; isi = 'Mohon pertimbangkan berkonsultasi dengan terapis atau tenaga medis.';
+    } else { kls = 'same'; judul = d === 0 ? 'Belum ada perubahan' : 'Tersimpan'; isi = 'Semoga lekas membaik. Jaga kesehatan ya.'; }
+    box.innerHTML = '<h2>Terima kasih 🙏</h2><p class="ny-sub">Skala nyeri Anda sudah tersimpan.</p>'
+      + '<div class="ny-hasil ' + kls + '"><div class="ny-big">' + (sb != null ? sb + ' → ' : '') + ss + '<small style="font-size:14px">/10</small></div>'
+      + '<div style="font-weight:900;margin-top:6px">' + esc(judul) + '</div><div style="font-size:12.5px;margin-top:4px">' + esc(isi) + '</div></div>'
+      + '<button type="button" class="ny-tutup" id="ny-tutup">Tutup</button>';
+    document.getElementById('ny-tutup').onclick = tutup;
+  }
+
+  function render(info) {
+    if (!info || !info.ok) { pesan('Link tidak bisa dipakai', (info && info.pesan) || 'Link tidak valid.', true); return; }
+    if (info.status === 'terisi') {
+      pesan('Sudah diisi', 'Skala nyeri atas nama ' + info.nama + (info.sesudah != null ? ' (' + info.sesudah + '/10)' : '') + ' sudah kami terima. Terima kasih.', true); return;
+    }
+    var pilih = 0;
+    var tombol = ''; for (var i = 1; i <= 10; i++) tombol += '<button type="button" data-n="' + i + '" style="background:' + warna(i) + '">' + i + '</button>';
+    box.innerHTML = '<h2>Bagaimana nyerinya sekarang?</h2><p class="ny-sub">Program MOVE · Pijat Terapis · hanya 10 detik</p>'
+      + '<div class="ny-ring">Halo, <b>' + esc(info.nama) + '</b>.'
+      + (info.keluhan ? '<br>Keluhan: ' + esc(info.keluhan) : '')
+      + (info.sebelum != null ? '<br><span class="ny-chip">Nyeri sebelum pijat: ' + info.sebelum + '/10</span>' : '') + '</div>'
+      + '<p class="ny-q">Pilih angka nyeri Anda saat ini</p>'
+      + '<div class="ny-hint"><span>1 = hampir tidak nyeri</span><span>10 = sangat nyeri</span></div>'
+      + '<div id="ny-grid">' + tombol + '</div><div class="ny-lvl" id="ny-lvl"></div>'
+      + '<label for="ny-cat">Catatan (boleh dikosongkan)</label><textarea id="ny-cat" maxlength="300" placeholder="Contoh: punggung terasa lebih ringan, leher masih agak kaku"></textarea>'
+      + '<button type="button" id="ny-kirim">Kirim</button><div id="ny-err"></div>';
+
+    var grid = document.getElementById('ny-grid'), lvl = document.getElementById('ny-lvl');
+    grid.onclick = function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      pilih = parseInt(b.getAttribute('data-n'), 10);
+      Array.prototype.forEach.call(grid.children, function (x) { x.classList.toggle('on', x === b); });
+      lvl.textContent = pilih + '/10 · ' + level(pilih); lvl.style.color = warna(pilih);
+    };
+    var err = document.getElementById('ny-err'), btn = document.getElementById('ny-kirim');
+    btn.onclick = function () {
+      err.textContent = '';
+      if (!pilih) { err.textContent = 'Pilih dulu angka nyeri Anda.'; return; }
+      btn.disabled = true; btn.textContent = 'Mengirim…';
+      run().withSuccessHandler(function (res) {
+        if (res && res.ok) hasil(res);
+        else { btn.disabled = false; btn.textContent = 'Kirim'; err.textContent = (res && res.pesan) || 'Gagal menyimpan.'; }
+      }).withFailureHandler(function (e) {
+        btn.disabled = false; btn.textContent = 'Kirim'; err.textContent = (e && e.message) || 'Periksa koneksi lalu coba lagi.';
+      }).simpanNyeriLewatToken(token, pilih, document.getElementById('ny-cat').value);
+    };
+  }
+
+  run().withSuccessHandler(render).withFailureHandler(function (e) {
+    pesan('Gagal memuat', (e && e.message) || 'Periksa koneksi lalu muat ulang halaman.', false);
+  }).getInfoNyeri(token);
+})();
+</script>
+
 </body>
 </html>

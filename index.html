@@ -1393,6 +1393,22 @@ html.dark .mgp-card i{background:color-mix(in srgb,var(--c) 22%,#111b2e)}
 html.dark .mgp-h{color:#86efac}
 html.dark .mgp-btn.alt{background:#3b2a12;color:#fdba74;border-color:#92400e}
 </style>
+<style id="mvn-style">
+/* ===== MENU BAWAH HP khusus halaman MOVE ===== */
+#mobile-nav-bar.mvn-on{justify-content:space-around;align-items:stretch;padding:0 4px 4px;border-top:0;background:#fff;box-shadow:0 -8px 28px rgba(5,60,40,.18);border-radius:22px 22px 0 0;overflow:visible}
+#mobile-nav-bar.mvn-on::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;border-radius:22px 22px 0 0;background:linear-gradient(90deg,#055a2a,#16a34a,#f59e0b)}
+.mvn-i{position:relative;flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 2px 2px;color:#94a3b8;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:color .2s}
+.mvn-ic{display:flex;align-items:center;justify-content:center;width:38px;height:28px;border-radius:14px;font-size:1.05rem;transition:background .2s,transform .2s}
+.mvn-tx{font-size:9px;font-weight:800;letter-spacing:.02em;line-height:1.1;text-align:center;white-space:nowrap}
+.mvn-i:active .mvn-ic{transform:scale(.92)}
+/* tombol Booking di tengah: menonjol */
+.mvn-i.mvn-main{color:#0f766e}
+.mvn-i.mvn-main .mvn-ic{width:52px;height:52px;border-radius:50%;margin-top:-22px;font-size:1.25rem;color:#fff;background:linear-gradient(135deg,#0f766e,#14b8a6);border:4px solid #fff;box-shadow:0 8px 18px rgba(15,118,110,.45)}
+.mvn-i.mvn-main.on .mvn-ic{background:linear-gradient(135deg,#055a2a,#16a34a);box-shadow:0 0 0 4px rgba(22,163,74,.28),0 8px 18px rgba(5,90,42,.45)}
+.mvn-i.mvn-main.on .mvn-tx{color:#055a2a}
+.mvn-i.mvn-main .mvn-tx{margin-top:-2px;color:#0f766e;font-weight:900}
+@media(prefers-reduced-motion:reduce){.mvn-i,.mvn-ic{transition:none}}
+</style>
 <style id="anat3d-style">
 /* ===== MOVE: Pembelajaran Anatomi 3D (ditambahkan, terpisah dari Booking) ===== */
 .an3-wrap{background:#fff;border-radius:2rem;border-top:5px solid #f59e0b;box-shadow:0 12px 32px rgba(5,90,42,.1);padding:24px;margin-bottom:2rem}
@@ -3956,7 +3972,65 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
             } catch (e) { /* abaikan */ }
         }
 
+        // ================================================================
+        // MENU BAWAH HP KHUSUS HALAMAN MOVE
+        // Di halaman MOVE, menu bawah (Beranda/Profil/Informasi/Lainnya) diganti
+        // sesuai isi halaman. Keluar dari MOVE -> menu asli otomatis kembali.
+        // ================================================================
+        let MVN_DEFAULT = null, MVN_ON = false, MVN_TICK = false;
+        function mvnItem(k, ico, label, js, cls) {
+            return '<a href="javascript:void(0)" class="mvn-i ' + (cls || '') + '" data-k="' + k + '" onclick="' + js + '">'
+                + '<span class="mvn-ic"><i class="fas ' + ico + '"></i></span><span class="mvn-tx">' + label + '</span></a>';
+        }
+        function mvnGo(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const y = el.getBoundingClientRect().top + (window.pageYOffset || 0) - 90;
+            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        }
+        function mvnSpy() {
+            if (!MVN_ON) return;
+            const nav = document.getElementById('mobile-nav-bar'); if (!nav) return;
+            // Hanya tombol Booking yang menyala: saat form booking terbuka atau bagian Booking sedang terlihat
+            let aktif = false;
+            const host = document.getElementById('pijat-inline-host');
+            const cta = document.getElementById('kg-sec-booking');
+            const vh = window.innerHeight || 700;
+            if (host && host.classList.contains('open')) {
+                const r = host.getBoundingClientRect(); aktif = r.bottom > 90 && r.top < vh * 0.7;
+            }
+            if (!aktif && cta) { const r = cta.getBoundingClientRect(); aktif = r.bottom > 90 && r.top < vh * 0.6; }
+            nav.querySelectorAll('.mvn-i').forEach(function (a) { a.classList.toggle('on', aktif && a.getAttribute('data-k') === 'booking'); });
+        }
+        function mvnOnScroll() {
+            if (MVN_TICK) return; MVN_TICK = true;
+            requestAnimationFrame(function () { MVN_TICK = false; mvnSpy(); });
+        }
+        function mobileNavSync(section, sub) {
+            try {
+                const nav = document.getElementById('mobile-nav-bar'); if (!nav) return;
+                const move = section === 'informasi' && String(sub || '').toLowerCase() === 'kegiatan';
+                if (move === MVN_ON) return;
+                if (move) {
+                    if (MVN_DEFAULT === null) MVN_DEFAULT = nav.innerHTML;
+                    nav.innerHTML = mvnItem('belajar', 'fa-cube', 'Anatomi 3D', "mvnGo('kg-sec-belajar')")
+                        + mvnItem('booking', 'fa-spa', 'Booking', 'openPijatModal()', 'mvn-main')
+                        + mvnItem('riwayat', 'fa-clipboard-list', 'Riwayat', "mvnGo('kg-sec-riwayat')")
+                        + mvnItem('panduan', 'fa-circle-info', 'Panduan', 'mgOpen()');
+                    nav.classList.add('mvn-on'); MVN_ON = true;
+                    window.addEventListener('scroll', mvnOnScroll, { passive: true });
+                    setTimeout(mvnSpy, 300);
+                } else {
+                    window.removeEventListener('scroll', mvnOnScroll);
+                    if (MVN_DEFAULT !== null) nav.innerHTML = MVN_DEFAULT;
+                    nav.classList.remove('mvn-on'); MVN_ON = false;
+                    if (typeof applyI18n === 'function') applyI18n();
+                }
+            } catch (e) { }
+        }
+
         function showSection(section, subParam = '') {
+            mobileNavSync(section, subParam);
             if (document.getElementById('berita-page-overlay')) tutupBeritaPage();
             LAST_SECTION = section;
             LAST_SUBPARAM = subParam;
@@ -11549,6 +11623,7 @@ html.dark #content-karya .kr-morebtn{background:#151f32;border-color:#2c3d5c;col
                 panel.style.animation = 'none'; void panel.offsetWidth; panel.style.animation = '';
             }
             pijatScrollPanel();
+            try { setTimeout(mvnSpy, 120); setTimeout(mvnSpy, 700); } catch (e) { }
         }
         function closePijatModal() {
             try { pijatSuaraBerhenti(true); } catch (e) { }
